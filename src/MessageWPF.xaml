@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Data_Package_Images.MessageWPF"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Data_Package_Images"
+             mc:Ignorable="d" 
+             d:DesignHeight="67" d:DesignWidth="568">
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="goToMessageMi" Header="Go to message" Click="goToMessageMi_Click"/>
+            <MenuItem x:Name="viewUserMi" Header="View user" IsEnabled="False"/>
+            <Separator/>
+            <MenuItem x:Name="copyMessageMi" Header="Copy message"/>
+            <MenuItem x:Name="copyChannelIdMi" Header="Copy channel id"/>
+            <MenuItem x:Name="copyMetadataMi" Header="Copy metadata"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+    <Grid x:Name="rootGrid" Background="#00000000" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave">
+        <Border CornerRadius="32" HorizontalAlignment="Left" Height="40" Margin="8,21,0,0" VerticalAlignment="Top" Width="40">
+            <Border.Background>
+                <ImageBrush x:Name="avatarImg" Stretch="Fill" ImageSource="https://cdn.discordapp.com/embed/avatars/0.png"/>
+            </Border.Background>
+        </Border>
+        <TextBlock x:Name="contentLb" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="64,41,0,0" VerticalAlignment="Top" FontFamily="Source Sans Pro" Foreground="#FFDBDEE1" FontSize="16" Text="Lorem ipsum dolor sit amet" Padding="0,0,5,5">
+        </TextBlock>
+        <Label x:Name="metadataLb" Content="Channel: 1234" HorizontalAlignment="Left" Margin="0,-3,0,0" VerticalAlignment="Top" Foreground="#FF949BA4" FontFamily="Source Sans Pro" FontSize="13"/>
+        <Grid HorizontalAlignment="Left" Height="Auto" Margin="60,14,0,0" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="usernameLb" Content="Lorem ipsum" HorizontalAlignment="Left" Margin="-1,0,0,-2" VerticalAlignment="Top" Foreground="#FFF2F3F5" FontFamily="Source Sans Pro" FontSize="16"/>
+            <Label x:Name="dateLb" Content="Today at 12:34" HorizontalAlignment="Left" Margin="0,3,0,-1" VerticalAlignment="Top" Foreground="#FF949BA4" FontFamily="Source Sans Pro" Grid.Column="1" FontSize="13"/>
+        </Grid>
+
+    </Grid>
+</UserControl>
