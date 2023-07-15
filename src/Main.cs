@@ -177,6 +177,8 @@ namespace Data_Package_Images
 
                 guildsBw.RunWorkerAsync();
 
+                var startTime = DateTime.Now;
+
                 using (var file = File.OpenRead(openFileDialog1.FileName))
                 using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
                 {
@@ -230,7 +232,7 @@ namespace Data_Package_Images
                 }
 
                 progressBar1.Value = progressBar1.Maximum;
-                loadingLb.Text = $"Finished! Total messages: {TotalMessages}";
+                loadingLb.Text = $"Finished! Parsed {TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s";
             }
         }
 
