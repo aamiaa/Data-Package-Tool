@@ -175,6 +175,8 @@ namespace Data_Package_Images
                 loadFileBtn.Hide();
                 progressBar1.Show();
 
+                guildsBw.RunWorkerAsync();
+
                 using (var file = File.OpenRead(openFileDialog1.FileName))
                 using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
                 {
@@ -223,57 +225,9 @@ namespace Data_Package_Images
                                 TotalMessages += channel.messages.Count;
                                 Channels.Add(channel);
                             }
-                        } else if(Regex.IsMatch(entry.FullName, @"activity/reporting/events.+\.json", RegexOptions.None))
-                        {
-                            using(var data = new StreamReader(entry.Open()))
-                            {
-                                int lineNum = 0;
-                                while(!data.EndOfStream)
-                                {
-                                    lineNum++;
-
-                                    var line = data.ReadLine();
-                                    //ThreadPool.QueueUserWorkItem(state => ProcessAnalyticsLine(line));
-                                    ProcessAnalyticsLine(line);
-
-                                    if(lineNum%10000 == 0)
-                                    {
-                                        loadingLb.Text = $"Reading {entry.FullName} - line {lineNum}\n{i}/{zip.Entries.Count}";
-                                        Application.DoEvents();
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (var eventData in AllInvites)
-                    {
-                        var guild = AllJoinedGuilds.Find(x => x.id == eventData.guild);
-                        if(guild == null)
-                        {
-                            AllJoinedGuilds.Add(new DAnalyticsGuild
-                            {
-                                id = eventData.guild,
-                                join_type = "invite",
-                                invites = new List<string> { eventData.invite },
-                                timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
-                            });
-                        } else if(!guild.invites.Contains(eventData.invite))
-                        {
-                            guild.invites.Add(eventData.invite);
                         }
                     }
                 }
-
-                AllJoinedGuilds = AllJoinedGuilds.OrderByDescending(o => o.timestamp.Ticks).ToList();
-                foreach(var guild in AllJoinedGuilds)
-                {
-                    string[] values = { guild.timestamp.ToShortDateString(), guild.id, guild.join_type, guild.location, String.Join(", ", guild.invites.ToArray())};
-                    var lvItem = new ListViewItem(values);
-                    serversLv.Items.Add(lvItem);
-                }
-
-                AllAttachments = AllAttachments.OrderByDescending(o => Int64.Parse(o.message.id)).ToList();
 
                 progressBar1.Value = progressBar1.Maximum;
                 loadingLb.Text = $"Finished! Total messages: {TotalMessages}";
@@ -421,6 +375,66 @@ namespace Data_Package_Images
             }
 
             Properties.Settings.Default.Save();
+        }
+
+        private void guildsBw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            using (var file = File.OpenRead(openFileDialog1.FileName))
+            using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
+            {
+                foreach (var entry in zip.Entries)
+                {
+                    if (Regex.IsMatch(entry.FullName, @"activity/reporting/events.+\.json", RegexOptions.None))
+                    {
+                        using (var data = new StreamReader(entry.Open()))
+                        {
+                            int lineNum = 0;
+                            while (!data.EndOfStream)
+                            {
+                                lineNum++;
+
+                                var line = data.ReadLine();
+                                //ThreadPool.QueueUserWorkItem(state => ProcessAnalyticsLine(line));
+                                ProcessAnalyticsLine(line);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void guildsBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            foreach (var eventData in AllInvites)
+            {
+                var guild = AllJoinedGuilds.Find(x => x.id == eventData.guild);
+                if (guild == null)
+                {
+                    AllJoinedGuilds.Add(new DAnalyticsGuild
+                    {
+                        id = eventData.guild,
+                        join_type = "invite",
+                        invites = new List<string> { eventData.invite },
+                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
+                    });
+                }
+                else if (!guild.invites.Contains(eventData.invite))
+                {
+                    guild.invites.Add(eventData.invite);
+                }
+            }
+
+            AllJoinedGuilds = AllJoinedGuilds.OrderByDescending(o => o.timestamp.Ticks).ToList();
+
+            serversLv.Items.Clear();
+            foreach (var guild in AllJoinedGuilds)
+            {
+                string[] values = { guild.timestamp.ToShortDateString(), guild.id, guild.join_type, guild.location, String.Join(", ", guild.invites.ToArray()) };
+                var lvItem = new ListViewItem(values);
+                serversLv.Items.Add(lvItem);
+            }
+
+            AllAttachments = AllAttachments.OrderByDescending(o => Int64.Parse(o.message.id)).ToList();
         }
     }
 }

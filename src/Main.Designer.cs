@@ -29,6 +29,7 @@ namespace Data_Package_Images
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Loading...");
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.loadTb = new System.Windows.Forms.TabPage();
             this.loadingLb = new System.Windows.Forms.Label();
@@ -58,6 +59,7 @@ namespace Data_Package_Images
             this.ptbRb = new System.Windows.Forms.RadioButton();
             this.stableRb = new System.Windows.Forms.RadioButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.guildsBw = new System.ComponentModel.BackgroundWorker();
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
             this.listWPF1 = new Data_Package_Images.ListWPF();
             this.tabControl1.SuspendLayout();
@@ -257,6 +259,8 @@ namespace Data_Package_Images
             this.columnHeader5});
             this.serversLv.Dock = System.Windows.Forms.DockStyle.Fill;
             this.serversLv.HideSelection = false;
+            this.serversLv.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1});
             this.serversLv.Location = new System.Drawing.Point(3, 3);
             this.serversLv.Name = "serversLv";
             this.serversLv.Size = new System.Drawing.Size(574, 285);
@@ -366,6 +370,11 @@ namespace Data_Package_Images
             // 
             this.openFileDialog1.Filter = "Discord Package files|*.zip";
             // 
+            // guildsBw
+            // 
+            this.guildsBw.DoWork += new System.ComponentModel.DoWorkEventHandler(this.guildsBw_DoWork);
+            this.guildsBw.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.guildsBw_RunWorkerCompleted);
+            // 
             // elementHost1
             // 
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -435,6 +444,7 @@ namespace Data_Package_Images
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
         private ListWPF listWPF1;
+        private System.ComponentModel.BackgroundWorker guildsBw;
     }
 }
 
