@@ -64,6 +64,7 @@
     </Compile>
     <Compile Include="DAnalyticsEvent.cs" />
     <Compile Include="DChannel.cs" />
+    <Compile Include="DRequest.cs" />
     <Compile Include="DUser.cs" />
     <Compile Include="ListWPF.xaml.cs">
       <DependentUpon>ListWPF.xaml</DependentUpon>
