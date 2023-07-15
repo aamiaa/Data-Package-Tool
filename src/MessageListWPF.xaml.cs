@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Data_Package_Images
 {
     /// <summary>
-    /// Interaction logic for ListWPF.xaml
+    /// Interaction logic for MessageListWPF.xaml
     /// </summary>
-    public partial class ListWPF : UserControl
+    public partial class MessageListWPF : UserControl
     {
-        public ListWPF()
+        public MessageListWPF()
         {
             InitializeComponent();
         }
@@ -39,6 +39,18 @@ namespace Data_Package_Images
             });
             child.SetValue(Grid.RowProperty, mainGrid.RowDefinitions.Count - 1);
             mainGrid.Children.Add(child);
+        }
+
+        public void RemoveMessage(string messageId)
+        {
+            foreach(MessageWPF msg in mainGrid.Children)
+            {
+                if(msg.SelectedMessage.id == messageId)
+                {
+                    msg.MarkDeleted();
+                    break;
+                }
+            }
         }
     }
 }

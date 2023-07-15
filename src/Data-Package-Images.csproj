@@ -66,14 +66,20 @@
     <Compile Include="DChannel.cs" />
     <Compile Include="DRequest.cs" />
     <Compile Include="DUser.cs" />
-    <Compile Include="ListWPF.xaml.cs">
-      <DependentUpon>ListWPF.xaml</DependentUpon>
+    <Compile Include="MessageListWPF.xaml.cs">
+      <DependentUpon>MessageListWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MassDeletePrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MassDeletePrompt.Designer.cs">
+      <DependentUpon>MassDeletePrompt.cs</DependentUpon>
     </Compile>
     <Compile Include="Message.cs">
       <SubType>UserControl</SubType>
@@ -91,6 +97,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MassDeletePrompt.resx">
+      <DependentUpon>MassDeletePrompt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Message.resx">
       <DependentUpon>Message.cs</DependentUpon>
@@ -123,7 +132,7 @@
     <None Include="Resources\0.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ListWPF.xaml">
+    <Page Include="MessageListWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

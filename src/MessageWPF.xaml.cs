@@ -21,7 +21,8 @@ namespace Data_Package_Images
     /// </summary>
     public partial class MessageWPF : UserControl
     {
-        private DMessage SelectedMessage;
+        public DMessage SelectedMessage;
+        public bool IsDeleted = false;
         public MessageWPF(DMessage message, DUser user)
         {
             InitializeComponent();
@@ -98,11 +99,23 @@ namespace Data_Package_Images
             bitmap.UriSource = new Uri(user.GetAvatarURL(), UriKind.Absolute);
             bitmap.EndInit();
             avatarImg.ImageSource = bitmap;
+
+            // Add red tint if the message was deleted with mass deleter
+            if(message.deleted)
+            {
+                MarkDeleted();
+            }
         }
 
         public Size GetTextSize()
         {
             return contentLb.RenderSize;
+        }
+
+        public void MarkDeleted()
+        {
+            IsDeleted = true;
+            rootGrid.Background = new SolidColorBrush(Color.FromArgb(255, 78, 54, 59));
         }
 
         private void ParseAndSet(string content)
@@ -161,12 +174,24 @@ namespace Data_Package_Images
 
         private void Grid_MouseEnter(object sender, MouseEventArgs e)
         {
-            rootGrid.Background = new SolidColorBrush(Color.FromArgb(255, 46, 48, 53));
+            if(IsDeleted)
+            {
+                rootGrid.Background = new SolidColorBrush(Color.FromArgb(255, 73, 51, 55));
+            } else
+            {
+                rootGrid.Background = new SolidColorBrush(Color.FromArgb(255, 46, 48, 53));
+            }
         }
 
         private void Grid_MouseLeave(object sender, MouseEventArgs e)
         {
-            rootGrid.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+            if(IsDeleted)
+            {
+                rootGrid.Background = new SolidColorBrush(Color.FromArgb(255, 78, 54, 59));
+            } else
+            {
+                rootGrid.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+            }
         }
 
         private void viewUserMi_Click(object sender, RoutedEventArgs e)

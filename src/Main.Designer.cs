@@ -29,15 +29,19 @@ namespace Data_Package_Images
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Loading...");
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Loading...");
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.loadTb = new System.Windows.Forms.TabPage();
             this.loadingLb = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.loadFileBtn = new System.Windows.Forms.Button();
             this.messagesTab = new System.Windows.Forms.TabPage();
+            this.massDeleteBtn = new System.Windows.Forms.Button();
             this.resultsCountLb = new System.Windows.Forms.Label();
             this.messagesPanel = new System.Windows.Forms.Panel();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.listWPF1 = new Data_Package_Images.MessageListWPF();
             this.searchBtn = new System.Windows.Forms.Button();
             this.searchTb = new System.Windows.Forms.TextBox();
             this.imagesTab = new System.Windows.Forms.TabPage();
@@ -60,8 +64,9 @@ namespace Data_Package_Images
             this.stableRb = new System.Windows.Forms.RadioButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.guildsBw = new System.ComponentModel.BackgroundWorker();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.listWPF1 = new Data_Package_Images.ListWPF();
+            this.massDeleteTimer = new System.Windows.Forms.Timer(this.components);
+            this.messagesPrevBtn = new System.Windows.Forms.Button();
+            this.messagesNextBtn = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
             this.messagesTab.SuspendLayout();
@@ -135,6 +140,9 @@ namespace Data_Package_Images
             // messagesTab
             // 
             this.messagesTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(51)))), ((int)(((byte)(56)))));
+            this.messagesTab.Controls.Add(this.messagesNextBtn);
+            this.messagesTab.Controls.Add(this.messagesPrevBtn);
+            this.messagesTab.Controls.Add(this.massDeleteBtn);
             this.messagesTab.Controls.Add(this.resultsCountLb);
             this.messagesTab.Controls.Add(this.messagesPanel);
             this.messagesTab.Controls.Add(this.searchBtn);
@@ -146,11 +154,22 @@ namespace Data_Package_Images
             this.messagesTab.TabIndex = 0;
             this.messagesTab.Text = "Messages";
             // 
+            // massDeleteBtn
+            // 
+            this.massDeleteBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.massDeleteBtn.Location = new System.Drawing.Point(497, 5);
+            this.massDeleteBtn.Name = "massDeleteBtn";
+            this.massDeleteBtn.Size = new System.Drawing.Size(75, 23);
+            this.massDeleteBtn.TabIndex = 4;
+            this.massDeleteBtn.Text = "Mass Delete";
+            this.massDeleteBtn.UseVisualStyleBackColor = true;
+            this.massDeleteBtn.Click += new System.EventHandler(this.massDeleteBtn_Click);
+            // 
             // resultsCountLb
             // 
             this.resultsCountLb.AutoSize = true;
             this.resultsCountLb.ForeColor = System.Drawing.SystemColors.Control;
-            this.resultsCountLb.Location = new System.Drawing.Point(259, 10);
+            this.resultsCountLb.Location = new System.Drawing.Point(328, 9);
             this.resultsCountLb.Name = "resultsCountLb";
             this.resultsCountLb.Size = new System.Drawing.Size(0, 13);
             this.resultsCountLb.TabIndex = 3;
@@ -166,6 +185,16 @@ namespace Data_Package_Images
             this.messagesPanel.Name = "messagesPanel";
             this.messagesPanel.Size = new System.Drawing.Size(568, 251);
             this.messagesPanel.TabIndex = 2;
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(568, 251);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.listWPF1;
             // 
             // searchBtn
             // 
@@ -260,7 +289,7 @@ namespace Data_Package_Images
             this.serversLv.Dock = System.Windows.Forms.DockStyle.Fill;
             this.serversLv.HideSelection = false;
             this.serversLv.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem2});
             this.serversLv.Location = new System.Drawing.Point(3, 3);
             this.serversLv.Name = "serversLv";
             this.serversLv.Size = new System.Drawing.Size(574, 285);
@@ -375,15 +404,29 @@ namespace Data_Package_Images
             this.guildsBw.DoWork += new System.ComponentModel.DoWorkEventHandler(this.guildsBw_DoWork);
             this.guildsBw.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.guildsBw_RunWorkerCompleted);
             // 
-            // elementHost1
+            // massDeleteTimer
             // 
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(568, 251);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.listWPF1;
+            this.massDeleteTimer.Tick += new System.EventHandler(this.massDeleteTimer_Tick);
+            // 
+            // messagesPrevBtn
+            // 
+            this.messagesPrevBtn.Location = new System.Drawing.Point(276, 5);
+            this.messagesPrevBtn.Name = "messagesPrevBtn";
+            this.messagesPrevBtn.Size = new System.Drawing.Size(20, 20);
+            this.messagesPrevBtn.TabIndex = 5;
+            this.messagesPrevBtn.Text = "<";
+            this.messagesPrevBtn.UseVisualStyleBackColor = true;
+            this.messagesPrevBtn.Click += new System.EventHandler(this.messagesPrevBtn_Click);
+            // 
+            // messagesNextBtn
+            // 
+            this.messagesNextBtn.Location = new System.Drawing.Point(302, 5);
+            this.messagesNextBtn.Name = "messagesNextBtn";
+            this.messagesNextBtn.Size = new System.Drawing.Size(20, 20);
+            this.messagesNextBtn.TabIndex = 6;
+            this.messagesNextBtn.Text = ">";
+            this.messagesNextBtn.UseVisualStyleBackColor = true;
+            this.messagesNextBtn.Click += new System.EventHandler(this.messagesNextBtn_Click);
             // 
             // Main
             // 
@@ -443,8 +486,12 @@ namespace Data_Package_Images
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private ListWPF listWPF1;
+        private MessageListWPF listWPF1;
         private System.ComponentModel.BackgroundWorker guildsBw;
+        private System.Windows.Forms.Button massDeleteBtn;
+        private System.Windows.Forms.Timer massDeleteTimer;
+        private System.Windows.Forms.Button messagesNextBtn;
+        private System.Windows.Forms.Button messagesPrevBtn;
     }
 }
 

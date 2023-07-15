@@ -15,6 +15,8 @@ namespace Data_Package_Images
     }
     public class DMessage
     {
+        public bool deleted = false;
+
         public string id;
         public string timestamp;
         public string content;

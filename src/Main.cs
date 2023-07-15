@@ -111,7 +111,7 @@ namespace Data_Package_Images
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };*/
             var msgControl = new MessageWPF(message, User);
-            ((ListWPF)elementHost1.Child).AddToList(msgControl);
+            ((MessageListWPF)elementHost1.Child).AddToList(msgControl);
         }
 
         private List<DAnalyticsEvent> AllInvites = new List<DAnalyticsEvent>();
@@ -236,6 +236,20 @@ namespace Data_Package_Images
             }
         }
 
+        private List<DMessage> LastSearchResults;
+        private int SearchResultsOffset = 0;
+        private void LoadSearchResults()
+        {
+            ((MessageListWPF)elementHost1.Child).Clear();
+            resultsCountLb.Text = $"{SearchResultsOffset + 1}-{Math.Min(SearchResultsOffset + MaxResults, LastSearchResults.Count)} of {LastSearchResults.Count}";
+            for (int i = SearchResultsOffset; i < SearchResultsOffset + MaxResults; i++)
+            {
+                if(i >= LastSearchResults.Count) return;
+
+                var msg = LastSearchResults[i];
+                DisplayMessage(msg);
+            }
+        }
         private void searchBtn_Click(object sender, EventArgs e)
         {
             SuspendLayout();
@@ -243,12 +257,13 @@ namespace Data_Package_Images
             searchBtn.Enabled = false;
             messagesPanel.Hide();
             //messagesPanel.Controls.Clear();
-            ((ListWPF)elementHost1.Child).Clear();
+            ((MessageListWPF)elementHost1.Child).Clear();
+            SearchResultsOffset = 0;
 
             var searchText = searchTb.Text;
             int count = 0;
 
-            List<DMessage> list = new List<DMessage>();
+            LastSearchResults = new List<DMessage>();
 
             foreach (var channel in Channels)
             {
@@ -256,16 +271,16 @@ namespace Data_Package_Images
                 {
                     if (msg.content.Contains(searchText))
                     {
-                        list.Add(msg);
+                        LastSearchResults.Add(msg);
                         count++;
 
                         if (count >= MaxResults)
                         {
-                            resultsCountLb.Text = $"Results: {count} (only {MaxResults} shown)";
+                            resultsCountLb.Text = $"{SearchResultsOffset + 1}-{SearchResultsOffset + MaxResults} of {count}";
                         }
                         else
                         {
-                            resultsCountLb.Text = $"Results: {count}";
+                            resultsCountLb.Text = $"{SearchResultsOffset + 1}-{count} of {count}";
                         }
 
                         if(count%100 == 0) Application.DoEvents();
@@ -279,18 +294,26 @@ namespace Data_Package_Images
             }
             else
             {
-                list = list.OrderByDescending(o => Int64.Parse(o.id)).ToList();
-                for(int i=0;i<Math.Min(count, MaxResults);i++)
-                {
-                    var msg = list[i];
-                    DisplayMessage(msg);
-                }
+                LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.id)).ToList();
+                LoadSearchResults();
             }
 
             messagesPanel.Show();
             searchBtn.Enabled = true;
 
             ResumeLayout();
+        }
+
+        private void messagesPrevBtn_Click(object sender, EventArgs e)
+        {
+            SearchResultsOffset -= MaxResults;
+            LoadSearchResults();
+        }
+
+        private void messagesNextBtn_Click(object sender, EventArgs e)
+        {
+            SearchResultsOffset += MaxResults;
+            LoadSearchResults();
         }
 
         private int imagesOffset = 0;
@@ -437,6 +460,56 @@ namespace Data_Package_Images
             }
 
             AllAttachments = AllAttachments.OrderByDescending(o => Int64.Parse(o.message.id)).ToList();
+        }
+
+        private string AccountToken;
+        private int MassDeleteIdx = 0;
+        private void massDeleteBtn_Click(object sender, EventArgs e)
+        {
+            if(LastSearchResults == null || LastSearchResults.Count == 0)
+            {
+                MessageBox.Show("You need to search for something first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var prompt = new MassDeletePrompt();
+            prompt.ShowDialog();
+            if(prompt.DialogSuccess)
+            {
+                MassDeleteIdx = 0;
+                massDeleteTimer.Interval = prompt.GetDelay();
+                AccountToken = prompt.GetToken();
+
+                searchTb.Enabled = false;
+                searchBtn.Enabled = false;
+                massDeleteTimer.Start();
+            }
+        }
+
+        private void massDeleteTimer_Tick(object sender, EventArgs e)
+        {
+            massDeleteTimer.Stop(); // Stop and restart the timer every time to prevent overlaps
+
+            if(MassDeleteIdx >= LastSearchResults.Count)
+            {
+                searchTb.Enabled = true;
+                searchBtn.Enabled = true;
+                return;
+            }
+
+            var msg = LastSearchResults[MassDeleteIdx++];
+
+            try
+            {
+                // TODO: request here
+                msg.deleted = true;
+                ((MessageListWPF)elementHost1.Child).RemoveMessage(msg.id);
+            } catch(Exception)
+            {
+
+            }
+
+            massDeleteTimer.Start();
         }
     }
 }
