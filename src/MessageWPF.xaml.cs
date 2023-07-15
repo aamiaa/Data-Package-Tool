@@ -168,5 +168,32 @@ namespace Data_Package_Images
         {
             rootGrid.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         }
+
+        private void viewUserMi_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Main.LaunchDiscordProtocol($"discord://-/users/{SelectedMessage.channel.GetOtherDMRecipient(Main.User)}");
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+        }
+
+        private void copyMessageMi_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(SelectedMessage.content);
+        }
+
+        private void copyChannelIdMi_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(SelectedMessage.channel.id);
+        }
+
+        private void copyMetadataMi_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText((string)metadataLb.Content);
+        }
     }
 }
