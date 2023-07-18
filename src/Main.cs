@@ -451,6 +451,9 @@ namespace Data_Package_Images
             imagesNextBtn.Enabled = false;
             imagesPrevBtn.Enabled = false;
 
+            if (imagesOffset < 0) imagesOffset = 0;
+            if (imagesOffset >= AllAttachments.Count || imagesOffset + imagesPerPage >= AllAttachments.Count) imagesOffset = AllAttachments.Count - imagesPerPage;
+
             imagesPanel.Controls.Clear();
             imagesCountLb.Text = $"{imagesOffset + 1}-{imagesOffset + imagesPerPage} of {AllAttachments.Count}";
 
