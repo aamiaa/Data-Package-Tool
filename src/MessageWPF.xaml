@@ -12,8 +12,11 @@
             <MenuItem x:Name="viewUserMi" Header="View user" IsEnabled="False" Click="viewUserMi_Click"/>
             <Separator/>
             <MenuItem x:Name="copyMessageMi" Header="Copy message" Click="copyMessageMi_Click"/>
+            <MenuItem x:Name="copyUserIdMi" Header="Copy user id" IsEnabled="False" Click="copyUserIdMi_Click"/>
             <MenuItem x:Name="copyChannelIdMi" Header="Copy channel id" Click="copyChannelIdMi_Click"/>
-            <MenuItem x:Name="copyMetadataMi" Header="Copy metadata" Click="copyMetadataMi_Click"/>
+            <MenuItem x:Name="copyGuildIdMi" Header="Copy guild id" IsEnabled="False" Click="copyGuildIdMi_Click"/>
+            <Separator/>
+            <MenuItem x:Name="findGuildIdMi" Header="Find guild id" IsEnabled="False"/>
         </ContextMenu>
     </UserControl.ContextMenu>
     <Grid x:Name="rootGrid" Background="#00000000" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave">

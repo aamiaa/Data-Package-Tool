@@ -5,5 +5,20 @@
     <Setting Name="UseDiscordInstance" Type="System.String" Scope="User">
       <Value Profile="(Default)">default</Value>
     </Setting>
+    <Setting Name="SearchExcludeGuilds" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SearchExcludeDMs" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SearchExcludeGDMs" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SearchExcludeIDs" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SearchMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">exact</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

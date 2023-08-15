@@ -35,7 +35,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -66,6 +66,12 @@
     <Compile Include="DChannel.cs" />
     <Compile Include="DRequest.cs" />
     <Compile Include="DUser.cs" />
+    <Compile Include="SearchOptionsPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SearchOptionsPrompt.Designer.cs">
+      <DependentUpon>SearchOptionsPrompt.cs</DependentUpon>
+    </Compile>
     <Compile Include="MessageListWPF.xaml.cs">
       <DependentUpon>MessageListWPF.xaml</DependentUpon>
     </Compile>
@@ -94,6 +100,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Attachment.resx">
       <DependentUpon>Attachment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SearchOptionsPrompt.resx">
+      <DependentUpon>SearchOptionsPrompt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>

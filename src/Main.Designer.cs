@@ -37,11 +37,12 @@ namespace Data_Package_Images
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.loadFileBtn = new System.Windows.Forms.Button();
             this.messagesTab = new System.Windows.Forms.TabPage();
+            this.searchOptionsBtn = new System.Windows.Forms.Button();
+            this.messagesNextBtn = new System.Windows.Forms.Button();
+            this.messagesPrevBtn = new System.Windows.Forms.Button();
             this.massDeleteBtn = new System.Windows.Forms.Button();
             this.resultsCountLb = new System.Windows.Forms.Label();
             this.messagesPanel = new System.Windows.Forms.Panel();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.listWPF1 = new Data_Package_Images.MessageListWPF();
             this.searchBtn = new System.Windows.Forms.Button();
             this.searchTb = new System.Windows.Forms.TextBox();
             this.imagesTab = new System.Windows.Forms.TabPage();
@@ -53,9 +54,13 @@ namespace Data_Package_Images
             this.serversLv = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.serversContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyInvitesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsTab = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.defaultRb = new System.Windows.Forms.RadioButton();
@@ -65,14 +70,19 @@ namespace Data_Package_Images
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.guildsBw = new System.ComponentModel.BackgroundWorker();
             this.massDeleteTimer = new System.Windows.Forms.Timer(this.components);
-            this.messagesPrevBtn = new System.Windows.Forms.Button();
-            this.messagesNextBtn = new System.Windows.Forms.Button();
+            this.searchBw = new System.ComponentModel.BackgroundWorker();
+            this.searchTimer = new System.Windows.Forms.Timer(this.components);
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.listWPF1 = new Data_Package_Images.MessageListWPF();
+            this.loadBw = new System.ComponentModel.BackgroundWorker();
+            this.loadTimer = new System.Windows.Forms.Timer(this.components);
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
             this.messagesTab.SuspendLayout();
             this.messagesPanel.SuspendLayout();
             this.imagesTab.SuspendLayout();
             this.serversTab.SuspendLayout();
+            this.serversContextMenu.SuspendLayout();
             this.settingsTab.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -140,6 +150,7 @@ namespace Data_Package_Images
             // messagesTab
             // 
             this.messagesTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(51)))), ((int)(((byte)(56)))));
+            this.messagesTab.Controls.Add(this.searchOptionsBtn);
             this.messagesTab.Controls.Add(this.messagesNextBtn);
             this.messagesTab.Controls.Add(this.messagesPrevBtn);
             this.messagesTab.Controls.Add(this.massDeleteBtn);
@@ -153,6 +164,36 @@ namespace Data_Package_Images
             this.messagesTab.Size = new System.Drawing.Size(580, 291);
             this.messagesTab.TabIndex = 0;
             this.messagesTab.Text = "Messages";
+            // 
+            // searchOptionsBtn
+            // 
+            this.searchOptionsBtn.Location = new System.Drawing.Point(265, 6);
+            this.searchOptionsBtn.Name = "searchOptionsBtn";
+            this.searchOptionsBtn.Size = new System.Drawing.Size(55, 20);
+            this.searchOptionsBtn.TabIndex = 7;
+            this.searchOptionsBtn.Text = "Options";
+            this.searchOptionsBtn.UseVisualStyleBackColor = true;
+            this.searchOptionsBtn.Click += new System.EventHandler(this.searchOptionsBtn_Click);
+            // 
+            // messagesNextBtn
+            // 
+            this.messagesNextBtn.Location = new System.Drawing.Point(352, 5);
+            this.messagesNextBtn.Name = "messagesNextBtn";
+            this.messagesNextBtn.Size = new System.Drawing.Size(20, 20);
+            this.messagesNextBtn.TabIndex = 6;
+            this.messagesNextBtn.Text = ">";
+            this.messagesNextBtn.UseVisualStyleBackColor = true;
+            this.messagesNextBtn.Click += new System.EventHandler(this.messagesNextBtn_Click);
+            // 
+            // messagesPrevBtn
+            // 
+            this.messagesPrevBtn.Location = new System.Drawing.Point(326, 5);
+            this.messagesPrevBtn.Name = "messagesPrevBtn";
+            this.messagesPrevBtn.Size = new System.Drawing.Size(20, 20);
+            this.messagesPrevBtn.TabIndex = 5;
+            this.messagesPrevBtn.Text = "<";
+            this.messagesPrevBtn.UseVisualStyleBackColor = true;
+            this.messagesPrevBtn.Click += new System.EventHandler(this.messagesPrevBtn_Click);
             // 
             // massDeleteBtn
             // 
@@ -169,7 +210,7 @@ namespace Data_Package_Images
             // 
             this.resultsCountLb.AutoSize = true;
             this.resultsCountLb.ForeColor = System.Drawing.SystemColors.Control;
-            this.resultsCountLb.Location = new System.Drawing.Point(328, 9);
+            this.resultsCountLb.Location = new System.Drawing.Point(378, 9);
             this.resultsCountLb.Name = "resultsCountLb";
             this.resultsCountLb.Size = new System.Drawing.Size(0, 13);
             this.resultsCountLb.TabIndex = 3;
@@ -185,16 +226,6 @@ namespace Data_Package_Images
             this.messagesPanel.Name = "messagesPanel";
             this.messagesPanel.Size = new System.Drawing.Size(568, 251);
             this.messagesPanel.TabIndex = 2;
-            // 
-            // elementHost1
-            // 
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(568, 251);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.listWPF1;
             // 
             // searchBtn
             // 
@@ -283,10 +314,13 @@ namespace Data_Package_Images
             this.serversLv.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
+            this.columnHeader6,
             this.columnHeader3,
             this.columnHeader4,
             this.columnHeader5});
+            this.serversLv.ContextMenuStrip = this.serversContextMenu;
             this.serversLv.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.serversLv.FullRowSelect = true;
             this.serversLv.HideSelection = false;
             this.serversLv.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem2});
@@ -305,7 +339,12 @@ namespace Data_Package_Images
             // columnHeader2
             // 
             this.columnHeader2.Text = "Guild Id";
-            this.columnHeader2.Width = 163;
+            this.columnHeader2.Width = 91;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Guild Name";
+            this.columnHeader6.Width = 150;
             // 
             // columnHeader3
             // 
@@ -315,12 +354,34 @@ namespace Data_Package_Images
             // columnHeader4
             // 
             this.columnHeader4.Text = "Join Context";
-            this.columnHeader4.Width = 78;
+            this.columnHeader4.Width = 81;
             // 
             // columnHeader5
             // 
             this.columnHeader5.Text = "Invites";
-            this.columnHeader5.Width = 153;
+            this.columnHeader5.Width = 120;
+            // 
+            // serversContextMenu
+            // 
+            this.serversContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyIdToolStripMenuItem,
+            this.copyInvitesToolStripMenuItem});
+            this.serversContextMenu.Name = "serversContextMenu";
+            this.serversContextMenu.Size = new System.Drawing.Size(140, 48);
+            // 
+            // copyIdToolStripMenuItem
+            // 
+            this.copyIdToolStripMenuItem.Name = "copyIdToolStripMenuItem";
+            this.copyIdToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.copyIdToolStripMenuItem.Text = "Copy id";
+            this.copyIdToolStripMenuItem.Click += new System.EventHandler(this.copyIdToolStripMenuItem_Click);
+            // 
+            // copyInvitesToolStripMenuItem
+            // 
+            this.copyInvitesToolStripMenuItem.Name = "copyInvitesToolStripMenuItem";
+            this.copyInvitesToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.copyInvitesToolStripMenuItem.Text = "Copy invites";
+            this.copyInvitesToolStripMenuItem.Click += new System.EventHandler(this.copyInvitesToolStripMenuItem_Click);
             // 
             // settingsTab
             // 
@@ -408,25 +469,33 @@ namespace Data_Package_Images
             // 
             this.massDeleteTimer.Tick += new System.EventHandler(this.massDeleteTimer_Tick);
             // 
-            // messagesPrevBtn
+            // searchBw
             // 
-            this.messagesPrevBtn.Location = new System.Drawing.Point(276, 5);
-            this.messagesPrevBtn.Name = "messagesPrevBtn";
-            this.messagesPrevBtn.Size = new System.Drawing.Size(20, 20);
-            this.messagesPrevBtn.TabIndex = 5;
-            this.messagesPrevBtn.Text = "<";
-            this.messagesPrevBtn.UseVisualStyleBackColor = true;
-            this.messagesPrevBtn.Click += new System.EventHandler(this.messagesPrevBtn_Click);
+            this.searchBw.DoWork += new System.ComponentModel.DoWorkEventHandler(this.searchBw_DoWork);
+            this.searchBw.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.searchBw_RunWorkerCompleted);
             // 
-            // messagesNextBtn
+            // searchTimer
             // 
-            this.messagesNextBtn.Location = new System.Drawing.Point(302, 5);
-            this.messagesNextBtn.Name = "messagesNextBtn";
-            this.messagesNextBtn.Size = new System.Drawing.Size(20, 20);
-            this.messagesNextBtn.TabIndex = 6;
-            this.messagesNextBtn.Text = ">";
-            this.messagesNextBtn.UseVisualStyleBackColor = true;
-            this.messagesNextBtn.Click += new System.EventHandler(this.messagesNextBtn_Click);
+            this.searchTimer.Tick += new System.EventHandler(this.searchTimer_Tick);
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(568, 251);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.listWPF1;
+            // 
+            // loadBw
+            // 
+            this.loadBw.DoWork += new System.ComponentModel.DoWorkEventHandler(this.loadBw_DoWork);
+            this.loadBw.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.loadBw_RunWorkerCompleted);
+            // 
+            // loadTimer
+            // 
+            this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
             // 
             // Main
             // 
@@ -447,6 +516,7 @@ namespace Data_Package_Images
             this.imagesTab.ResumeLayout(false);
             this.imagesTab.PerformLayout();
             this.serversTab.ResumeLayout(false);
+            this.serversContextMenu.ResumeLayout(false);
             this.settingsTab.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -492,6 +562,15 @@ namespace Data_Package_Images
         private System.Windows.Forms.Timer massDeleteTimer;
         private System.Windows.Forms.Button messagesNextBtn;
         private System.Windows.Forms.Button messagesPrevBtn;
+        private System.Windows.Forms.ContextMenuStrip serversContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem copyIdToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyInvitesToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.Button searchOptionsBtn;
+        private System.ComponentModel.BackgroundWorker searchBw;
+        private System.Windows.Forms.Timer searchTimer;
+        private System.ComponentModel.BackgroundWorker loadBw;
+        private System.Windows.Forms.Timer loadTimer;
     }
 }
 

@@ -12,7 +12,7 @@ namespace Data_Package_Images.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -32,6 +32,65 @@ namespace Data_Package_Images.Properties {
             }
             set {
                 this["UseDiscordInstance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SearchExcludeGuilds {
+            get {
+                return ((bool)(this["SearchExcludeGuilds"]));
+            }
+            set {
+                this["SearchExcludeGuilds"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SearchExcludeDMs {
+            get {
+                return ((bool)(this["SearchExcludeDMs"]));
+            }
+            set {
+                this["SearchExcludeDMs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SearchExcludeGDMs {
+            get {
+                return ((bool)(this["SearchExcludeGDMs"]));
+            }
+            set {
+                this["SearchExcludeGDMs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection SearchExcludeIDs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["SearchExcludeIDs"]));
+            }
+            set {
+                this["SearchExcludeIDs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("exact")]
+        public string SearchMode {
+            get {
+                return ((string)(this["SearchMode"]));
+            }
+            set {
+                this["SearchMode"] = value;
             }
         }
     }

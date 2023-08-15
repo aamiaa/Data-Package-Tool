@@ -23,11 +23,12 @@ namespace Data_Package_Images
         private readonly int MaxResults = 500;
         private int TotalMessages = 0;
         private List<DChannel> Channels = new List<DChannel>();
+        private DateTime PackageCreationTime;
         
         public static DUser User;
         public static List<DAttachment> AllAttachments = new List<DAttachment>();
         public static List<DAnalyticsGuild> AllJoinedGuilds = new List<DAnalyticsGuild>();
-
+        public static dynamic CurrentGuilds;
         public Main()
         {
             InitializeComponent();
@@ -96,20 +97,6 @@ namespace Data_Package_Images
 
         private void DisplayMessage(DMessage message)
         {
-            /*var loc = new Point(0, 0);
-            if (messagesPanel.Controls.Count > 0)
-            {
-                var last = (Message)messagesPanel.Controls[messagesPanel.Controls.Count - 1];
-                var endsAtY = Math.Max(last.Location.Y + last.GetTextSize().Height - 73, last.Location.Y + last.Size.Height + 3);
-                loc = new Point(0, endsAtY);
-            }
-
-            new Message(message, User)
-            {
-                Parent = messagesPanel,
-                Location = loc,
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
-            };*/
             var msgControl = new MessageWPF(message, User);
             ((MessageListWPF)elementHost1.Child).AddToList(msgControl);
         }
@@ -136,6 +123,13 @@ namespace Data_Package_Images
                         if (eventData.invite_code != null && !guild.invites.Contains(eventData.invite_code))
                         {
                             guild.invites.Add(eventData.invite_code);
+                        }
+
+                        // Get the earliest join date
+                        var timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind);
+                        if(timestamp < guild.timestamp)
+                        {
+                            guild.timestamp = timestamp;
                         }
                     }
                     else
@@ -176,64 +170,92 @@ namespace Data_Package_Images
                 progressBar1.Show();
 
                 guildsBw.RunWorkerAsync();
+                loadBw.RunWorkerAsync();
+                loadTimer.Start();
+            }
+        }
 
-                var startTime = DateTime.Now;
+        private string LoadStatusText = "";
+        private int LoadProgress = 0;
+        private void loadBw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var startTime = DateTime.Now;
 
-                using (var file = File.OpenRead(openFileDialog1.FileName))
-                using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
-                {
+            using (var file = File.OpenRead(openFileDialog1.FileName))
+            using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
+            {
+                progressBar1.Invoke((MethodInvoker)delegate {
                     progressBar1.Maximum = zip.Entries.Count;
+                });
 
-                    var userFile = zip.GetEntry("account/user.json");
-                    if (userFile == null)
+                var userFile = zip.GetEntry("account/user.json");
+                if (userFile == null)
+                {
+                    MessageBox.Show("Invalid data package: missing user.json", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    /*loadFileBtn.Show();
+                    progressBar1.Hide();
+                    progressBar1.Value = 0;*/
+                    return;
+                }
+
+                PackageCreationTime = userFile.LastWriteTime.DateTime;
+
+                using (var r = new StreamReader(userFile.Open()))
+                {
+                    var json = r.ReadToEnd();
+                    User = Newtonsoft.Json.JsonConvert.DeserializeObject<DUser>(json);
+                }
+
+                using (var r = new StreamReader(zip.GetEntry("servers/index.json").Open()))
+                {
+                    var json = r.ReadToEnd();
+                    CurrentGuilds = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json);
+                }
+
+                int i = 0;
+                foreach (var entry in zip.Entries)
+                {
+                    i++;
+                    LoadStatusText = $"Reading {entry.FullName}\n{i}/{zip.Entries.Count}";
+                    LoadProgress = i;
+
+                    if (Regex.IsMatch(entry.FullName, @"messages/c?\d+/messages\.csv", RegexOptions.None))
                     {
-                        MessageBox.Show("Invalid data package: missing user.json", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                        loadFileBtn.Show();
-                        progressBar1.Hide();
-                        progressBar1.Value = 0;
-                        return;
-                    }
-
-                    using (var r = new StreamReader(userFile.Open()))
-                    {
-                        var json = r.ReadToEnd();
-                        User = Newtonsoft.Json.JsonConvert.DeserializeObject<DUser>(json);
-                    }
-
-                    int i = 0;
-                    foreach (var entry in zip.Entries)
-                    {
-                        i++;
-                        if(i%100 == 0)
+                        var match = Regex.Matches(entry.FullName, @"messages/(c?(\d+))/messages\.csv", RegexOptions.None)[0];
+                        var channelId = match.Groups[2].Value;
+                        var folderName = match.Groups[1].Value; // folder name might not start with "c" in older versions
+                        using (var rJson = new StreamReader(zip.GetEntry($"messages/{folderName}/channel.json").Open()))
+                        using (var rCsv = new StreamReader(entry.Open()))
                         {
-                            loadingLb.Text = $"Reading {entry.FullName}\n{i}/{zip.Entries.Count}";
-                            progressBar1.Value = i;
-                            Application.DoEvents();
-                        }
+                            var json = rJson.ReadToEnd();
+                            var csv = rCsv.ReadToEnd();
 
-                        if (Regex.IsMatch(entry.FullName, @"messages/c\d+/messages\.csv", RegexOptions.None))
-                        {
-                            var channelId = Regex.Matches(entry.FullName, @"messages/c(\d+)/messages\.csv", RegexOptions.None)[0].Groups[1].Value;
-                            using (var rJson = new StreamReader(zip.GetEntry($"messages/c{channelId}/channel.json").Open()))
-                            using (var rCsv = new StreamReader(entry.Open()))
-                            {
-                                var json = rJson.ReadToEnd();
-                                var csv = rCsv.ReadToEnd();
+                            var channel = Newtonsoft.Json.JsonConvert.DeserializeObject<DChannel>(json);
+                            channel.LoadMessages(csv);
 
-                                var channel = Newtonsoft.Json.JsonConvert.DeserializeObject<DChannel>(json);
-                                channel.LoadMessages(csv);
-
-                                TotalMessages += channel.messages.Count;
-                                Channels.Add(channel);
-                            }
+                            TotalMessages += channel.messages.Count;
+                            Channels.Add(channel);
                         }
                     }
                 }
-
-                progressBar1.Value = progressBar1.Maximum;
-                loadingLb.Text = $"Finished! Parsed {TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s";
             }
+
+            loadingLb.Invoke((MethodInvoker)delegate {
+                loadingLb.Text = $"Finished! Parsed {TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {PackageCreationTime.ToShortDateString()}";
+            });
+        }
+
+        private void loadTimer_Tick(object sender, EventArgs e)
+        {
+            loadingLb.Text = LoadStatusText;
+            progressBar1.Value = LoadProgress;
+        }
+
+        private void loadBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            loadTimer.Stop();
+            progressBar1.Value = progressBar1.Maximum;
         }
 
         private List<DMessage> LastSearchResults;
@@ -252,12 +274,21 @@ namespace Data_Package_Images
         }
         private void searchBtn_Click(object sender, EventArgs e)
         {
-            SuspendLayout();
-
             searchBtn.Enabled = false;
+            searchTb.Enabled = false;
+            searchOptionsBtn.Enabled = false;
+            messagesPrevBtn.Enabled = false;
+            messagesNextBtn.Enabled = false;
             messagesPanel.Hide();
             //messagesPanel.Controls.Clear();
             ((MessageListWPF)elementHost1.Child).Clear();
+
+            searchBw.RunWorkerAsync();
+            searchTimer.Start();
+        }
+
+        private void searchBw_DoWork(object sender, DoWorkEventArgs e)
+        {
             SearchResultsOffset = 0;
 
             var searchText = searchTb.Text;
@@ -267,41 +298,136 @@ namespace Data_Package_Images
 
             foreach (var channel in Channels)
             {
-                foreach (var msg in channel.messages)
+                // Filters
+                if (channel.IsDM() && Properties.Settings.Default.SearchExcludeDMs) continue;
+                if (channel.IsGroupDM() && Properties.Settings.Default.SearchExcludeGDMs) continue;
+                if (!channel.IsDM() && !channel.IsGroupDM() && Properties.Settings.Default.SearchExcludeGuilds) continue;
+                if (Properties.Settings.Default.SearchExcludeIDs != null)
                 {
-                    if (msg.content.Contains(searchText))
-                    {
-                        LastSearchResults.Add(msg);
-                        count++;
+                    if (Properties.Settings.Default.SearchExcludeIDs.Contains(channel.id)) continue;
+                    if (channel.guild != null && channel.guild.id != null && Properties.Settings.Default.SearchExcludeIDs.Contains(channel.guild.id)) continue;
+                }
 
-                        if (count >= MaxResults)
-                        {
-                            resultsCountLb.Text = $"{SearchResultsOffset + 1}-{SearchResultsOffset + MaxResults} of {count}";
-                        }
-                        else
-                        {
-                            resultsCountLb.Text = $"{SearchResultsOffset + 1}-{count} of {count}";
-                        }
-
-                        if(count%100 == 0) Application.DoEvents();
-                    }
+                // Search modes
+                if (Properties.Settings.Default.SearchMode == "exact")
+                {
+                    count += SearchExact(searchText, channel);
+                }
+                else if (Properties.Settings.Default.SearchMode == "words")
+                {
+                    count += SearchWords(searchText, channel);
+                }
+                else if (Properties.Settings.Default.SearchMode == "regex")
+                {
+                    count += SearchRegex(searchText, channel);
                 }
             }
 
-            if (count == 0)
+            LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.id)).ToList();
+        }
+
+        private void searchTimer_Tick(object sender, EventArgs e)
+        {
+            if (LastSearchResults.Count > 0)
             {
-                resultsCountLb.Text = $"No results";
+                if (LastSearchResults.Count >= MaxResults)
+                {
+                    resultsCountLb.Text = $"{SearchResultsOffset + 1}-{SearchResultsOffset + MaxResults} of {LastSearchResults.Count}";
+                }
+                else
+                {
+                    resultsCountLb.Text = $"{SearchResultsOffset + 1}-{LastSearchResults.Count} of {LastSearchResults.Count}";
+                }
             }
-            else
+        }
+
+        private void searchBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            searchTimer.Stop();
+
+            if (LastSearchResults.Count > 0)
             {
-                LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.id)).ToList();
                 LoadSearchResults();
+
+                if (LastSearchResults.Count >= MaxResults)
+                {
+                    resultsCountLb.Text = $"{SearchResultsOffset + 1}-{SearchResultsOffset + MaxResults} of {LastSearchResults.Count}";
+                }
+                else
+                {
+                    resultsCountLb.Text = $"{SearchResultsOffset + 1}-{LastSearchResults.Count} of {LastSearchResults.Count}";
+                }
+            } else
+            {
+                resultsCountLb.Text = "No results";
             }
 
             messagesPanel.Show();
             searchBtn.Enabled = true;
+            searchTb.Enabled = true;
+            searchOptionsBtn.Enabled = true;
+            messagesPrevBtn.Enabled = true;
+            messagesNextBtn.Enabled = true;
+        }
 
-            ResumeLayout();
+        private int SearchExact(string searchText, DChannel channel)
+        {
+            int count = 0;
+
+            foreach (var msg in channel.messages)
+            {
+
+                if (msg.content.Contains(searchText))
+                {
+                    LastSearchResults.Add(msg);
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        private int SearchWords(string searchText, DChannel channel)
+        {
+            int count = 0;
+
+            foreach (var msg in channel.messages)
+            {
+                bool isMatch = true;
+                foreach (var word in searchText.Split(' '))
+                {
+                    if (!Regex.IsMatch(msg.content, $@"(^|\s+){word}($|\s+)", RegexOptions.None))
+                    {
+                        isMatch = false;
+                        break;
+                    }
+                }
+
+                if (isMatch)
+                {
+                    LastSearchResults.Add(msg);
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        private int SearchRegex(string searchText, DChannel channel)
+        {
+            int count = 0;
+
+            foreach (var msg in channel.messages)
+            {
+
+                if (Regex.IsMatch(msg.content, searchText, RegexOptions.None))
+                {
+                    LastSearchResults.Add(msg);
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         private void messagesPrevBtn_Click(object sender, EventArgs e)
@@ -454,7 +580,13 @@ namespace Data_Package_Images
             serversLv.Items.Clear();
             foreach (var guild in AllJoinedGuilds)
             {
-                string[] values = { guild.timestamp.ToShortDateString(), guild.id, guild.join_type, guild.location, String.Join(", ", guild.invites.ToArray()) };
+                string guildName = "";
+                if(CurrentGuilds[guild.id] != null)
+                {
+                    guildName = CurrentGuilds[guild.id];
+                }
+
+                string[] values = { guild.timestamp.ToShortDateString(), guild.id, guildName, guild.join_type, guild.location, String.Join(", ", guild.invites.ToArray()) };
                 var lvItem = new ListViewItem(values);
                 serversLv.Items.Add(lvItem);
             }
@@ -510,6 +642,22 @@ namespace Data_Package_Images
             }
 
             massDeleteTimer.Start();
+        }
+
+        private void copyIdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(serversLv.SelectedItems[0].SubItems[1].Text);
+        }
+
+        private void copyInvitesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(serversLv.SelectedItems[0].SubItems[5].Text);
+        }
+
+        private void searchOptionsBtn_Click(object sender, EventArgs e)
+        {
+            var prompt = new SearchOptionsPrompt();
+            prompt.ShowDialog();
         }
     }
 }

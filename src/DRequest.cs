@@ -78,15 +78,15 @@ namespace Data_Package_Images
         public static Dictionary<string, string> DefaultBrowserHeaders(Dictionary<string, string> extraHeaders = null)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>{
-                {"Accept", "*/*"},
-                {"Accept-Language", "en-US,en;q=0.5"},
+                {"20", "*/*"},
+                {"23", "en-US,en;q=0.5"},
                 {"sec-ch-ua", $"\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"{BROWSER_VERSION}\", \"Google Chrome\";v=\"{BROWSER_VERSION}\""},
                 {"sec-ch-ua-mobile", "?0"},
                 {"sec-ch-ua-platform", "\"Windows\""},
                 {"sec-fetch-dest", "empty"},
                 {"sec-fetch-mode", "cors"},
                 {"sec-fetch-site", "same-origin"},
-                {"User-Agent", USER_AGENT},
+                {"40", USER_AGENT},
                 {"x-debug-options", "bugReporterEnabled"},
                 {"x-discord-locale", "en-US"},
                 {"x-discord-timezone", "America/New_York"},
@@ -136,16 +136,43 @@ namespace Data_Package_Images
     }
     class DRequest
     {
-        public static DRequestResponse Request(string method, string url, Dictionary<string, string> headers)
+        public static DRequestResponse Request(string method, string url, Dictionary<string, string> headers = null, string bodyData = null, bool includeDefaultHeaders = true)
         {
             WebRequest request = WebRequest.Create(url);
             request.Method = method;
-            foreach (KeyValuePair<string, string> kvp in DHeaders.DefaultBrowserHeaders(headers))
+
+            if (includeDefaultHeaders)
             {
-                request.Headers.Add(kvp.Key, kvp.Value);
+                foreach (KeyValuePair<string, string> kvp in DHeaders.DefaultBrowserHeaders(headers))
+                {
+                    request.Headers.Add(kvp.Key, kvp.Value);
+                }
+            } else if(headers != null)
+            {
+                foreach (KeyValuePair<string, string> kvp in headers)
+                {
+                    request.Headers.Add(kvp.Key, kvp.Value);
+                }
             }
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            if(bodyData != null)
+            {
+                var bytes = Encoding.Default.GetBytes(bodyData);
+
+                request.ContentLength = bytes.Length;
+                request.GetRequestStream().Write(bytes, 0, bytes.Length);
+            }
+
+            HttpWebResponse response;
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+               
+            } catch(WebException ex)
+            {
+                response = (HttpWebResponse)ex.Response;
+            }
+
             string body;
             using (var reader = new StreamReader(response.GetResponseStream()))
             {

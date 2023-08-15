@@ -52,6 +52,8 @@ namespace Data_Package_Images
             }
             else if (channel.IsDM())
             {
+                copyUserIdMi.IsEnabled = true;
+
                 var recipientId = channel.GetOtherDMRecipient(user);
                 var recipientUserRelationship = Array.Find(user.relationships, x => x.id == recipientId);
                 if(recipientUserRelationship != null)
@@ -64,11 +66,18 @@ namespace Data_Package_Images
             }
             else
             {
-                metadata += $"unknown ({channel.id})";
+                metadata += $"unknown ({channel.id}, {(channel.IsGroupDM() ? "Group DM" : "Text Channel")})";
+
+                if(!channel.IsGroupDM())
+                {
+                    findGuildIdMi.IsEnabled = true;
+                }
             }
 
             if (channel.guild != null)
             {
+                copyGuildIdMi.IsEnabled = true;
+
                 metadata += ", Guild: ";
                 if (channel.guild.name != null)
                 {
@@ -123,38 +132,51 @@ namespace Data_Package_Images
             contentLb.Text = "";
 
             bool isOnlyEmojis = Regex.Replace(content, @"<a?:\w+:\d+>", "").Trim() == "";
-            foreach (var word in content.Split(' '))
+
+            var lines = content.Split('\n');
+            for(int i=0;i<lines.Length;i++)
             {
-                if(Regex.IsMatch(word, @"<a?:\w+:\d+>"))
+                if(i > 0)
                 {
-                    var match = Regex.Matches(word, @"<(a?):\w+:(\d+)>", RegexOptions.None)[0];
-                    var isAnimated = match.Groups[1].Value == "a";
-                    var emojiId = match.Groups[2].Value;
+                    contentLb.Inlines.Add(new Run("\n"));
+                }
 
-                    var img = new Image();
-                    if(isOnlyEmojis)
+                var line = lines[i];
+                foreach (var word in line.Split(' '))
+                {
+                    if (Regex.IsMatch(word, @"^<a?:\w+:\d+>$"))
                     {
-                        img.Width = 48;
-                        img.Height = 48;
-                    } else
-                    {
-                        img.Width = 22;
-                        img.Height = 22;
+                        var match = Regex.Matches(word, @"<(a?):\w+:(\d+)>", RegexOptions.None)[0];
+                        var isAnimated = match.Groups[1].Value == "a";
+                        var emojiId = match.Groups[2].Value;
+
+                        var img = new Image();
+                        if (isOnlyEmojis)
+                        {
+                            img.Width = 48;
+                            img.Height = 48;
+                        }
+                        else
+                        {
+                            img.Width = 22;
+                            img.Height = 22;
+                        }
+
+                        BitmapImage bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.UriSource = new Uri($"https://cdn.discordapp.com/emojis/{emojiId}.{(isAnimated ? "gif" : "png")}?size={(isOnlyEmojis ? "96" : "44")}&quality=lossless", UriKind.Absolute);
+                        bitmap.EndInit();
+                        img.Source = bitmap;
+
+                        var inlineContainer = new InlineUIContainer(img);
+                        inlineContainer.BaselineAlignment = BaselineAlignment.Center;
+                        contentLb.Inlines.Add(inlineContainer);
+                        contentLb.Inlines.Add(new Run(" "));
                     }
-
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.UriSource = new Uri($"https://cdn.discordapp.com/emojis/{emojiId}.{(isAnimated ? "gif" : "png")}?size={(isOnlyEmojis ? "96" : "44")}&quality=lossless", UriKind.Absolute);
-                    bitmap.EndInit();
-                    img.Source = bitmap;
-
-                    var inlineContainer = new InlineUIContainer(img);
-                    inlineContainer.BaselineAlignment = BaselineAlignment.Center;
-                    contentLb.Inlines.Add(inlineContainer);
-                    contentLb.Inlines.Add(new Run(" "));
-                } else
-                {
-                    contentLb.Inlines.Add(new Run(word + " "));
+                    else
+                    {
+                        contentLb.Inlines.Add(new Run(word + " "));
+                    }
                 }
             }
         }
@@ -219,6 +241,16 @@ namespace Data_Package_Images
         private void copyMetadataMi_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText((string)metadataLb.Content);
+        }
+
+        private void copyUserIdMi_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(SelectedMessage.channel.GetOtherDMRecipient(Main.User));
+        }
+
+        private void copyGuildIdMi_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(SelectedMessage.channel.guild.id);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Data_Package_Images
         public string avatar_hash;
 
         public DRelationship[] relationships;
+        public dynamic[] user_sessions;
 
         public string GetAvatarURL()
         {
