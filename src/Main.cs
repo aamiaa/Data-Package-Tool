@@ -241,6 +241,8 @@ namespace Data_Package_Images
                 }
             }
 
+            AllAttachments = AllAttachments.OrderByDescending(o => Int64.Parse(o.message.id)).ToList();
+
             loadingLb.Invoke((MethodInvoker)delegate {
                 loadingLb.Text = $"Finished! Parsed {TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {PackageCreationTime.ToShortDateString()}";
             });
@@ -593,8 +595,6 @@ namespace Data_Package_Images
                 var lvItem = new ListViewItem(values);
                 serversLv.Items.Add(lvItem);
             }
-
-            AllAttachments = AllAttachments.OrderByDescending(o => Int64.Parse(o.message.id)).ToList();
         }
 
         private string AccountToken;
