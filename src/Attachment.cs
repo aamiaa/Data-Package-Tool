@@ -53,7 +53,7 @@ namespace Data_Package_Images
             try
             {
                 var link = SelectedAttachment.message.GetMessageLink();
-                Main.LaunchDiscordProtocol($"discord://-/channels/{link}");
+                Main.LaunchDiscordProtocol($"channels/{link}");
             }
             catch (Exception ex)
             {
@@ -80,7 +80,7 @@ namespace Data_Package_Images
         {
             try
             {
-                Main.LaunchDiscordProtocol($"discord://-/users/{SelectedAttachment.message.channel.GetOtherDMRecipient(Main.User)}");
+                Main.LaunchDiscordProtocol($"users/{SelectedAttachment.message.channel.GetOtherDMRecipient(Main.User)}");
             } catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

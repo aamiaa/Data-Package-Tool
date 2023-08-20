@@ -48,6 +48,15 @@ namespace Data_Package_Images
                 case "canary":
                     canaryRb.Checked = true;
                     break;
+                case "web_stable":
+                    webStableRb.Checked = true;
+                    break;
+                case "web_ptb":
+                    webPTBRb.Checked = true;
+                    break;
+                case "web_canary":
+                    webCanaryRb.Checked = true;
+                    break;
             }
         }
 
@@ -56,7 +65,29 @@ namespace Data_Package_Images
             string instance = Properties.Settings.Default.UseDiscordInstance;
             if(instance == "default")
             {
-                Process.Start(url);
+                Process.Start($"discord://-/{url}");
+                return;
+            }
+
+            if(instance.StartsWith("web_"))
+            {
+                string hostname;
+                switch (instance)
+                {
+                    case "web_stable":
+                        hostname = "discord.com";
+                        break;
+                    case "web_ptb":
+                        hostname = "ptb.discord.com";
+                        break;
+                    case "web_canary":
+                        hostname = "canary.discord.com";
+                        break;
+                    default:
+                        throw new Exception($"Invalid settings value: {instance}");
+                }
+
+                Process.Start($"https://{hostname}/{url}");
                 return;
             }
 
@@ -87,7 +118,7 @@ namespace Data_Package_Images
                 string exePath = Path.Combine(folder, $"{folderName}.exe");
                 if(new DirectoryInfo(folder).Name.StartsWith("app-") && File.Exists(exePath))
                 {
-                    Process.Start(exePath, $"--url -- \"{url}\"");
+                    Process.Start(exePath, $"--url -- \"discord://-/{url}\"");
                     return;
                 }
             }
@@ -246,21 +277,22 @@ namespace Data_Package_Images
 
             AllAttachments = AllAttachments.OrderByDescending(o => Int64.Parse(o.message.id)).ToList();
 
-            var dmChannels = Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
-            foreach(var dmChannel in dmChannels)
+            dmsLv.Invoke((MethodInvoker)delegate
             {
-                string recipientId = dmChannel.GetOtherDMRecipient(User);
-                string recipientUsername = "";
-                var relationship = User.relationships.ToList().Find(x => x.id == recipientId);
-                if (relationship != null) recipientUsername = relationship.user.GetTag();
-
-                string[] values = { SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString()};
-                var lvItem = new ListViewItem(values);
-                dmsLv.Invoke((MethodInvoker)delegate
+                var dmChannels = Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
+                foreach (var dmChannel in dmChannels)
                 {
+                    string recipientId = dmChannel.GetOtherDMRecipient(User);
+                    string recipientUsername = "";
+                    var relationship = User.relationships.ToList().Find(x => x.id == recipientId);
+                    if (relationship != null) recipientUsername = relationship.user.GetTag();
+
+                    string[] values = { SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString() };
+                    var lvItem = new ListViewItem(values);
                     dmsLv.Items.Add(lvItem);
-                });
-            }
+                }
+            });
+
             loadingLb.Invoke((MethodInvoker)delegate {
                 loadingLb.Text = $"Finished! Parsed {TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {PackageCreationTime.ToShortDateString()}";
             });
@@ -554,6 +586,17 @@ namespace Data_Package_Images
             } else if(canaryRb.Checked)
             {
                 Properties.Settings.Default.UseDiscordInstance = "canary";
+            } else if(webStableRb.Checked)
+            {
+                Properties.Settings.Default.UseDiscordInstance = "web_stable";
+            }
+            else if (webPTBRb.Checked)
+            {
+                Properties.Settings.Default.UseDiscordInstance = "web_ptb";
+            }
+            else if (webCanaryRb.Checked)
+            {
+                Properties.Settings.Default.UseDiscordInstance = "web_canary";
             }
 
             Properties.Settings.Default.Save();
@@ -703,7 +746,7 @@ namespace Data_Package_Images
         {
             try
             {
-                Main.LaunchDiscordProtocol($"discord://-/users/{dmsLv.SelectedItems[0].SubItems[2].Text}");
+                Main.LaunchDiscordProtocol($"users/{dmsLv.SelectedItems[0].SubItems[2].Text}");
             }
             catch (Exception ex)
             {

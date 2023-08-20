@@ -105,7 +105,7 @@ namespace Data_Package_Images
             try
             {
                 var link = SelectedMessage.GetMessageLink();
-                Main.LaunchDiscordProtocol($"discord://-/channels/{link}");
+                Main.LaunchDiscordProtocol($"channels/{link}");
             } catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
