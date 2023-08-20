@@ -30,7 +30,7 @@ namespace Data_Package_Images
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Loading...");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Loading...");
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.loadTb = new System.Windows.Forms.TabPage();
             this.loadingLb = new System.Windows.Forms.Label();
@@ -43,6 +43,8 @@ namespace Data_Package_Images
             this.massDeleteBtn = new System.Windows.Forms.Button();
             this.resultsCountLb = new System.Windows.Forms.Label();
             this.messagesPanel = new System.Windows.Forms.Panel();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.listWPF1 = new Data_Package_Images.MessageListWPF();
             this.searchBtn = new System.Windows.Forms.Button();
             this.searchTb = new System.Windows.Forms.TextBox();
             this.imagesTab = new System.Windows.Forms.TabPage();
@@ -61,6 +63,16 @@ namespace Data_Package_Images
             this.serversContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyInvitesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.dmsLv = new System.Windows.Forms.ListView();
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.dmsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyUserIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyChannelIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsTab = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.defaultRb = new System.Windows.Forms.RadioButton();
@@ -72,10 +84,9 @@ namespace Data_Package_Images
             this.massDeleteTimer = new System.Windows.Forms.Timer(this.components);
             this.searchBw = new System.ComponentModel.BackgroundWorker();
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.listWPF1 = new Data_Package_Images.MessageListWPF();
             this.loadBw = new System.ComponentModel.BackgroundWorker();
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
+            this.viewUserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
             this.messagesTab.SuspendLayout();
@@ -83,6 +94,8 @@ namespace Data_Package_Images
             this.imagesTab.SuspendLayout();
             this.serversTab.SuspendLayout();
             this.serversContextMenu.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.dmsContextMenu.SuspendLayout();
             this.settingsTab.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -93,6 +106,7 @@ namespace Data_Package_Images
             this.tabControl1.Controls.Add(this.messagesTab);
             this.tabControl1.Controls.Add(this.imagesTab);
             this.tabControl1.Controls.Add(this.serversTab);
+            this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.settingsTab);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -139,7 +153,7 @@ namespace Data_Package_Images
             // loadFileBtn
             // 
             this.loadFileBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.loadFileBtn.Location = new System.Drawing.Point(267, 167);
+            this.loadFileBtn.Location = new System.Drawing.Point(251, 167);
             this.loadFileBtn.Name = "loadFileBtn";
             this.loadFileBtn.Size = new System.Drawing.Size(75, 23);
             this.loadFileBtn.TabIndex = 0;
@@ -226,6 +240,16 @@ namespace Data_Package_Images
             this.messagesPanel.Name = "messagesPanel";
             this.messagesPanel.Size = new System.Drawing.Size(568, 251);
             this.messagesPanel.TabIndex = 2;
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(568, 251);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.listWPF1;
             // 
             // searchBtn
             // 
@@ -323,7 +347,7 @@ namespace Data_Package_Images
             this.serversLv.FullRowSelect = true;
             this.serversLv.HideSelection = false;
             this.serversLv.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
             this.serversLv.Location = new System.Drawing.Point(3, 3);
             this.serversLv.Name = "serversLv";
             this.serversLv.Size = new System.Drawing.Size(574, 285);
@@ -382,6 +406,84 @@ namespace Data_Package_Images
             this.copyInvitesToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.copyInvitesToolStripMenuItem.Text = "Copy invites";
             this.copyInvitesToolStripMenuItem.Click += new System.EventHandler(this.copyInvitesToolStripMenuItem_Click);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(51)))), ((int)(((byte)(56)))));
+            this.tabPage1.Controls.Add(this.dmsLv);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(580, 291);
+            this.tabPage1.TabIndex = 5;
+            this.tabPage1.Text = "Direct Messages";
+            // 
+            // dmsLv
+            // 
+            this.dmsLv.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader7,
+            this.columnHeader8,
+            this.columnHeader9,
+            this.columnHeader10,
+            this.columnHeader11});
+            this.dmsLv.ContextMenuStrip = this.dmsContextMenu;
+            this.dmsLv.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dmsLv.FullRowSelect = true;
+            this.dmsLv.HideSelection = false;
+            this.dmsLv.Location = new System.Drawing.Point(3, 3);
+            this.dmsLv.Name = "dmsLv";
+            this.dmsLv.Size = new System.Drawing.Size(574, 285);
+            this.dmsLv.TabIndex = 0;
+            this.dmsLv.UseCompatibleStateImageBehavior = false;
+            this.dmsLv.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Text = "Date";
+            this.columnHeader7.Width = 83;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "Channel Id";
+            this.columnHeader8.Width = 115;
+            // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Text = "User Id";
+            this.columnHeader9.Width = 143;
+            // 
+            // columnHeader10
+            // 
+            this.columnHeader10.Text = "Username";
+            this.columnHeader10.Width = 147;
+            // 
+            // columnHeader11
+            // 
+            this.columnHeader11.Text = "# of your msgs";
+            this.columnHeader11.Width = 81;
+            // 
+            // dmsContextMenu
+            // 
+            this.dmsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.viewUserToolStripMenuItem,
+            this.copyUserIdToolStripMenuItem,
+            this.copyChannelIdToolStripMenuItem});
+            this.dmsContextMenu.Name = "dmsContextMenu";
+            this.dmsContextMenu.Size = new System.Drawing.Size(181, 92);
+            // 
+            // copyUserIdToolStripMenuItem
+            // 
+            this.copyUserIdToolStripMenuItem.Name = "copyUserIdToolStripMenuItem";
+            this.copyUserIdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyUserIdToolStripMenuItem.Text = "Copy user id";
+            this.copyUserIdToolStripMenuItem.Click += new System.EventHandler(this.copyUserIdToolStripMenuItem_Click);
+            // 
+            // copyChannelIdToolStripMenuItem
+            // 
+            this.copyChannelIdToolStripMenuItem.Name = "copyChannelIdToolStripMenuItem";
+            this.copyChannelIdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyChannelIdToolStripMenuItem.Text = "Copy channel id";
+            this.copyChannelIdToolStripMenuItem.Click += new System.EventHandler(this.copyChannelIdToolStripMenuItem_Click);
             // 
             // settingsTab
             // 
@@ -478,16 +580,6 @@ namespace Data_Package_Images
             // 
             this.searchTimer.Tick += new System.EventHandler(this.searchTimer_Tick);
             // 
-            // elementHost1
-            // 
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(568, 251);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.listWPF1;
-            // 
             // loadBw
             // 
             this.loadBw.DoWork += new System.ComponentModel.DoWorkEventHandler(this.loadBw_DoWork);
@@ -496,6 +588,13 @@ namespace Data_Package_Images
             // loadTimer
             // 
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
+            // 
+            // viewUserToolStripMenuItem
+            // 
+            this.viewUserToolStripMenuItem.Name = "viewUserToolStripMenuItem";
+            this.viewUserToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewUserToolStripMenuItem.Text = "View user";
+            this.viewUserToolStripMenuItem.Click += new System.EventHandler(this.viewUserToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -517,6 +616,8 @@ namespace Data_Package_Images
             this.imagesTab.PerformLayout();
             this.serversTab.ResumeLayout(false);
             this.serversContextMenu.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.dmsContextMenu.ResumeLayout(false);
             this.settingsTab.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -571,6 +672,17 @@ namespace Data_Package_Images
         private System.Windows.Forms.Timer searchTimer;
         private System.ComponentModel.BackgroundWorker loadBw;
         private System.Windows.Forms.Timer loadTimer;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.ListView dmsLv;
+        private System.Windows.Forms.ColumnHeader columnHeader7;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.ColumnHeader columnHeader10;
+        private System.Windows.Forms.ContextMenuStrip dmsContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem copyUserIdToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyChannelIdToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader columnHeader11;
+        private System.Windows.Forms.ToolStripMenuItem viewUserToolStripMenuItem;
     }
 }
 

@@ -95,6 +95,14 @@ namespace Data_Package_Images
             throw new Exception("Couldn't find the Discord exe file");
         }
 
+        public DateTime SnowflakeToTimestap(string snowflake)
+        {
+            var ms = Int64.Parse(snowflake) >> 22;
+            var timestamp = ms + 1420070400000;
+
+            return DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime;
+        }
+
         private void DisplayMessage(DMessage message)
         {
             var msgControl = new MessageWPF(message, User);
@@ -243,11 +251,25 @@ namespace Data_Package_Images
 
             AllAttachments = AllAttachments.OrderByDescending(o => Int64.Parse(o.message.id)).ToList();
 
+            var dmChannels = Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
+            foreach(var dmChannel in dmChannels)
+            {
+                string recipientId = dmChannel.GetOtherDMRecipient(User);
+                string recipientUsername = "";
+                var relationship = User.relationships.ToList().Find(x => x.id == recipientId);
+                if (relationship != null) recipientUsername = relationship.user.GetTag();
+
+                string[] values = { SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString()};
+                var lvItem = new ListViewItem(values);
+                dmsLv.Invoke((MethodInvoker)delegate
+                {
+                    dmsLv.Items.Add(lvItem);
+                });
+            }
             loadingLb.Invoke((MethodInvoker)delegate {
                 loadingLb.Text = $"Finished! Parsed {TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {PackageCreationTime.ToShortDateString()}";
             });
         }
-
         private void loadTimer_Tick(object sender, EventArgs e)
         {
             loadingLb.Text = LoadStatusText;
@@ -661,6 +683,28 @@ namespace Data_Package_Images
         {
             var prompt = new SearchOptionsPrompt();
             prompt.ShowDialog();
+        }
+
+        private void copyUserIdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(dmsLv.SelectedItems[0].SubItems[2].Text);
+        }
+
+        private void copyChannelIdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(dmsLv.SelectedItems[0].SubItems[1].Text);
+        }
+
+        private void viewUserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Main.LaunchDiscordProtocol($"discord://-/users/{dmsLv.SelectedItems[0].SubItems[2].Text}");
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
         }
     }
 }
