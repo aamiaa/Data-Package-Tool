@@ -266,12 +266,14 @@ namespace Data_Package_Images
         {
             DHeaders.Init();
 
-            string token = Interaction.InputBox("Enter your token", "Prompt");
+            string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
+            if (token == "") return;
             if (!Main.ValidateToken(token))
             {
                 System.Windows.Forms.MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 return;
             }
+            Main.AccountToken = token;
 
             var body = new Dictionary<string, string[]>();
             body.Add("recipients", new string[]{SelectedMessage.channel.GetOtherDMRecipient(Main.User)});
