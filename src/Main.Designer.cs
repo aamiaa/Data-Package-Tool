@@ -30,7 +30,7 @@ namespace Data_Package_Images
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Loading...");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Loading...");
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.loadTb = new System.Windows.Forms.TabPage();
             this.loadingLb = new System.Windows.Forms.Label();
@@ -76,6 +76,9 @@ namespace Data_Package_Images
             this.copyChannelIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsTab = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.webCanaryRb = new System.Windows.Forms.RadioButton();
+            this.webPTBRb = new System.Windows.Forms.RadioButton();
+            this.webStableRb = new System.Windows.Forms.RadioButton();
             this.defaultRb = new System.Windows.Forms.RadioButton();
             this.canaryRb = new System.Windows.Forms.RadioButton();
             this.ptbRb = new System.Windows.Forms.RadioButton();
@@ -87,9 +90,8 @@ namespace Data_Package_Images
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
             this.loadBw = new System.ComponentModel.BackgroundWorker();
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
-            this.webStableRb = new System.Windows.Forms.RadioButton();
-            this.webPTBRb = new System.Windows.Forms.RadioButton();
-            this.webCanaryRb = new System.Windows.Forms.RadioButton();
+            this.openDmSELFBOTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
             this.messagesTab.SuspendLayout();
@@ -350,7 +352,7 @@ namespace Data_Package_Images
             this.serversLv.FullRowSelect = true;
             this.serversLv.HideSelection = false;
             this.serversLv.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
             this.serversLv.Location = new System.Drawing.Point(3, 3);
             this.serversLv.Name = "serversLv";
             this.serversLv.Size = new System.Drawing.Size(574, 285);
@@ -469,29 +471,31 @@ namespace Data_Package_Images
             // 
             this.dmsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.viewUserToolStripMenuItem,
+            this.openDmSELFBOTToolStripMenuItem,
+            this.toolStripSeparator1,
             this.copyUserIdToolStripMenuItem,
             this.copyChannelIdToolStripMenuItem});
             this.dmsContextMenu.Name = "dmsContextMenu";
-            this.dmsContextMenu.Size = new System.Drawing.Size(161, 70);
+            this.dmsContextMenu.Size = new System.Drawing.Size(181, 120);
             // 
             // viewUserToolStripMenuItem
             // 
             this.viewUserToolStripMenuItem.Name = "viewUserToolStripMenuItem";
-            this.viewUserToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.viewUserToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.viewUserToolStripMenuItem.Text = "View user";
             this.viewUserToolStripMenuItem.Click += new System.EventHandler(this.viewUserToolStripMenuItem_Click);
             // 
             // copyUserIdToolStripMenuItem
             // 
             this.copyUserIdToolStripMenuItem.Name = "copyUserIdToolStripMenuItem";
-            this.copyUserIdToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.copyUserIdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.copyUserIdToolStripMenuItem.Text = "Copy user id";
             this.copyUserIdToolStripMenuItem.Click += new System.EventHandler(this.copyUserIdToolStripMenuItem_Click);
             // 
             // copyChannelIdToolStripMenuItem
             // 
             this.copyChannelIdToolStripMenuItem.Name = "copyChannelIdToolStripMenuItem";
-            this.copyChannelIdToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.copyChannelIdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.copyChannelIdToolStripMenuItem.Text = "Copy channel id";
             this.copyChannelIdToolStripMenuItem.Click += new System.EventHandler(this.copyChannelIdToolStripMenuItem_Click);
             // 
@@ -522,6 +526,42 @@ namespace Data_Package_Images
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Which Discord instance to launch";
+            // 
+            // webCanaryRb
+            // 
+            this.webCanaryRb.AutoSize = true;
+            this.webCanaryRb.Location = new System.Drawing.Point(123, 88);
+            this.webCanaryRb.Name = "webCanaryRb";
+            this.webCanaryRb.Size = new System.Drawing.Size(99, 17);
+            this.webCanaryRb.TabIndex = 6;
+            this.webCanaryRb.TabStop = true;
+            this.webCanaryRb.Text = "Browser Canary";
+            this.webCanaryRb.UseVisualStyleBackColor = true;
+            this.webCanaryRb.CheckedChanged += new System.EventHandler(this.discordInstanceSettingsChange);
+            // 
+            // webPTBRb
+            // 
+            this.webPTBRb.AutoSize = true;
+            this.webPTBRb.Location = new System.Drawing.Point(123, 65);
+            this.webPTBRb.Name = "webPTBRb";
+            this.webPTBRb.Size = new System.Drawing.Size(87, 17);
+            this.webPTBRb.TabIndex = 5;
+            this.webPTBRb.TabStop = true;
+            this.webPTBRb.Text = "Browser PTB";
+            this.webPTBRb.UseVisualStyleBackColor = true;
+            this.webPTBRb.CheckedChanged += new System.EventHandler(this.discordInstanceSettingsChange);
+            // 
+            // webStableRb
+            // 
+            this.webStableRb.AutoSize = true;
+            this.webStableRb.Location = new System.Drawing.Point(123, 42);
+            this.webStableRb.Name = "webStableRb";
+            this.webStableRb.Size = new System.Drawing.Size(96, 17);
+            this.webStableRb.TabIndex = 4;
+            this.webStableRb.TabStop = true;
+            this.webStableRb.Text = "Browser Stable";
+            this.webStableRb.UseVisualStyleBackColor = true;
+            this.webStableRb.CheckedChanged += new System.EventHandler(this.discordInstanceSettingsChange);
             // 
             // defaultRb
             // 
@@ -602,41 +642,17 @@ namespace Data_Package_Images
             // 
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
             // 
-            // webStableRb
+            // openDmSELFBOTToolStripMenuItem
             // 
-            this.webStableRb.AutoSize = true;
-            this.webStableRb.Location = new System.Drawing.Point(123, 42);
-            this.webStableRb.Name = "webStableRb";
-            this.webStableRb.Size = new System.Drawing.Size(96, 17);
-            this.webStableRb.TabIndex = 4;
-            this.webStableRb.TabStop = true;
-            this.webStableRb.Text = "Browser Stable";
-            this.webStableRb.UseVisualStyleBackColor = true;
-            this.webStableRb.CheckedChanged += new System.EventHandler(this.discordInstanceSettingsChange);
+            this.openDmSELFBOTToolStripMenuItem.Name = "openDmSELFBOTToolStripMenuItem";
+            this.openDmSELFBOTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openDmSELFBOTToolStripMenuItem.Text = "Open dm (SELFBOT)";
+            this.openDmSELFBOTToolStripMenuItem.Click += new System.EventHandler(this.openDmSELFBOTToolStripMenuItem_Click);
             // 
-            // webPTBRb
+            // toolStripSeparator1
             // 
-            this.webPTBRb.AutoSize = true;
-            this.webPTBRb.Location = new System.Drawing.Point(123, 65);
-            this.webPTBRb.Name = "webPTBRb";
-            this.webPTBRb.Size = new System.Drawing.Size(87, 17);
-            this.webPTBRb.TabIndex = 5;
-            this.webPTBRb.TabStop = true;
-            this.webPTBRb.Text = "Browser PTB";
-            this.webPTBRb.UseVisualStyleBackColor = true;
-            this.webPTBRb.CheckedChanged += new System.EventHandler(this.discordInstanceSettingsChange);
-            // 
-            // webCanaryRb
-            // 
-            this.webCanaryRb.AutoSize = true;
-            this.webCanaryRb.Location = new System.Drawing.Point(123, 88);
-            this.webCanaryRb.Name = "webCanaryRb";
-            this.webCanaryRb.Size = new System.Drawing.Size(99, 17);
-            this.webCanaryRb.TabIndex = 6;
-            this.webCanaryRb.TabStop = true;
-            this.webCanaryRb.Text = "Browser Canary";
-            this.webCanaryRb.UseVisualStyleBackColor = true;
-            this.webCanaryRb.CheckedChanged += new System.EventHandler(this.discordInstanceSettingsChange);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // Main
             // 
@@ -728,6 +744,8 @@ namespace Data_Package_Images
         private System.Windows.Forms.RadioButton webCanaryRb;
         private System.Windows.Forms.RadioButton webPTBRb;
         private System.Windows.Forms.RadioButton webStableRb;
+        private System.Windows.Forms.ToolStripMenuItem openDmSELFBOTToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 

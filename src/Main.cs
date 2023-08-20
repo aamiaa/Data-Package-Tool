@@ -831,5 +831,38 @@ namespace Data_Package_Images
                 return false;
             }
         }
+
+        private void openDmSELFBOTToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DHeaders.Init();
+
+            string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
+            if (token == "") return;
+            if (!Main.ValidateToken(token))
+            {
+                System.Windows.Forms.MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                return;
+            }
+            Main.AccountToken = token;
+
+            var body = new Dictionary<string, string[]>();
+            body.Add("recipients", new string[] { dmsLv.SelectedItems[0].SubItems[2].Text });
+
+            var response = DRequest.Request("POST", "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
+            {
+                {"Authorization", token},
+                {"Content-Type", "application/json"},
+                {"X-Context-Properties", Convert.ToBase64String(Encoding.UTF8.GetBytes("{}"))}
+            }, Newtonsoft.Json.JsonConvert.SerializeObject(body), true);
+
+            if (response.response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                LaunchDiscordProtocol($"channels/@me/{dmsLv.SelectedItems[0].SubItems[1].Text}");
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show($"Request error: {response.response.StatusCode} {response.body}", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+        }
     }
 }
