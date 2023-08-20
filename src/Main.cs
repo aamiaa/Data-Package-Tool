@@ -199,12 +199,7 @@ namespace Data_Package_Images
                 var userFile = zip.GetEntry("account/user.json");
                 if (userFile == null)
                 {
-                    MessageBox.Show("Invalid data package: missing user.json", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                    /*loadFileBtn.Show();
-                    progressBar1.Hide();
-                    progressBar1.Value = 0;*/
-                    return;
+                    throw new Exception("Invalid data package: missing user.json");
                 }
 
                 PackageCreationTime = userFile.LastWriteTime.DateTime;
@@ -279,6 +274,15 @@ namespace Data_Package_Images
         private void loadBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             loadTimer.Stop();
+            if (e.Error != null)
+            {
+                loadFileBtn.Show();
+                progressBar1.Hide();
+
+                MessageBox.Show($"An error occurred:\n\n{e.Error.ToString()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            
             progressBar1.Value = progressBar1.Maximum;
         }
 
