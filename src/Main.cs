@@ -374,6 +374,10 @@ namespace Data_Package_Images
                     if (Properties.Settings.Default.SearchExcludeIDs.Contains(channel.id)) continue;
                     if (channel.guild != null && channel.guild.id != null && Properties.Settings.Default.SearchExcludeIDs.Contains(channel.guild.id)) continue;
                 }
+                if(Properties.Settings.Default.SearchWhitelistIDs != null && Properties.Settings.Default.SearchWhitelistIDs.Count > 0)
+                {
+                    if (!Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.id) && !(channel.guild != null && channel.guild.id != null && Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.guild.id))) continue;
+                }
 
                 // Search modes
                 if (Properties.Settings.Default.SearchMode == "exact")

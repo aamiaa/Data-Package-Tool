@@ -45,6 +45,14 @@ namespace Data_Package_Images
                     excludedIdsLb.Items.Add(id);
                 }
             }
+
+            if (Properties.Settings.Default.SearchWhitelistIDs != null)
+            {
+                foreach (var id in Properties.Settings.Default.SearchWhitelistIDs)
+                {
+                    whitelistIdsLb.Items.Add(id);
+                }
+            }
         }
 
         private void saveBtn_Click(object sender, EventArgs e)
@@ -64,12 +72,19 @@ namespace Data_Package_Images
             Properties.Settings.Default.SearchExcludeDMs = excludeDmsCb.Checked;
             Properties.Settings.Default.SearchExcludeGDMs = excludeGroupDmsCb.Checked;
 
-            var ids = new StringCollection();
+            var excludeIds = new StringCollection();
             foreach(string item in excludedIdsLb.Items)
             {
-                ids.Add(item);
+                excludeIds.Add(item);
             }
-            Properties.Settings.Default.SearchExcludeIDs = ids;
+            Properties.Settings.Default.SearchExcludeIDs = excludeIds;
+
+            var whitelistIds = new StringCollection();
+            foreach (string item in whitelistIdsLb.Items)
+            {
+                whitelistIds.Add(item);
+            }
+            Properties.Settings.Default.SearchWhitelistIDs = whitelistIds;
 
             Properties.Settings.Default.Save();
             Close();
@@ -78,7 +93,8 @@ namespace Data_Package_Images
         private void addBtn_Click(object sender, EventArgs e)
         {
             string id = Interaction.InputBox("Enter the id", "Prompt");
-            if(!excludedIdsLb.Items.Contains(id))
+            if (id == "") return;
+            if (!excludedIdsLb.Items.Contains(id))
             {
                 excludedIdsLb.Items.Add(id);
             }
@@ -93,6 +109,29 @@ namespace Data_Package_Images
                 if (excludedIdsLb.Items.Count > 0)
                 {
                     excludedIdsLb.SelectedIndex = Math.Min(oldIdx, excludedIdsLb.Items.Count - 1);
+                }
+            }
+        }
+
+        private void addWhitelistBtn_Click(object sender, EventArgs e)
+        {
+            string id = Interaction.InputBox("Enter the id", "Prompt");
+            if (id == "") return;
+            if (!whitelistIdsLb.Items.Contains(id))
+            {
+                whitelistIdsLb.Items.Add(id);
+            }
+        }
+
+        private void removeWhitelistBtn_Click(object sender, EventArgs e)
+        {
+            if (whitelistIdsLb.SelectedIndex > -1)
+            {
+                int oldIdx = whitelistIdsLb.SelectedIndex;
+                whitelistIdsLb.Items.RemoveAt(whitelistIdsLb.SelectedIndex);
+                if (whitelistIdsLb.Items.Count > 0)
+                {
+                    whitelistIdsLb.SelectedIndex = Math.Min(oldIdx, whitelistIdsLb.Items.Count - 1);
                 }
             }
         }

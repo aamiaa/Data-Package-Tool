@@ -41,6 +41,10 @@
             this.regexMatchRb = new System.Windows.Forms.RadioButton();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.removeWhitelistBtn = new System.Windows.Forms.Button();
+            this.addWhitelistBtn = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.whitelistIdsLb = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // excludeGuildsCb
@@ -78,7 +82,7 @@
             this.excludedIdsLb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.excludedIdsLb.FormattingEnabled = true;
-            this.excludedIdsLb.Location = new System.Drawing.Point(12, 130);
+            this.excludedIdsLb.Location = new System.Drawing.Point(12, 120);
             this.excludedIdsLb.Name = "excludedIdsLb";
             this.excludedIdsLb.Size = new System.Drawing.Size(249, 95);
             this.excludedIdsLb.TabIndex = 3;
@@ -87,7 +91,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 114);
+            this.label1.Location = new System.Drawing.Point(12, 104);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(181, 13);
             this.label1.TabIndex = 4;
@@ -96,7 +100,7 @@
             // saveBtn
             // 
             this.saveBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.saveBtn.Location = new System.Drawing.Point(109, 242);
+            this.saveBtn.Location = new System.Drawing.Point(109, 351);
             this.saveBtn.Name = "saveBtn";
             this.saveBtn.Size = new System.Drawing.Size(75, 23);
             this.saveBtn.TabIndex = 5;
@@ -107,7 +111,7 @@
             // addBtn
             // 
             this.addBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.addBtn.Location = new System.Drawing.Point(265, 130);
+            this.addBtn.Location = new System.Drawing.Point(265, 120);
             this.addBtn.Name = "addBtn";
             this.addBtn.Size = new System.Drawing.Size(24, 21);
             this.addBtn.TabIndex = 6;
@@ -118,7 +122,7 @@
             // removeBtn
             // 
             this.removeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.removeBtn.Location = new System.Drawing.Point(265, 157);
+            this.removeBtn.Location = new System.Drawing.Point(265, 147);
             this.removeBtn.Name = "removeBtn";
             this.removeBtn.Size = new System.Drawing.Size(24, 21);
             this.removeBtn.TabIndex = 7;
@@ -174,12 +178,58 @@
             this.label3.TabIndex = 12;
             this.label3.Text = "Exclusions:";
             // 
+            // removeWhitelistBtn
+            // 
+            this.removeWhitelistBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.removeWhitelistBtn.Location = new System.Drawing.Point(265, 277);
+            this.removeWhitelistBtn.Name = "removeWhitelistBtn";
+            this.removeWhitelistBtn.Size = new System.Drawing.Size(24, 21);
+            this.removeWhitelistBtn.TabIndex = 16;
+            this.removeWhitelistBtn.Text = "-";
+            this.removeWhitelistBtn.UseVisualStyleBackColor = true;
+            this.removeWhitelistBtn.Click += new System.EventHandler(this.removeWhitelistBtn_Click);
+            // 
+            // addWhitelistBtn
+            // 
+            this.addWhitelistBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.addWhitelistBtn.Location = new System.Drawing.Point(265, 250);
+            this.addWhitelistBtn.Name = "addWhitelistBtn";
+            this.addWhitelistBtn.Size = new System.Drawing.Size(24, 21);
+            this.addWhitelistBtn.TabIndex = 15;
+            this.addWhitelistBtn.Text = "+";
+            this.addWhitelistBtn.UseVisualStyleBackColor = true;
+            this.addWhitelistBtn.Click += new System.EventHandler(this.addWhitelistBtn_Click);
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 234);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(210, 13);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Search only in specific channels/guilds ids:";
+            // 
+            // whitelistIdsLb
+            // 
+            this.whitelistIdsLb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.whitelistIdsLb.FormattingEnabled = true;
+            this.whitelistIdsLb.Location = new System.Drawing.Point(12, 250);
+            this.whitelistIdsLb.Name = "whitelistIdsLb";
+            this.whitelistIdsLb.Size = new System.Drawing.Size(249, 95);
+            this.whitelistIdsLb.TabIndex = 13;
+            // 
             // SearchOptionsPrompt
             // 
             this.AcceptButton = this.saveBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(293, 269);
+            this.ClientSize = new System.Drawing.Size(293, 378);
+            this.Controls.Add(this.removeWhitelistBtn);
+            this.Controls.Add(this.addWhitelistBtn);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.whitelistIdsLb);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.regexMatchRb);
@@ -221,5 +271,9 @@
         private System.Windows.Forms.RadioButton regexMatchRb;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button removeWhitelistBtn;
+        private System.Windows.Forms.Button addWhitelistBtn;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ListBox whitelistIdsLb;
     }
 }

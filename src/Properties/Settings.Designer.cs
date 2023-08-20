@@ -104,5 +104,16 @@ namespace Data_Package_Images.Properties {
                 this["DeletedMessageIDs"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection SearchWhitelistIDs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["SearchWhitelistIDs"]));
+            }
+            set {
+                this["SearchWhitelistIDs"] = value;
+            }
+        }
     }
 }
