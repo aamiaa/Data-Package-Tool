@@ -25,7 +25,7 @@ namespace Data_Package_Images
 
         private void saveBtn_Click(object sender, EventArgs e)
         {
-            if(!ValidateToken())
+            if(Main.ValidateToken(tokenTb.Text))
             {
                 MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -33,24 +33,6 @@ namespace Data_Package_Images
 
             DialogSuccess = true;
             Close();
-        }
-
-        private bool ValidateToken()
-        {
-            var token = tokenTb.Text;
-            var parts = token.Split('.');
-
-            if (parts.Length != 3) return false;
-
-            var userIdPart = parts[0];
-            try
-            {
-                var userId = Encoding.UTF8.GetString(Convert.FromBase64String(userIdPart));
-                return userId == Main.User.id;
-            } catch(Exception)
-            {
-                return false;
-            }
         }
 
         public string GetToken()

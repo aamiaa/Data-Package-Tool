@@ -46,6 +46,7 @@ namespace Data_Package_Images
 
             BROWSER_VERSION = GetLatestChromeVersion();
             BROWSER_VERSION_FULL = $"{ BROWSER_VERSION}.0.0.0";
+            USER_AGENT = $"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{BROWSER_VERSION_FULL} Safari/537.36";
 
             _initialized = true;
         }
@@ -78,15 +79,13 @@ namespace Data_Package_Images
         public static Dictionary<string, string> DefaultBrowserHeaders(Dictionary<string, string> extraHeaders = null)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>{
-                {"20", "*/*"},
-                {"23", "en-US,en;q=0.5"},
+                {"Accept-Language", "en-US,en;q=0.5"},
                 {"sec-ch-ua", $"\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"{BROWSER_VERSION}\", \"Google Chrome\";v=\"{BROWSER_VERSION}\""},
                 {"sec-ch-ua-mobile", "?0"},
                 {"sec-ch-ua-platform", "\"Windows\""},
                 {"sec-fetch-dest", "empty"},
                 {"sec-fetch-mode", "cors"},
                 {"sec-fetch-site", "same-origin"},
-                {"40", USER_AGENT},
                 {"x-debug-options", "bugReporterEnabled"},
                 {"x-discord-locale", "en-US"},
                 {"x-discord-timezone", "America/New_York"},
@@ -138,8 +137,17 @@ namespace Data_Package_Images
     {
         public static DRequestResponse Request(string method, string url, Dictionary<string, string> headers = null, string bodyData = null, bool includeDefaultHeaders = true)
         {
-            WebRequest request = WebRequest.Create(url);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = method;
+
+            if(headers != null)
+            {
+                if(headers.ContainsKey("Content-Type"))
+                {
+                    request.ContentType = headers["Content-Type"];
+                    headers.Remove("Content-Type");
+                }
+            }
 
             if (includeDefaultHeaders)
             {
@@ -147,6 +155,8 @@ namespace Data_Package_Images
                 {
                     request.Headers.Add(kvp.Key, kvp.Value);
                 }
+                request.Accept = "*/*";
+                request.UserAgent = DHeaders.USER_AGENT;
             } else if(headers != null)
             {
                 foreach (KeyValuePair<string, string> kvp in headers)

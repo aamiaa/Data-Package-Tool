@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -31,6 +34,7 @@ namespace Data_Package_Images
             if (message.channel.IsDM())
             {
                 viewUserMi.IsEnabled = true;
+                openDMMi.IsEnabled = true;
             }
 
             // Set username
@@ -251,6 +255,36 @@ namespace Data_Package_Images
         private void copyGuildIdMi_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(SelectedMessage.channel.guild.id);
+        }
+
+        private void openDMMi_Click(object sender, RoutedEventArgs e)
+        {
+            DHeaders.Init();
+
+            string token = Interaction.InputBox("Enter your token", "Prompt");
+            if (!Main.ValidateToken(token))
+            {
+                System.Windows.Forms.MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                return;
+            }
+
+            var body = new Dictionary<string, string[]>();
+            body.Add("recipients", new string[]{SelectedMessage.channel.GetOtherDMRecipient(Main.User)});
+
+            var response = DRequest.Request("POST", "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
+            {
+                {"Authorization", token},
+                {"Content-Type", "application/json"},
+                {"X-Context-Properties", Convert.ToBase64String(Encoding.UTF8.GetBytes("{}"))}
+            }, Newtonsoft.Json.JsonConvert.SerializeObject(body), true);
+
+            if(response.response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                goToMessageMi_Click(sender, e);
+            }  else
+            {
+                System.Windows.Forms.MessageBox.Show($"Request error: {response.response.StatusCode} {response.body}", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
         }
     }
 }

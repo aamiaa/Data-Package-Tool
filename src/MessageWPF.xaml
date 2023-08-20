@@ -10,6 +10,7 @@
         <ContextMenu>
             <MenuItem x:Name="goToMessageMi" Header="Go to message" Click="goToMessageMi_Click"/>
             <MenuItem x:Name="viewUserMi" Header="View user" IsEnabled="False" Click="viewUserMi_Click"/>
+            <MenuItem x:Name="openDMMi" Header="Open dm (SELFBOT)" IsEnabled="False" Click="openDMMi_Click"/>
             <Separator/>
             <MenuItem x:Name="copyMessageMi" Header="Copy message" Click="copyMessageMi_Click"/>
             <MenuItem x:Name="copyUserIdMi" Header="Copy user id" IsEnabled="False" Click="copyUserIdMi_Click"/>

@@ -753,5 +753,23 @@ namespace Data_Package_Images
                 System.Windows.Forms.MessageBox.Show(ex.Message, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
+
+        public static bool ValidateToken(string token)
+        {
+            var parts = token.Split('.');
+
+            if (parts.Length != 3) return false;
+
+            var userIdPart = parts[0];
+            try
+            {
+                var userId = Encoding.UTF8.GetString(Convert.FromBase64String(userIdPart));
+                return userId == User.id;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
