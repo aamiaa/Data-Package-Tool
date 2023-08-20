@@ -23,7 +23,7 @@
     <Grid x:Name="rootGrid" Background="#00000000" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave">
         <Border CornerRadius="32" HorizontalAlignment="Left" Height="40" Margin="8,21,0,0" VerticalAlignment="Top" Width="40">
             <Border.Background>
-                <ImageBrush x:Name="avatarImg" Stretch="Fill" ImageSource="https://cdn.discordapp.com/embed/avatars/0.png"/>
+                <ImageBrush x:Name="avatarImg" Stretch="Fill"/>
             </Border.Background>
         </Border>
         <TextBlock x:Name="contentLb" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="64,41,0,0" VerticalAlignment="Top" FontFamily="Source Sans Pro" Foreground="#FFDBDEE1" FontSize="16" Text="Lorem ipsum dolor sit amet" Padding="0,0,5,5">

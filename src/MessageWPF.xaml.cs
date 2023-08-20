@@ -26,10 +26,19 @@ namespace Data_Package_Images
     {
         public DMessage SelectedMessage;
         public bool IsDeleted = false;
+        public static BitmapImage AvatarSource;
         public MessageWPF(DMessage message, DUser user)
         {
             InitializeComponent();
             this.SelectedMessage = message;
+
+            if(AvatarSource == null)
+            {
+                AvatarSource = new BitmapImage();
+                AvatarSource.BeginInit();
+                AvatarSource.UriSource = new Uri(user.GetAvatarURL(), UriKind.Absolute);
+                AvatarSource.EndInit();
+            }
 
             if (message.channel.IsDM())
             {
@@ -107,11 +116,7 @@ namespace Data_Package_Images
             dateLb.Content = parsedDate.ToShortDateString() + " " + parsedDate.ToShortTimeString();
 
             // Set avatar
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.UriSource = new Uri(user.GetAvatarURL(), UriKind.Absolute);
-            bitmap.EndInit();
-            avatarImg.ImageSource = bitmap;
+            avatarImg.ImageSource = AvatarSource;
 
             // Add red tint if the message was deleted with mass deleter
             if(message.deleted)
