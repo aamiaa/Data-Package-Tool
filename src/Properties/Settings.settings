@@ -20,5 +20,8 @@
     <Setting Name="SearchMode" Type="System.String" Scope="User">
       <Value Profile="(Default)">exact</Value>
     </Setting>
+    <Setting Name="DeletedMessageIDs" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

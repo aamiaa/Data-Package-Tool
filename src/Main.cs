@@ -29,10 +29,17 @@ namespace Data_Package_Images
         public static List<DAttachment> AllAttachments = new List<DAttachment>();
         public static List<DAnalyticsGuild> AllJoinedGuilds = new List<DAnalyticsGuild>();
         public static dynamic CurrentGuilds;
+        public static string AccountToken = "";
         public Main()
         {
             InitializeComponent();
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            if(Properties.Settings.Default.DeletedMessageIDs == null)
+            {
+                Properties.Settings.Default.DeletedMessageIDs = new System.Collections.Specialized.StringCollection();
+                Properties.Settings.Default.Save();
+            }
 
             switch(Properties.Settings.Default.UseDiscordInstance)
             {
@@ -384,6 +391,13 @@ namespace Data_Package_Images
             }
 
             LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.id)).ToList();
+            foreach(var message in LastSearchResults)
+            {
+                if(Properties.Settings.Default.DeletedMessageIDs.Contains(message.id))
+                {
+                    message.deleted = true;
+                }
+            }
         }
 
         private void searchTimer_Tick(object sender, EventArgs e)
@@ -666,10 +680,18 @@ namespace Data_Package_Images
             }
         }
 
-        private string AccountToken;
         private int MassDeleteIdx = 0;
         private void massDeleteBtn_Click(object sender, EventArgs e)
         {
+            if(massDeleteTimer.Enabled == true)
+            {
+                massDeleteTimer.Stop();
+                massDeleteBtn.Text = "Mass Delete";
+                searchTb.Enabled = true;
+                searchBtn.Enabled = true;
+                return;
+            }
+
             if(LastSearchResults == null || LastSearchResults.Count == 0)
             {
                 MessageBox.Show("You need to search for something first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -686,6 +708,9 @@ namespace Data_Package_Images
 
                 searchTb.Enabled = false;
                 searchBtn.Enabled = false;
+                massDeleteBtn.Text = "Click to stop";
+
+                DHeaders.Init();
                 massDeleteTimer.Start();
             }
         }
@@ -694,23 +719,54 @@ namespace Data_Package_Images
         {
             massDeleteTimer.Stop(); // Stop and restart the timer every time to prevent overlaps
 
-            if(MassDeleteIdx >= LastSearchResults.Count)
+            DMessage msg;
+            while(true)
             {
-                searchTb.Enabled = true;
-                searchBtn.Enabled = true;
-                return;
-            }
+                if (MassDeleteIdx >= LastSearchResults.Count)
+                {
+                    massDeleteBtn.Text = "Mass Delete";
+                    searchTb.Enabled = true;
+                    searchBtn.Enabled = true;
 
-            var msg = LastSearchResults[MassDeleteIdx++];
+                    MessageBox.Show("Mass Delete Finished!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                msg = LastSearchResults[MassDeleteIdx++];
+                if (!msg.deleted) break;
+            }
 
             try
             {
                 // TODO: request here
-                msg.deleted = true;
-                ((MessageListWPF)elementHost1.Child).RemoveMessage(msg.id);
-            } catch(Exception)
-            {
+                var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{msg.channel.id}/messages/{msg.id}", new Dictionary<string, string>
+                {
+                    {"Authorization", AccountToken}
+                });
+                
+                switch(res.response.StatusCode)
+                {
+                    case HttpStatusCode.NotFound:
+                    case HttpStatusCode.NoContent:
+                        msg.deleted = true;
+                        ((MessageListWPF)elementHost1.Child).RemoveMessage(msg.id);
 
+                        Properties.Settings.Default.DeletedMessageIDs.Add(msg.id);
+                        Properties.Settings.Default.Save();
+                        break;
+                    case (HttpStatusCode)429:
+                        MassDeleteIdx--;
+                        System.Threading.Thread.Sleep((int)Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res.body).retry_after * 1000);
+                        break;
+                    case HttpStatusCode.Forbidden:
+                        break;
+                    default:
+                        MessageBox.Show($"Request error: {res.response.StatusCode} {res.body}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                }
+            } catch(Exception ex)
+            {
+                MessageBox.Show($"Request error: {ex.ToString()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             massDeleteTimer.Start();

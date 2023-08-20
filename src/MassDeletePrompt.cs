@@ -16,6 +16,8 @@ namespace Data_Package_Images
         public MassDeletePrompt()
         {
             InitializeComponent();
+
+            tokenTb.Text = Main.AccountToken;
         }
 
         private void delayTb_Scroll(object sender, EventArgs e)
@@ -25,7 +27,7 @@ namespace Data_Package_Images
 
         private void saveBtn_Click(object sender, EventArgs e)
         {
-            if(Main.ValidateToken(tokenTb.Text))
+            if(!Main.ValidateToken(tokenTb.Text))
             {
                 MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

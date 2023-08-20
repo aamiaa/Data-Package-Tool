@@ -93,5 +93,16 @@ namespace Data_Package_Images.Properties {
                 this["SearchMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection DeletedMessageIDs {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["DeletedMessageIDs"]));
+            }
+            set {
+                this["DeletedMessageIDs"] = value;
+            }
+        }
     }
 }
