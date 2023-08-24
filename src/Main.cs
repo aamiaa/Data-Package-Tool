@@ -14,7 +14,6 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Data_Package_Images
@@ -638,7 +637,6 @@ namespace Data_Package_Images
                                 lineNum++;
 
                                 var line = data.ReadLine();
-                                //ThreadPool.QueueUserWorkItem(state => ProcessAnalyticsLine(line));
                                 ProcessAnalyticsLine(line);
                             }
                         }
@@ -659,7 +657,7 @@ namespace Data_Package_Images
                         id = eventData.guild,
                         join_type = "invite",
                         invites = new List<string> { eventData.invite },
-                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
+                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)
                     });
                 }
                 else if (!guild.invites.Contains(eventData.invite))
@@ -743,7 +741,6 @@ namespace Data_Package_Images
 
             try
             {
-                // TODO: request here
                 var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{msg.channel.id}/messages/{msg.id}", new Dictionary<string, string>
                 {
                     {"Authorization", AccountToken}
@@ -761,7 +758,7 @@ namespace Data_Package_Images
                         break;
                     case (HttpStatusCode)429:
                         MassDeleteIdx--;
-                        System.Threading.Thread.Sleep((int)Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res.body).retry_after * 1000);
+                        Thread.Sleep((int)Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res.body).retry_after * 1000);
                         break;
                     case HttpStatusCode.Forbidden:
                         break;
@@ -771,7 +768,7 @@ namespace Data_Package_Images
                 }
             } catch(Exception ex)
             {
-                MessageBox.Show($"Request error: {ex.ToString()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Request error: {ex}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             massDeleteTimer.Start();
@@ -807,11 +804,11 @@ namespace Data_Package_Images
         {
             try
             {
-                Main.LaunchDiscordProtocol($"users/{dmsLv.SelectedItems[0].SubItems[2].Text}");
+                LaunchDiscordProtocol($"users/{dmsLv.SelectedItems[0].SubItems[2].Text}");
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -837,17 +834,19 @@ namespace Data_Package_Images
         {
             DHeaders.Init();
 
-            string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
+            string token = Interaction.InputBox("Enter your token", "Prompt", AccountToken);
             if (token == "") return;
-            if (!Main.ValidateToken(token))
+            if (!ValidateToken(token))
             {
-                System.Windows.Forms.MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            Main.AccountToken = token;
+            AccountToken = token;
 
-            var body = new Dictionary<string, string[]>();
-            body.Add("recipients", new string[] { dmsLv.SelectedItems[0].SubItems[2].Text });
+            var body = new Dictionary<string, string[]>
+            {
+                { "recipients", new string[] { dmsLv.SelectedItems[0].SubItems[2].Text } }
+            };
 
             var response = DRequest.Request("POST", "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
             {
@@ -856,13 +855,13 @@ namespace Data_Package_Images
                 {"X-Context-Properties", Convert.ToBase64String(Encoding.UTF8.GetBytes("{}"))}
             }, Newtonsoft.Json.JsonConvert.SerializeObject(body), true);
 
-            if (response.response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.response.StatusCode == HttpStatusCode.OK)
             {
                 LaunchDiscordProtocol($"channels/@me/{dmsLv.SelectedItems[0].SubItems[1].Text}");
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show($"Request error: {response.response.StatusCode} {response.body}", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                MessageBox.Show($"Request error: {response.response.StatusCode} {response.body}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

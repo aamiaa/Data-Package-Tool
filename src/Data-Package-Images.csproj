@@ -92,12 +92,6 @@
     <Compile Include="MassDeletePrompt.Designer.cs">
       <DependentUpon>MassDeletePrompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="Message.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Message.Designer.cs">
-      <DependentUpon>Message.cs</DependentUpon>
-    </Compile>
     <Compile Include="MessageWPF.xaml.cs">
       <DependentUpon>MessageWPF.xaml</DependentUpon>
     </Compile>
@@ -114,9 +108,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MassDeletePrompt.resx">
       <DependentUpon>MassDeletePrompt.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Message.resx">
-      <DependentUpon>Message.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

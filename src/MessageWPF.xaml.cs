@@ -111,7 +111,6 @@ namespace Data_Package_Images
             metadataLb.Content = metadata;
 
             // Set content and timestamp
-            //contentLb.Text = message.content;
             ParseAndSet(message.content);
             var parsedDate = DateTime.Parse(message.timestamp, null, System.Globalization.DateTimeStyles.RoundtripKind);
             dateLb.Content = parsedDate.ToShortDateString() + " " + parsedDate.ToShortTimeString();
@@ -178,8 +177,10 @@ namespace Data_Package_Images
                         bitmap.EndInit();
                         img.Source = bitmap;
 
-                        var inlineContainer = new InlineUIContainer(img);
-                        inlineContainer.BaselineAlignment = BaselineAlignment.Center;
+                        var inlineContainer = new InlineUIContainer(img)
+                        {
+                            BaselineAlignment = BaselineAlignment.Center
+                        };
                         contentLb.Inlines.Add(inlineContainer);
                         contentLb.Inlines.Add(new Run(" "));
                     }
@@ -276,8 +277,10 @@ namespace Data_Package_Images
             }
             Main.AccountToken = token;
 
-            var body = new Dictionary<string, string[]>();
-            body.Add("recipients", new string[]{SelectedMessage.channel.GetOtherDMRecipient(Main.User)});
+            var body = new Dictionary<string, string[]>
+            {
+                { "recipients", new string[] { SelectedMessage.channel.GetOtherDMRecipient(Main.User) } }
+            };
 
             var response = DRequest.Request("POST", "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
             {
