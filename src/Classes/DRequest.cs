@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Data_Package_Images.Classes
+namespace Data_Package_Tool.Classes
 {
     class DSuperProperties
     {

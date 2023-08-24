@@ -1,4 +1,4 @@
-﻿using Data_Package_Images.Classes;
+﻿using Data_Package_Tool.Classes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Data_Package_Images
+namespace Data_Package_Tool
 {
     public partial class Attachment : UserControl
     {

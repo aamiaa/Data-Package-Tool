@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{82BF458B-7E32-4CB0-A839-B039D440678D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Data_Package_Images</RootNamespace>
-    <AssemblyName>Data-Package-Images</AssemblyName>
+    <RootNamespace>Data_Package_Tool</RootNamespace>
+    <AssemblyName>Data-Package-Tool</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

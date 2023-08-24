@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Data_Package_Images
+namespace Data_Package_Tool
 {
     public partial class MassDeletePrompt : Form
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data_Package_Images.Classes
+namespace Data_Package_Tool.Classes
 {
     public class PartialGuild
     {

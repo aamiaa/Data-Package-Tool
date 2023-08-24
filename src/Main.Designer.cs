@@ -1,5 +1,5 @@
 ﻿
-namespace Data_Package_Images
+namespace Data_Package_Tool
 {
     partial class Main
     {
@@ -44,7 +44,7 @@ namespace Data_Package_Images
             this.resultsCountLb = new System.Windows.Forms.Label();
             this.messagesPanel = new System.Windows.Forms.Panel();
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.listWPF1 = new Data_Package_Images.MessageListWPF();
+            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.searchBtn = new System.Windows.Forms.Button();
             this.searchTb = new System.Windows.Forms.TextBox();
             this.imagesTab = new System.Windows.Forms.TabPage();
@@ -72,6 +72,8 @@ namespace Data_Package_Images
             this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.dmsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.viewUserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openDmSELFBOTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.copyUserIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyChannelIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsTab = new System.Windows.Forms.TabPage();
@@ -90,8 +92,6 @@ namespace Data_Package_Images
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
             this.loadBw = new System.ComponentModel.BackgroundWorker();
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
-            this.openDmSELFBOTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
             this.messagesTab.SuspendLayout();
@@ -476,7 +476,7 @@ namespace Data_Package_Images
             this.copyUserIdToolStripMenuItem,
             this.copyChannelIdToolStripMenuItem});
             this.dmsContextMenu.Name = "dmsContextMenu";
-            this.dmsContextMenu.Size = new System.Drawing.Size(181, 120);
+            this.dmsContextMenu.Size = new System.Drawing.Size(181, 98);
             // 
             // viewUserToolStripMenuItem
             // 
@@ -484,6 +484,18 @@ namespace Data_Package_Images
             this.viewUserToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.viewUserToolStripMenuItem.Text = "View user";
             this.viewUserToolStripMenuItem.Click += new System.EventHandler(this.viewUserToolStripMenuItem_Click);
+            // 
+            // openDmSELFBOTToolStripMenuItem
+            // 
+            this.openDmSELFBOTToolStripMenuItem.Name = "openDmSELFBOTToolStripMenuItem";
+            this.openDmSELFBOTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openDmSELFBOTToolStripMenuItem.Text = "Open dm (SELFBOT)";
+            this.openDmSELFBOTToolStripMenuItem.Click += new System.EventHandler(this.openDmSELFBOTToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // copyUserIdToolStripMenuItem
             // 
@@ -642,18 +654,6 @@ namespace Data_Package_Images
             // 
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
             // 
-            // openDmSELFBOTToolStripMenuItem
-            // 
-            this.openDmSELFBOTToolStripMenuItem.Name = "openDmSELFBOTToolStripMenuItem";
-            this.openDmSELFBOTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openDmSELFBOTToolStripMenuItem.Text = "Open dm (SELFBOT)";
-            this.openDmSELFBOTToolStripMenuItem.Click += new System.EventHandler(this.openDmSELFBOTToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
-            // 
             // Main
             // 
             this.AcceptButton = this.searchBtn;
@@ -664,7 +664,7 @@ namespace Data_Package_Images
             this.Controls.Add(this.tabControl1);
             this.Name = "Main";
             this.ShowIcon = false;
-            this.Text = "Data Package Images";
+            this.Text = "Data Package Tool";
             this.tabControl1.ResumeLayout(false);
             this.loadTb.ResumeLayout(false);
             this.messagesTab.ResumeLayout(false);

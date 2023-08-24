@@ -1,5 +1,5 @@
 ﻿
-namespace Data_Package_Images
+namespace Data_Package_Tool
 {
     partial class MassDeletePrompt
     {

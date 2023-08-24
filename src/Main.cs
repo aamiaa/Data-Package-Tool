@@ -1,4 +1,4 @@
-﻿using Data_Package_Images.Classes;
+﻿using Data_Package_Tool.Classes;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Data_Package_Images
+namespace Data_Package_Tool
 {
     public partial class Main : Form
     {

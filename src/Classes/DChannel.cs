@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic.FileIO;
 
-namespace Data_Package_Images.Classes
+namespace Data_Package_Tool.Classes
 {
     public class DChannel
     {

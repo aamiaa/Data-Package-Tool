@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Data_Package_Images
+namespace Data_Package_Tool
 {
     /// <summary>
     /// Interaction logic for MessageListWPF.xaml

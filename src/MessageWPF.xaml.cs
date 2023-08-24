@@ -1,4 +1,4 @@
-﻿using Data_Package_Images.Classes;
+﻿using Data_Package_Tool.Classes;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Data_Package_Images
+namespace Data_Package_Tool
 {
     /// <summary>
     /// Interaction logic for MessageWPF.xaml

@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="Data_Package_Images.MessageWPF"
+﻿<UserControl x:Class="Data_Package_Tool.MessageWPF"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Data_Package_Images"
+             xmlns:local="clr-namespace:Data_Package_Tool"
              mc:Ignorable="d" 
              d:DesignHeight="67" d:DesignWidth="568">
     <UserControl.ContextMenu>
