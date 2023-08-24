@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data_Package_Images
 {
-    class DAnalyticsEvent
+    public class DAnalyticsEvent
     {
         public string event_type;
 
@@ -20,16 +20,5 @@ namespace Data_Package_Images
         public string location;
         public string invite_code;
         public string timestamp;
-    }
-
-    public class DAnalyticsGuild
-    {
-        public string id;
-        public string join_type;
-        public string join_method;
-        public string application_id;
-        public string location;
-        public List<string> invites = new List<string>();
-        public DateTime timestamp;
     }
 }

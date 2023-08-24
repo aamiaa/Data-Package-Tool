@@ -62,10 +62,15 @@
     <Compile Include="Attachment.Designer.cs">
       <DependentUpon>Attachment.cs</DependentUpon>
     </Compile>
-    <Compile Include="DAnalyticsEvent.cs" />
-    <Compile Include="DChannel.cs" />
-    <Compile Include="DRequest.cs" />
-    <Compile Include="DUser.cs" />
+    <Compile Include="Classes\DAnalyticsEvent.cs" />
+    <Compile Include="Classes\DAnalyticsGuild.cs" />
+    <Compile Include="Classes\DAttachment.cs" />
+    <Compile Include="Classes\DChannel.cs" />
+    <Compile Include="Classes\DMessage.cs" />
+    <Compile Include="Classes\DRelationship.cs" />
+    <Compile Include="Classes\DRequest.cs" />
+    <Compile Include="Classes\DUser.cs" />
+    <Compile Include="Classes\PartialGuild.cs" />
     <Compile Include="SearchOptionsPrompt.cs">
       <SubType>Form</SubType>
     </Compile>

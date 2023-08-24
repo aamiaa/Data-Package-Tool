@@ -7,9 +7,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Data_Package_Images
+namespace Data_Package_Images.Classes
 {
-    public class DSuperProperties
+    class DSuperProperties
     {
         public string os;
         public string browser;
@@ -27,7 +27,7 @@ namespace Data_Package_Images
         public string client_event_source;
 
     }
-    public class DHeaders
+    class DHeaders
     {
         public static string BROWSER_VERSION;
         public static string BROWSER_VERSION_FULL;
