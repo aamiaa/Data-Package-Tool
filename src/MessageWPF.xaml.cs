@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -81,11 +82,6 @@ namespace Data_Package_Tool
             else
             {
                 metadata += $"unknown ({channel.id}, {(channel.IsGroupDM() ? "Group DM" : "Text Channel")})";
-
-                if(!channel.IsGroupDM())
-                {
-                    findGuildIdMi.IsEnabled = true;
-                }
             }
 
             if (channel.guild != null)
@@ -134,6 +130,7 @@ namespace Data_Package_Tool
         {
             IsDeleted = true;
             rootGrid.Background = new SolidColorBrush(Color.FromArgb(255, 78, 54, 59));
+            deleteMessageMi.IsEnabled = false;
         }
 
         private void ParseAndSet(string content)
@@ -310,6 +307,40 @@ namespace Data_Package_Tool
             }  else
             {
                 System.Windows.Forms.MessageBox.Show($"Request error: {response.response.StatusCode} {response.body}", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+        }
+
+        private void deleteMessageMi_Click(object sender, RoutedEventArgs e)
+        {
+            DHeaders.Init();
+
+            string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
+            if (token == "") return;
+            if (!Util.ValidateToken(token, Main.User.id))
+            {
+                System.Windows.Forms.MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                return;
+            }
+            Main.AccountToken = token;
+
+            var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{SelectedMessage.channel.id}/messages/{SelectedMessage.id}", new Dictionary<string, string>
+            {
+                {"Authorization", token}
+            });
+
+            switch (res.response.StatusCode)
+            {
+                case HttpStatusCode.NotFound:
+                case HttpStatusCode.NoContent:
+                    SelectedMessage.deleted = true;
+                    this.MarkDeleted();
+
+                    Properties.Settings.Default.DeletedMessageIDs.Add(SelectedMessage.id);
+                    Properties.Settings.Default.Save();
+                    break;
+                default:
+                    System.Windows.Forms.MessageBox.Show($"Request error: {res.response.StatusCode} {res.body}", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                    return;
             }
         }
     }
