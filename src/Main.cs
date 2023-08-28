@@ -1,4 +1,4 @@
-﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -23,6 +23,7 @@ namespace Data_Package_Tool
         private readonly int MaxResults = 500;
         private int TotalMessages = 0;
         private List<DChannel> Channels = new List<DChannel>();
+        private Dictionary<string, DChannel> ChannelsMap = new Dictionary<string, DChannel>();
         private DateTime PackageCreationTime;
         
         public static DUser User;
@@ -277,6 +278,7 @@ namespace Data_Package_Tool
 
                             TotalMessages += channel.messages.Count;
                             Channels.Add(channel);
+                            ChannelsMap[channel.id] = channel;
                         }
                     }
                 }
@@ -287,6 +289,8 @@ namespace Data_Package_Tool
             dmsLv.Invoke((MethodInvoker)delegate
             {
                 var dmChannels = Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
+                var duplicateChannelsMap = new Dictionary<string, dynamic>();
+
                 foreach (var dmChannel in dmChannels)
                 {
                     string recipientId = dmChannel.GetOtherDMRecipient(User);
@@ -296,6 +300,19 @@ namespace Data_Package_Tool
 
                     string[] values = { SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString() };
                     var lvItem = new ListViewItem(values);
+
+                    if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
+                    {
+                        duplicateChannelsMap[recipientId].item.BackColor = Color.Yellow;
+                        lvItem.BackColor = Color.Yellow;
+
+                        duplicateChannelsMap[recipientId].channel.has_duplicates = true;
+                        dmChannel.has_duplicates = true;
+                    } else
+                    {
+                        duplicateChannelsMap[recipientId] = new { item = lvItem, channel = dmChannel };
+                    }
+
                     dmsLv.Items.Add(lvItem);
                 }
             });
@@ -776,12 +793,14 @@ namespace Data_Package_Tool
 
         private void copyIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(serversLv.SelectedItems[0].SubItems[1].Text);
+            string guildId = serversLv.SelectedItems[0].SubItems[1].Text;
+            Clipboard.SetText(guildId);
         }
 
         private void copyInvitesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(serversLv.SelectedItems[0].SubItems[5].Text);
+            string invites = serversLv.SelectedItems[0].SubItems[5].Text;
+            Clipboard.SetText(invites);
         }
 
         private void searchOptionsBtn_Click(object sender, EventArgs e)
@@ -792,19 +811,28 @@ namespace Data_Package_Tool
 
         private void copyUserIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(dmsLv.SelectedItems[0].SubItems[2].Text);
+            string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
+            Clipboard.SetText(userId);
         }
 
         private void copyChannelIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(dmsLv.SelectedItems[0].SubItems[1].Text);
+            string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
+            Clipboard.SetText(channelId);
         }
 
         private void viewUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
+            string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
+            if (ChannelsMap[channelId].has_duplicates)
+            {
+                MessageBox.Show("You have multiple dm channels with this recipient. There is no guarantee that Discord will open the right one.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
             try
             {
-                LaunchDiscordProtocol($"users/{dmsLv.SelectedItems[0].SubItems[2].Text}");
+                LaunchDiscordProtocol($"users/{userId}");
             }
             catch (Exception ex)
             {
@@ -832,6 +860,13 @@ namespace Data_Package_Tool
 
         private void openDmSELFBOTToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
+            string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
+            if (ChannelsMap[channelId].has_duplicates)
+            {
+                MessageBox.Show("You have multiple dm channels with this recipient. There is no guarantee that Discord will open the right one.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
             DHeaders.Init();
 
             string token = Interaction.InputBox("Enter your token", "Prompt", AccountToken);
@@ -845,7 +880,7 @@ namespace Data_Package_Tool
 
             var body = new Dictionary<string, string[]>
             {
-                { "recipients", new string[] { dmsLv.SelectedItems[0].SubItems[2].Text } }
+                { "recipients", new string[] { userId } }
             };
 
             var response = DRequest.Request("POST", "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
@@ -857,7 +892,7 @@ namespace Data_Package_Tool
 
             if (response.response.StatusCode == HttpStatusCode.OK)
             {
-                LaunchDiscordProtocol($"channels/@me/{dmsLv.SelectedItems[0].SubItems[1].Text}");
+                LaunchDiscordProtocol($"channels/@me/{channelId}");
             }
             else
             {

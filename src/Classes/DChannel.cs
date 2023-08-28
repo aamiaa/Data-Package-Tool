@@ -17,6 +17,8 @@ namespace Data_Package_Tool.Classes
         public List<DMessage> messages = new List<DMessage>();
         public string[] recipients;
 
+        public bool has_duplicates;
+
         public void LoadMessages(string csv)
         {
             using(TextFieldParser parser = new TextFieldParser(new StringReader(csv)))

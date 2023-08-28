@@ -194,6 +194,11 @@ namespace Data_Package_Tool
 
         private void goToMessageMi_Click(object sender, RoutedEventArgs e)
         {
+            if(SelectedMessage.channel.has_duplicates)
+            {
+                System.Windows.Forms.MessageBox.Show("You have multiple dm channels with this recipient. There is no guarantee that Discord will open the right one.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+            }
+
             try
             {
                 var link = SelectedMessage.GetMessageLink();
@@ -229,6 +234,11 @@ namespace Data_Package_Tool
 
         private void viewUserMi_Click(object sender, RoutedEventArgs e)
         {
+            if (SelectedMessage.channel.has_duplicates)
+            {
+                System.Windows.Forms.MessageBox.Show("You have multiple dm channels with this recipient. There is no guarantee that Discord will open the right one.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+            }
+
             try
             {
                 Main.LaunchDiscordProtocol($"users/{SelectedMessage.channel.GetOtherDMRecipient(Main.User)}");
@@ -266,6 +276,11 @@ namespace Data_Package_Tool
 
         private void openDMMi_Click(object sender, RoutedEventArgs e)
         {
+            if (SelectedMessage.channel.has_duplicates)
+            {
+                System.Windows.Forms.MessageBox.Show("You have multiple dm channels with this recipient. There is no guarantee that Discord will open the right one.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+            }
+
             DHeaders.Init();
 
             string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
