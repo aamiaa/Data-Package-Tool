@@ -71,6 +71,7 @@
     <Compile Include="Classes\DRequest.cs" />
     <Compile Include="Classes\DUser.cs" />
     <Compile Include="Classes\PartialGuild.cs" />
+    <Compile Include="Classes\Util.cs" />
     <Compile Include="SearchOptionsPrompt.cs">
       <SubType>Form</SubType>
     </Compile>

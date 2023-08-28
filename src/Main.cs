@@ -1,4 +1,4 @@
-using Data_Package_Tool.Classes;
+﻿using Data_Package_Tool.Classes;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -66,80 +66,6 @@ namespace Data_Package_Tool
                     webCanaryRb.Checked = true;
                     break;
             }
-        }
-
-        public static void LaunchDiscordProtocol(string url)
-        {
-            string instance = Properties.Settings.Default.UseDiscordInstance;
-            if(instance == "default")
-            {
-                Process.Start($"discord://-/{url}");
-                return;
-            }
-
-            if(instance.StartsWith("web_"))
-            {
-                string hostname;
-                switch (instance)
-                {
-                    case "web_stable":
-                        hostname = "discord.com";
-                        break;
-                    case "web_ptb":
-                        hostname = "ptb.discord.com";
-                        break;
-                    case "web_canary":
-                        hostname = "canary.discord.com";
-                        break;
-                    default:
-                        throw new Exception($"Invalid settings value: {instance}");
-                }
-
-                Process.Start($"https://{hostname}/{url}");
-                return;
-            }
-
-            string folderName;
-            switch(instance)
-            {
-                case "stable":
-                    folderName = "Discord";
-                    break;
-                case "ptb":
-                    folderName = "DiscordPTB";
-                    break;
-                case "canary":
-                    folderName = "DiscordCanary";
-                    break;
-                default:
-                    throw new Exception($"Invalid settings value: {instance}");
-            }
-
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), folderName);
-            if(!Directory.Exists(path))
-            {
-                throw new Exception($"Couldn't find Discord folder path for {instance}");
-            }
-
-            foreach(var folder in Directory.GetDirectories(path))
-            {
-                string exePath = Path.Combine(folder, $"{folderName}.exe");
-                if(new DirectoryInfo(folder).Name.StartsWith("app-") && File.Exists(exePath))
-                {
-                    Process.Start(exePath, $"--url -- \"discord://-/{url}\"");
-                    return;
-                }
-            }
-
-            throw new Exception("Couldn't find the Discord exe file");
-        }
-
-        public DateTime SnowflakeToTimestap(string snowflake)
-        {
-            var ms = Int64.Parse(snowflake) >> 22;
-            var timestamp = ms + 1420070400000;
-
-            return DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime;
         }
 
         private void DisplayMessage(DMessage message)
@@ -298,7 +224,7 @@ namespace Data_Package_Tool
                     var relationship = User.relationships.ToList().Find(x => x.id == recipientId);
                     if (relationship != null) recipientUsername = relationship.user.GetTag();
 
-                    string[] values = { SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString() };
+                    string[] values = { Util.SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString() };
                     var lvItem = new ListViewItem(values);
 
                     if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
@@ -832,29 +758,11 @@ namespace Data_Package_Tool
 
             try
             {
-                LaunchDiscordProtocol($"users/{userId}");
+                Util.LaunchDiscordProtocol($"users/{userId}");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        public static bool ValidateToken(string token)
-        {
-            var parts = token.Split('.');
-
-            if (parts.Length != 3) return false;
-
-            var userIdPart = parts[0];
-            try
-            {
-                var userId = Encoding.UTF8.GetString(Convert.FromBase64String(userIdPart));
-                return userId == User.id;
-            }
-            catch (Exception)
-            {
-                return false;
             }
         }
 
@@ -871,7 +779,7 @@ namespace Data_Package_Tool
 
             string token = Interaction.InputBox("Enter your token", "Prompt", AccountToken);
             if (token == "") return;
-            if (!ValidateToken(token))
+            if (!Util.ValidateToken(token, User.id))
             {
                 MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -892,7 +800,7 @@ namespace Data_Package_Tool
 
             if (response.response.StatusCode == HttpStatusCode.OK)
             {
-                LaunchDiscordProtocol($"channels/@me/{channelId}");
+                Util.LaunchDiscordProtocol($"channels/@me/{channelId}");
             }
             else
             {

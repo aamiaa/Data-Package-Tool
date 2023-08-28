@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data_Package_Tool.Classes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -27,7 +28,7 @@ namespace Data_Package_Tool
 
         private void saveBtn_Click(object sender, EventArgs e)
         {
-            if(!Main.ValidateToken(tokenTb.Text))
+            if(!Util.ValidateToken(tokenTb.Text, Main.User.id))
             {
                 MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

@@ -202,7 +202,7 @@ namespace Data_Package_Tool
             try
             {
                 var link = SelectedMessage.GetMessageLink();
-                Main.LaunchDiscordProtocol($"channels/{link}");
+                Util.LaunchDiscordProtocol($"channels/{link}");
             }
             catch (Exception ex)
             {
@@ -241,7 +241,7 @@ namespace Data_Package_Tool
 
             try
             {
-                Main.LaunchDiscordProtocol($"users/{SelectedMessage.channel.GetOtherDMRecipient(Main.User)}");
+                Util.LaunchDiscordProtocol($"users/{SelectedMessage.channel.GetOtherDMRecipient(Main.User)}");
             }
             catch (Exception ex)
             {
@@ -285,7 +285,7 @@ namespace Data_Package_Tool
 
             string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
             if (token == "") return;
-            if (!Main.ValidateToken(token))
+            if (!Util.ValidateToken(token, Main.User.id))
             {
                 System.Windows.Forms.MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 return;
