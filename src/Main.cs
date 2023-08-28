@@ -1,4 +1,5 @@
 ﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Forms;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -23,12 +24,12 @@ namespace Data_Package_Tool
         private readonly int MaxResults = 500;
         private int TotalMessages = 0;
         private List<DChannel> Channels = new List<DChannel>();
-        private Dictionary<string, DChannel> ChannelsMap = new Dictionary<string, DChannel>();
         private DateTime PackageCreationTime;
         
         public static DUser User;
         public static List<DAttachment> AllAttachments = new List<DAttachment>();
         public static List<DAnalyticsGuild> AllJoinedGuilds = new List<DAnalyticsGuild>();
+        public static Dictionary<string, DChannel> ChannelsMap = new Dictionary<string, DChannel>();
         public static dynamic CurrentGuilds;
         public static string AccountToken = "";
         public Main()
@@ -224,7 +225,7 @@ namespace Data_Package_Tool
                     var relationship = User.relationships.ToList().Find(x => x.id == recipientId);
                     if (relationship != null) recipientUsername = relationship.user.GetTag();
 
-                    string[] values = { Util.SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString() };
+                    string[] values = { Util.SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString(), User.notes.ContainsKey(recipientId) ? User.notes[recipientId] : "" };
                     var lvItem = new ListViewItem(values);
 
                     if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
@@ -234,7 +235,8 @@ namespace Data_Package_Tool
 
                         duplicateChannelsMap[recipientId].channel.has_duplicates = true;
                         dmChannel.has_duplicates = true;
-                    } else
+                    }
+                    else
                     {
                         duplicateChannelsMap[recipientId] = new { item = lvItem, channel = dmChannel };
                     }
@@ -806,6 +808,24 @@ namespace Data_Package_Tool
             {
                 MessageBox.Show($"Request error: {response.response.StatusCode} {response.body}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private int dmsLvSortColumn = -1;
+        private void dmsLv_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if(e.Column != dmsLvSortColumn)
+            {
+                dmsLvSortColumn = e.Column;
+                dmsLv.Sorting = SortOrder.Ascending;
+            } else
+            {
+                if (dmsLv.Sorting == SortOrder.Ascending)
+                    dmsLv.Sorting = SortOrder.Descending;
+                else
+                    dmsLv.Sorting = SortOrder.Ascending;
+            }
+
+            dmsLv.ListViewItemSorter = new DmsLvItemComparer(e.Column, dmsLv.Sorting);
         }
     }
 }

@@ -16,6 +16,8 @@ namespace Data_Package_Tool.Classes
         public DRelationship[] relationships;
         public dynamic[] user_sessions;
 
+        public Dictionary<string, string> notes;
+
         public string GetAvatarURL()
         {
             if(avatar_hash != null)

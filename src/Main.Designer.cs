@@ -43,8 +43,6 @@ namespace Data_Package_Tool
             this.massDeleteBtn = new System.Windows.Forms.Button();
             this.resultsCountLb = new System.Windows.Forms.Label();
             this.messagesPanel = new System.Windows.Forms.Panel();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.searchBtn = new System.Windows.Forms.Button();
             this.searchTb = new System.Windows.Forms.TextBox();
             this.imagesTab = new System.Windows.Forms.TabPage();
@@ -92,6 +90,9 @@ namespace Data_Package_Tool
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
             this.loadBw = new System.ComponentModel.BackgroundWorker();
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
+            this.columnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
             this.messagesTab.SuspendLayout();
@@ -245,16 +246,6 @@ namespace Data_Package_Tool
             this.messagesPanel.Name = "messagesPanel";
             this.messagesPanel.Size = new System.Drawing.Size(568, 251);
             this.messagesPanel.TabIndex = 2;
-            // 
-            // elementHost1
-            // 
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(568, 251);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.listWPF1;
             // 
             // searchBtn
             // 
@@ -430,7 +421,8 @@ namespace Data_Package_Tool
             this.columnHeader8,
             this.columnHeader9,
             this.columnHeader10,
-            this.columnHeader11});
+            this.columnHeader11,
+            this.columnHeader12});
             this.dmsLv.ContextMenuStrip = this.dmsContextMenu;
             this.dmsLv.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dmsLv.FullRowSelect = true;
@@ -441,6 +433,7 @@ namespace Data_Package_Tool
             this.dmsLv.TabIndex = 0;
             this.dmsLv.UseCompatibleStateImageBehavior = false;
             this.dmsLv.View = System.Windows.Forms.View.Details;
+            this.dmsLv.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.dmsLv_ColumnClick);
             // 
             // columnHeader7
             // 
@@ -450,7 +443,7 @@ namespace Data_Package_Tool
             // columnHeader8
             // 
             this.columnHeader8.Text = "Channel Id";
-            this.columnHeader8.Width = 115;
+            this.columnHeader8.Width = 110;
             // 
             // columnHeader9
             // 
@@ -654,6 +647,21 @@ namespace Data_Package_Tool
             // 
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
             // 
+            // columnHeader12
+            // 
+            this.columnHeader12.Text = "Note";
+            this.columnHeader12.Width = 300;
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(568, 251);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.listWPF1;
+            // 
             // Main
             // 
             this.AcceptButton = this.searchBtn;
@@ -746,6 +754,7 @@ namespace Data_Package_Tool
         private System.Windows.Forms.RadioButton webStableRb;
         private System.Windows.Forms.ToolStripMenuItem openDmSELFBOTToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ColumnHeader columnHeader12;
     }
 }
 
