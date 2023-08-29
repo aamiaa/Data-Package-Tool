@@ -183,10 +183,16 @@ namespace Data_Package_Tool
                     CurrentGuilds = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json);
                 }
 
-                // Can't create BitmapImage here because it can only be accessed from the thread it was created in
-                using(var s = zip.GetEntry("account/avatar.png").Open())
+                if (User.avatar_hash != null)
                 {
-                    s.CopyTo(UserAvatar);
+                    // Can't create BitmapImage here because it can only be accessed from the thread it was created in
+                    using (var s = zip.GetEntry("account/avatar.png").Open()) // TODO: check if the extension changes when the avatar is animated
+                    {
+                        s.CopyTo(UserAvatar);
+                    }
+                } else
+                {
+                    Properties.Resources._0.Save(UserAvatar, System.Drawing.Imaging.ImageFormat.Png);
                 }
 
                 int i = 0;
