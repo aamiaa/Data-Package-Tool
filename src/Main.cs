@@ -27,6 +27,7 @@ namespace Data_Package_Tool
         private DateTime PackageCreationTime;
         
         public static DUser User;
+        public static MemoryStream UserAvatar = new MemoryStream();
         public static List<DAttachment> AllAttachments = new List<DAttachment>();
         public static List<DAnalyticsGuild> AllJoinedGuilds = new List<DAnalyticsGuild>();
         public static Dictionary<string, DChannel> ChannelsMap = new Dictionary<string, DChannel>();
@@ -180,6 +181,12 @@ namespace Data_Package_Tool
                 {
                     var json = r.ReadToEnd();
                     CurrentGuilds = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json);
+                }
+
+                // Can't create BitmapImage here because it can only be accessed from the thread it was created in
+                using(var s = zip.GetEntry("account/avatar.png").Open())
+                {
+                    s.CopyTo(UserAvatar);
                 }
 
                 int i = 0;

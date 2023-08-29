@@ -38,8 +38,10 @@ namespace Data_Package_Tool
             {
                 AvatarSource = new BitmapImage();
                 AvatarSource.BeginInit();
-                AvatarSource.UriSource = new Uri(user.GetAvatarURL(), UriKind.Absolute);
+                AvatarSource.StreamSource = Main.UserAvatar;
+                AvatarSource.CacheOption = BitmapCacheOption.OnLoad;
                 AvatarSource.EndInit();
+                AvatarSource.Freeze();
             }
 
             if (message.channel.IsDM())
