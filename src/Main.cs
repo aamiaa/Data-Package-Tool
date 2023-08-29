@@ -218,6 +218,8 @@ namespace Data_Package_Tool
                 var dmChannels = Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
                 var duplicateChannelsMap = new Dictionary<string, dynamic>();
 
+                tabControl1.TabPages[4].Text = $"Direct Messages - {dmChannels.Count}";
+
                 foreach (var dmChannel in dmChannels)
                 {
                     string recipientId = dmChannel.GetOtherDMRecipient(User);
@@ -612,6 +614,8 @@ namespace Data_Package_Tool
             }
 
             AllJoinedGuilds = AllJoinedGuilds.OrderByDescending(o => o.timestamp.Ticks).ToList();
+
+            tabControl1.TabPages[3].Text = $"Servers - {AllJoinedGuilds.Count}";
 
             serversLv.Items.Clear();
             foreach (var guild in AllJoinedGuilds)

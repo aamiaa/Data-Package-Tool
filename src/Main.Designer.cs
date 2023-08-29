@@ -43,6 +43,8 @@ namespace Data_Package_Tool
             this.massDeleteBtn = new System.Windows.Forms.Button();
             this.resultsCountLb = new System.Windows.Forms.Label();
             this.messagesPanel = new System.Windows.Forms.Panel();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.searchBtn = new System.Windows.Forms.Button();
             this.searchTb = new System.Windows.Forms.TextBox();
             this.imagesTab = new System.Windows.Forms.TabPage();
@@ -61,13 +63,14 @@ namespace Data_Package_Tool
             this.serversContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyInvitesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.dmsTab = new System.Windows.Forms.TabPage();
             this.dmsLv = new System.Windows.Forms.ListView();
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.dmsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.viewUserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openDmSELFBOTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,9 +93,6 @@ namespace Data_Package_Tool
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
             this.loadBw = new System.ComponentModel.BackgroundWorker();
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
-            this.columnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
             this.messagesTab.SuspendLayout();
@@ -100,7 +100,7 @@ namespace Data_Package_Tool
             this.imagesTab.SuspendLayout();
             this.serversTab.SuspendLayout();
             this.serversContextMenu.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.dmsTab.SuspendLayout();
             this.dmsContextMenu.SuspendLayout();
             this.settingsTab.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -112,7 +112,7 @@ namespace Data_Package_Tool
             this.tabControl1.Controls.Add(this.messagesTab);
             this.tabControl1.Controls.Add(this.imagesTab);
             this.tabControl1.Controls.Add(this.serversTab);
-            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.dmsTab);
             this.tabControl1.Controls.Add(this.settingsTab);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -246,6 +246,16 @@ namespace Data_Package_Tool
             this.messagesPanel.Name = "messagesPanel";
             this.messagesPanel.Size = new System.Drawing.Size(568, 251);
             this.messagesPanel.TabIndex = 2;
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(568, 251);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.listWPF1;
             // 
             // searchBtn
             // 
@@ -403,16 +413,16 @@ namespace Data_Package_Tool
             this.copyInvitesToolStripMenuItem.Text = "Copy invites";
             this.copyInvitesToolStripMenuItem.Click += new System.EventHandler(this.copyInvitesToolStripMenuItem_Click);
             // 
-            // tabPage1
+            // dmsTab
             // 
-            this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(51)))), ((int)(((byte)(56)))));
-            this.tabPage1.Controls.Add(this.dmsLv);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(580, 291);
-            this.tabPage1.TabIndex = 5;
-            this.tabPage1.Text = "Direct Messages";
+            this.dmsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(51)))), ((int)(((byte)(56)))));
+            this.dmsTab.Controls.Add(this.dmsLv);
+            this.dmsTab.Location = new System.Drawing.Point(4, 22);
+            this.dmsTab.Name = "dmsTab";
+            this.dmsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.dmsTab.Size = new System.Drawing.Size(580, 291);
+            this.dmsTab.TabIndex = 5;
+            this.dmsTab.Text = "Direct Messages";
             // 
             // dmsLv
             // 
@@ -448,7 +458,7 @@ namespace Data_Package_Tool
             // columnHeader9
             // 
             this.columnHeader9.Text = "User Id";
-            this.columnHeader9.Width = 143;
+            this.columnHeader9.Width = 132;
             // 
             // columnHeader10
             // 
@@ -459,6 +469,11 @@ namespace Data_Package_Tool
             // 
             this.columnHeader11.Text = "# of your msgs";
             this.columnHeader11.Width = 81;
+            // 
+            // columnHeader12
+            // 
+            this.columnHeader12.Text = "Note";
+            this.columnHeader12.Width = 300;
             // 
             // dmsContextMenu
             // 
@@ -647,21 +662,6 @@ namespace Data_Package_Tool
             // 
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
             // 
-            // columnHeader12
-            // 
-            this.columnHeader12.Text = "Note";
-            this.columnHeader12.Width = 300;
-            // 
-            // elementHost1
-            // 
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(568, 251);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.listWPF1;
-            // 
             // Main
             // 
             this.AcceptButton = this.searchBtn;
@@ -682,7 +682,7 @@ namespace Data_Package_Tool
             this.imagesTab.PerformLayout();
             this.serversTab.ResumeLayout(false);
             this.serversContextMenu.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
+            this.dmsTab.ResumeLayout(false);
             this.dmsContextMenu.ResumeLayout(false);
             this.settingsTab.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
@@ -738,7 +738,7 @@ namespace Data_Package_Tool
         private System.Windows.Forms.Timer searchTimer;
         private System.ComponentModel.BackgroundWorker loadBw;
         private System.Windows.Forms.Timer loadTimer;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage dmsTab;
         private System.Windows.Forms.ListView dmsLv;
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ColumnHeader columnHeader8;
