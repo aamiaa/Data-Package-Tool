@@ -39,7 +39,7 @@ namespace Data_Package_Tool.Classes
                     var msg = new DMessage
                     {
                         id = idField,
-                        timestamp = timestampField,
+                        timestamp = DateTime.Parse(timestampField),
                         content = contentField,
                         channel = this
                     };

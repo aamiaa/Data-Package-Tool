@@ -115,5 +115,53 @@ namespace Data_Package_Tool.Properties {
                 this["SearchWhitelistIDs"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SearchBeforeEnabled {
+            get {
+                return ((bool)(this["SearchBeforeEnabled"]));
+            }
+            set {
+                this["SearchBeforeEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2023-01-01")]
+        public global::System.DateTime SearchBeforeDate {
+            get {
+                return ((global::System.DateTime)(this["SearchBeforeDate"]));
+            }
+            set {
+                this["SearchBeforeDate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SearchAfterEnabled {
+            get {
+                return ((bool)(this["SearchAfterEnabled"]));
+            }
+            set {
+                this["SearchAfterEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2023-01-01")]
+        public global::System.DateTime SearchAfterDate {
+            get {
+                return ((global::System.DateTime)(this["SearchAfterDate"]));
+            }
+            set {
+                this["SearchAfterDate"] = value;
+            }
+        }
     }
 }

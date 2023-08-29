@@ -288,6 +288,18 @@ namespace Data_Package_Tool
         }
         private void searchBtn_Click(object sender, EventArgs e)
         {
+            if (Properties.Settings.Default.SearchMode == "regex")
+            {
+                try
+                {
+                    new Regex(searchTb.Text);
+                } catch(Exception ex)
+                {
+                    MessageBox.Show($"Invalid regex: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
             searchBtn.Enabled = false;
             searchTb.Enabled = false;
             searchOptionsBtn.Enabled = false;
@@ -310,6 +322,16 @@ namespace Data_Package_Tool
 
             LastSearchResults = new List<DMessage>();
 
+            // Optimization - precompile regex and reuse it
+            Regex compiledRegex = null;
+            if (Properties.Settings.Default.SearchMode == "words")
+            {
+                compiledRegex = new Regex($"^{String.Join("", Regex.Escape(searchText).Split(' ').Select(x => $"(?=.*?\\b{x}\\b)").ToArray())}", RegexOptions.Compiled); // https://stackoverflow.com/a/70484431
+            } else if(Properties.Settings.Default.SearchMode == "regex")
+            {
+                compiledRegex = new Regex(searchText, RegexOptions.Compiled);
+            }
+
             foreach (var channel in Channels)
             {
                 // Filters
@@ -327,17 +349,18 @@ namespace Data_Package_Tool
                 }
 
                 // Search modes
+                // Optimization - single condition which picks the function, rather than running the condition on every iteration
                 if (Properties.Settings.Default.SearchMode == "exact")
                 {
                     count += SearchExact(searchText, channel);
                 }
                 else if (Properties.Settings.Default.SearchMode == "words")
                 {
-                    count += SearchWords(searchText, channel);
+                    count += SearchRegex(searchText, compiledRegex, channel);
                 }
                 else if (Properties.Settings.Default.SearchMode == "regex")
                 {
-                    count += SearchRegex(searchText, channel);
+                    count += SearchRegex(searchText, compiledRegex, channel);
                 }
             }
 
@@ -395,11 +418,27 @@ namespace Data_Package_Tool
             messagesNextBtn.Enabled = true;
         }
 
+        private List<DMessage> FilterMessages(List<DMessage> messages)
+        {
+            IEnumerable<DMessage> m = messages;
+            if (Properties.Settings.Default.SearchBeforeEnabled)
+            {
+                m = m.Where(x => x.timestamp < Properties.Settings.Default.SearchBeforeDate);
+            }
+
+            if(Properties.Settings.Default.SearchAfterEnabled)
+            {
+                m = m.Where(x => x.timestamp > Properties.Settings.Default.SearchAfterDate);
+            }
+
+            return m is List<DMessage> l ? l : m.ToList();
+        }
+
         private int SearchExact(string searchText, DChannel channel)
         {
             int count = 0;
 
-            foreach (var msg in channel.messages)
+            foreach (var msg in FilterMessages(channel.messages))
             {
 
                 if (msg.content.Contains(searchText))
@@ -412,40 +451,14 @@ namespace Data_Package_Tool
             return count;
         }
 
-        private int SearchWords(string searchText, DChannel channel)
+        private int SearchRegex(string searchText, Regex compiledRegex, DChannel channel)
         {
             int count = 0;
 
-            foreach (var msg in channel.messages)
-            {
-                bool isMatch = true;
-                foreach (var word in searchText.Split(' '))
-                {
-                    if (!Regex.IsMatch(msg.content, $@"(^|\s+){word}($|\s+)", RegexOptions.None))
-                    {
-                        isMatch = false;
-                        break;
-                    }
-                }
-
-                if (isMatch)
-                {
-                    LastSearchResults.Add(msg);
-                    count++;
-                }
-            }
-
-            return count;
-        }
-
-        private int SearchRegex(string searchText, DChannel channel)
-        {
-            int count = 0;
-
-            foreach (var msg in channel.messages)
+            foreach (var msg in FilterMessages(channel.messages))
             {
 
-                if (Regex.IsMatch(msg.content, searchText, RegexOptions.None))
+                if (compiledRegex.IsMatch(msg.content))
                 {
                     LastSearchResults.Add(msg);
                     count++;

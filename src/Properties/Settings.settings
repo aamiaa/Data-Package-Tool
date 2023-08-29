@@ -26,5 +26,17 @@
     <Setting Name="SearchWhitelistIDs" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="SearchBeforeEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SearchBeforeDate" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2023-01-01</Value>
+    </Setting>
+    <Setting Name="SearchAfterEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SearchAfterDate" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2023-01-01</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -45,6 +45,10 @@
             this.addWhitelistBtn = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.whitelistIdsLb = new System.Windows.Forms.ListBox();
+            this.beforeDateDtp = new System.Windows.Forms.DateTimePicker();
+            this.beforeDateCb = new System.Windows.Forms.CheckBox();
+            this.afterDateCb = new System.Windows.Forms.CheckBox();
+            this.afterDateDtp = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
             // excludeGuildsCb
@@ -56,6 +60,7 @@
             this.excludeGuildsCb.TabIndex = 0;
             this.excludeGuildsCb.Text = "Exclude guild channels";
             this.excludeGuildsCb.UseVisualStyleBackColor = true;
+            this.excludeGuildsCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
             // 
             // excludeDmsCb
             // 
@@ -66,6 +71,7 @@
             this.excludeDmsCb.TabIndex = 1;
             this.excludeDmsCb.Text = "Exclude dm channels";
             this.excludeDmsCb.UseVisualStyleBackColor = true;
+            this.excludeDmsCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
             // 
             // excludeGroupDmsCb
             // 
@@ -76,13 +82,14 @@
             this.excludeGroupDmsCb.TabIndex = 2;
             this.excludeGroupDmsCb.Text = "Exclude group dm channels";
             this.excludeGroupDmsCb.UseVisualStyleBackColor = true;
+            this.excludeGroupDmsCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
             // 
             // excludedIdsLb
             // 
             this.excludedIdsLb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.excludedIdsLb.FormattingEnabled = true;
-            this.excludedIdsLb.Location = new System.Drawing.Point(12, 120);
+            this.excludedIdsLb.Location = new System.Drawing.Point(12, 242);
             this.excludedIdsLb.Name = "excludedIdsLb";
             this.excludedIdsLb.Size = new System.Drawing.Size(249, 95);
             this.excludedIdsLb.TabIndex = 3;
@@ -91,7 +98,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 104);
+            this.label1.Location = new System.Drawing.Point(12, 226);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(181, 13);
             this.label1.TabIndex = 4;
@@ -100,7 +107,7 @@
             // saveBtn
             // 
             this.saveBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.saveBtn.Location = new System.Drawing.Point(109, 351);
+            this.saveBtn.Location = new System.Drawing.Point(109, 473);
             this.saveBtn.Name = "saveBtn";
             this.saveBtn.Size = new System.Drawing.Size(75, 23);
             this.saveBtn.TabIndex = 5;
@@ -111,7 +118,7 @@
             // addBtn
             // 
             this.addBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.addBtn.Location = new System.Drawing.Point(265, 120);
+            this.addBtn.Location = new System.Drawing.Point(265, 242);
             this.addBtn.Name = "addBtn";
             this.addBtn.Size = new System.Drawing.Size(24, 21);
             this.addBtn.TabIndex = 6;
@@ -122,7 +129,7 @@
             // removeBtn
             // 
             this.removeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.removeBtn.Location = new System.Drawing.Point(265, 147);
+            this.removeBtn.Location = new System.Drawing.Point(265, 269);
             this.removeBtn.Name = "removeBtn";
             this.removeBtn.Size = new System.Drawing.Size(24, 21);
             this.removeBtn.TabIndex = 7;
@@ -139,6 +146,7 @@
             this.exactMatchRb.TabIndex = 8;
             this.exactMatchRb.Text = "Exact match";
             this.exactMatchRb.UseVisualStyleBackColor = true;
+            this.exactMatchRb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
             // 
             // wordsMatchRb
             // 
@@ -149,6 +157,7 @@
             this.wordsMatchRb.TabIndex = 9;
             this.wordsMatchRb.Text = "Words match";
             this.wordsMatchRb.UseVisualStyleBackColor = true;
+            this.wordsMatchRb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
             // 
             // regexMatchRb
             // 
@@ -159,6 +168,7 @@
             this.regexMatchRb.TabIndex = 10;
             this.regexMatchRb.Text = "Regex match";
             this.regexMatchRb.UseVisualStyleBackColor = true;
+            this.regexMatchRb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
             // 
             // label2
             // 
@@ -181,7 +191,7 @@
             // removeWhitelistBtn
             // 
             this.removeWhitelistBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.removeWhitelistBtn.Location = new System.Drawing.Point(265, 277);
+            this.removeWhitelistBtn.Location = new System.Drawing.Point(265, 399);
             this.removeWhitelistBtn.Name = "removeWhitelistBtn";
             this.removeWhitelistBtn.Size = new System.Drawing.Size(24, 21);
             this.removeWhitelistBtn.TabIndex = 16;
@@ -192,7 +202,7 @@
             // addWhitelistBtn
             // 
             this.addWhitelistBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.addWhitelistBtn.Location = new System.Drawing.Point(265, 250);
+            this.addWhitelistBtn.Location = new System.Drawing.Point(265, 372);
             this.addWhitelistBtn.Name = "addWhitelistBtn";
             this.addWhitelistBtn.Size = new System.Drawing.Size(24, 21);
             this.addWhitelistBtn.TabIndex = 15;
@@ -204,7 +214,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 234);
+            this.label4.Location = new System.Drawing.Point(12, 356);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(210, 13);
             this.label4.TabIndex = 14;
@@ -215,17 +225,67 @@
             this.whitelistIdsLb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.whitelistIdsLb.FormattingEnabled = true;
-            this.whitelistIdsLb.Location = new System.Drawing.Point(12, 250);
+            this.whitelistIdsLb.Location = new System.Drawing.Point(12, 372);
             this.whitelistIdsLb.Name = "whitelistIdsLb";
             this.whitelistIdsLb.Size = new System.Drawing.Size(249, 95);
             this.whitelistIdsLb.TabIndex = 13;
+            // 
+            // beforeDateDtp
+            // 
+            this.beforeDateDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
+            this.beforeDateDtp.Enabled = false;
+            this.beforeDateDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.beforeDateDtp.Location = new System.Drawing.Point(12, 133);
+            this.beforeDateDtp.Name = "beforeDateDtp";
+            this.beforeDateDtp.Size = new System.Drawing.Size(200, 20);
+            this.beforeDateDtp.TabIndex = 17;
+            this.beforeDateDtp.Value = new System.DateTime(2023, 1, 1, 0, 0, 0, 0);
+            this.beforeDateDtp.ValueChanged += new System.EventHandler(this.dummyValueChanged);
+            // 
+            // beforeDateCb
+            // 
+            this.beforeDateCb.AutoSize = true;
+            this.beforeDateCb.Location = new System.Drawing.Point(12, 110);
+            this.beforeDateCb.Name = "beforeDateCb";
+            this.beforeDateCb.Size = new System.Drawing.Size(103, 17);
+            this.beforeDateCb.TabIndex = 18;
+            this.beforeDateCb.Text = "Before this date:";
+            this.beforeDateCb.UseVisualStyleBackColor = true;
+            this.beforeDateCb.CheckedChanged += new System.EventHandler(this.beforeDateCb_CheckedChanged);
+            // 
+            // afterDateCb
+            // 
+            this.afterDateCb.AutoSize = true;
+            this.afterDateCb.Location = new System.Drawing.Point(12, 169);
+            this.afterDateCb.Name = "afterDateCb";
+            this.afterDateCb.Size = new System.Drawing.Size(94, 17);
+            this.afterDateCb.TabIndex = 20;
+            this.afterDateCb.Text = "After this date:";
+            this.afterDateCb.UseVisualStyleBackColor = true;
+            this.afterDateCb.CheckedChanged += new System.EventHandler(this.afterDateCb_CheckedChanged);
+            // 
+            // afterDateDtp
+            // 
+            this.afterDateDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
+            this.afterDateDtp.Enabled = false;
+            this.afterDateDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.afterDateDtp.Location = new System.Drawing.Point(12, 192);
+            this.afterDateDtp.Name = "afterDateDtp";
+            this.afterDateDtp.Size = new System.Drawing.Size(200, 20);
+            this.afterDateDtp.TabIndex = 19;
+            this.afterDateDtp.Value = new System.DateTime(2023, 1, 1, 0, 0, 0, 0);
+            this.afterDateDtp.ValueChanged += new System.EventHandler(this.dummyValueChanged);
             // 
             // SearchOptionsPrompt
             // 
             this.AcceptButton = this.saveBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(293, 378);
+            this.ClientSize = new System.Drawing.Size(293, 500);
+            this.Controls.Add(this.afterDateCb);
+            this.Controls.Add(this.afterDateDtp);
+            this.Controls.Add(this.beforeDateCb);
+            this.Controls.Add(this.beforeDateDtp);
             this.Controls.Add(this.removeWhitelistBtn);
             this.Controls.Add(this.addWhitelistBtn);
             this.Controls.Add(this.label4);
@@ -244,13 +304,16 @@
             this.Controls.Add(this.excludeDmsCb);
             this.Controls.Add(this.excludeGuildsCb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SearchOptionsPrompt";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Search Options";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SearchOptionsPrompt_FormClosing);
             this.Load += new System.EventHandler(this.FiltersPrompt_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SearchOptionsPrompt_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -275,5 +338,9 @@
         private System.Windows.Forms.Button addWhitelistBtn;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ListBox whitelistIdsLb;
+        private System.Windows.Forms.DateTimePicker beforeDateDtp;
+        private System.Windows.Forms.CheckBox beforeDateCb;
+        private System.Windows.Forms.CheckBox afterDateCb;
+        private System.Windows.Forms.DateTimePicker afterDateDtp;
     }
 }

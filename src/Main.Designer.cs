@@ -43,8 +43,6 @@ namespace Data_Package_Tool
             this.massDeleteBtn = new System.Windows.Forms.Button();
             this.resultsCountLb = new System.Windows.Forms.Label();
             this.messagesPanel = new System.Windows.Forms.Panel();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.searchBtn = new System.Windows.Forms.Button();
             this.searchTb = new System.Windows.Forms.TextBox();
             this.imagesTab = new System.Windows.Forms.TabPage();
@@ -93,6 +91,8 @@ namespace Data_Package_Tool
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
             this.loadBw = new System.ComponentModel.BackgroundWorker();
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
             this.messagesTab.SuspendLayout();
@@ -124,9 +124,9 @@ namespace Data_Package_Tool
             // loadTb
             // 
             this.loadTb.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(51)))), ((int)(((byte)(56)))));
-            this.loadTb.Controls.Add(this.loadingLb);
             this.loadTb.Controls.Add(this.progressBar1);
             this.loadTb.Controls.Add(this.loadFileBtn);
+            this.loadTb.Controls.Add(this.loadingLb);
             this.loadTb.Location = new System.Drawing.Point(4, 22);
             this.loadTb.Name = "loadTb";
             this.loadTb.Padding = new System.Windows.Forms.Padding(3);
@@ -136,15 +136,16 @@ namespace Data_Package_Tool
             // 
             // loadingLb
             // 
-            this.loadingLb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.loadingLb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.loadingLb.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.loadingLb.ForeColor = System.Drawing.SystemColors.Control;
-            this.loadingLb.Location = new System.Drawing.Point(6, 193);
+            this.loadingLb.Location = new System.Drawing.Point(6, 3);
             this.loadingLb.Name = "loadingLb";
-            this.loadingLb.Size = new System.Drawing.Size(600, 45);
+            this.loadingLb.Size = new System.Drawing.Size(571, 227);
             this.loadingLb.TabIndex = 2;
-            this.loadingLb.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.loadingLb.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // progressBar1
             // 
@@ -246,16 +247,6 @@ namespace Data_Package_Tool
             this.messagesPanel.Name = "messagesPanel";
             this.messagesPanel.Size = new System.Drawing.Size(568, 251);
             this.messagesPanel.TabIndex = 2;
-            // 
-            // elementHost1
-            // 
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(568, 251);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.listWPF1;
             // 
             // searchBtn
             // 
@@ -661,6 +652,16 @@ namespace Data_Package_Tool
             // loadTimer
             // 
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(568, 251);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.listWPF1;
             // 
             // Main
             // 

@@ -11,7 +11,7 @@ namespace Data_Package_Tool.Classes
         public bool deleted = false;
 
         public string id;
-        public string timestamp;
+        public DateTime timestamp;
         public string content;
         public List<DAttachment> attachments = new List<DAttachment>();
         public DChannel channel;

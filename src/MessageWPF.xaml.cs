@@ -108,8 +108,7 @@ namespace Data_Package_Tool
 
             // Set content and timestamp
             ParseAndSet(message.content);
-            var parsedDate = DateTime.Parse(message.timestamp, null, System.Globalization.DateTimeStyles.RoundtripKind);
-            dateLb.Content = parsedDate.ToShortDateString() + " " + parsedDate.ToShortTimeString();
+            dateLb.Content = message.timestamp.ToShortDateString() + " " + message.timestamp.ToShortTimeString();
 
             // Set avatar
             avatarImg.ImageSource = AvatarSource;
