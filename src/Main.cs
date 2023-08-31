@@ -1,4 +1,4 @@
-﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes;
 using Data_Package_Tool.Forms;
 using Microsoft.VisualBasic;
 using System;
@@ -499,6 +499,12 @@ namespace Data_Package_Tool
         private int imageSquareSize = 200;
         private void LoadImages()
         {
+            if(AllAttachments.Count == 0)
+            {
+                imagesCountLb.Text = $"No images found";
+                return;
+            }
+
             imagesNextBtn.Enabled = false;
             imagesPrevBtn.Enabled = false;
 
