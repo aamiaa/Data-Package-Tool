@@ -1,4 +1,4 @@
-using Data_Package_Tool.Classes;
+﻿using Data_Package_Tool.Classes;
 using Data_Package_Tool.Forms;
 using Microsoft.VisualBasic;
 using System;
@@ -195,6 +195,7 @@ namespace Data_Package_Tool
                     Properties.Resources._0.Save(UserAvatar, System.Drawing.Imaging.ImageFormat.Png);
                 }
 
+                var messagesRegex = new Regex(@"messages/(c?(\d+))/messages\.csv", RegexOptions.Compiled);
                 int i = 0;
                 foreach (var entry in zip.Entries)
                 {
@@ -202,9 +203,9 @@ namespace Data_Package_Tool
                     LoadStatusText = $"Reading {entry.FullName}\n{i}/{zip.Entries.Count}";
                     LoadProgress = i;
 
-                    if (Regex.IsMatch(entry.FullName, @"messages/c?\d+/messages\.csv", RegexOptions.None))
+                    var match = messagesRegex.Match(entry.FullName);
+                    if (match.Success)
                     {
-                        var match = Regex.Matches(entry.FullName, @"messages/(c?(\d+))/messages\.csv", RegexOptions.None)[0];
                         var channelId = match.Groups[2].Value;
                         var folderName = match.Groups[1].Value; // folder name might not start with "c" in older versions
                         using (var rJson = new StreamReader(zip.GetEntry($"messages/{folderName}/channel.json").Open()))
@@ -601,12 +602,14 @@ namespace Data_Package_Tool
 
         private void guildsBw_DoWork(object sender, DoWorkEventArgs e)
         {
+            var compiledRegex = new Regex(@"activity/reporting/events.+\.json", RegexOptions.Compiled);
+
             using (var file = File.OpenRead(openFileDialog1.FileName))
             using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
             {
                 foreach (var entry in zip.Entries)
                 {
-                    if (Regex.IsMatch(entry.FullName, @"activity/reporting/events.+\.json", RegexOptions.None))
+                    if (compiledRegex.IsMatch(entry.FullName))
                     {
                         using (var data = new StreamReader(entry.Open()))
                         {
