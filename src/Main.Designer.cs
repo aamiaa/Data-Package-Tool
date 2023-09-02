@@ -30,12 +30,11 @@ namespace Data_Package_Tool
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Loading...");
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.loadTb = new System.Windows.Forms.TabPage();
-            this.loadingLb = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.loadFileBtn = new System.Windows.Forms.Button();
+            this.loadingLb = new System.Windows.Forms.Label();
             this.messagesTab = new System.Windows.Forms.TabPage();
             this.searchOptionsBtn = new System.Windows.Forms.Button();
             this.messagesNextBtn = new System.Windows.Forms.Button();
@@ -91,6 +90,9 @@ namespace Data_Package_Tool
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
             this.loadBw = new System.ComponentModel.BackgroundWorker();
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
+            this.serversStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.serversPb = new System.Windows.Forms.ToolStripProgressBar();
+            this.serversStatusLb = new System.Windows.Forms.ToolStripStatusLabel();
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
             this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.tabControl1.SuspendLayout();
@@ -104,6 +106,7 @@ namespace Data_Package_Tool
             this.dmsContextMenu.SuspendLayout();
             this.settingsTab.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.serversStatusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -134,19 +137,6 @@ namespace Data_Package_Tool
             this.loadTb.TabIndex = 2;
             this.loadTb.Text = "Load Data Package";
             // 
-            // loadingLb
-            // 
-            this.loadingLb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.loadingLb.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.loadingLb.ForeColor = System.Drawing.SystemColors.Control;
-            this.loadingLb.Location = new System.Drawing.Point(6, 3);
-            this.loadingLb.Name = "loadingLb";
-            this.loadingLb.Size = new System.Drawing.Size(571, 227);
-            this.loadingLb.TabIndex = 2;
-            this.loadingLb.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            // 
             // progressBar1
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -167,6 +157,19 @@ namespace Data_Package_Tool
             this.loadFileBtn.Text = "Load File";
             this.loadFileBtn.UseVisualStyleBackColor = true;
             this.loadFileBtn.Click += new System.EventHandler(this.loadFileBtn_Click);
+            // 
+            // loadingLb
+            // 
+            this.loadingLb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.loadingLb.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.loadingLb.ForeColor = System.Drawing.SystemColors.Control;
+            this.loadingLb.Location = new System.Drawing.Point(6, 3);
+            this.loadingLb.Name = "loadingLb";
+            this.loadingLb.Size = new System.Drawing.Size(571, 227);
+            this.loadingLb.TabIndex = 2;
+            this.loadingLb.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // messagesTab
             // 
@@ -322,6 +325,7 @@ namespace Data_Package_Tool
             // serversTab
             // 
             this.serversTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(51)))), ((int)(((byte)(56)))));
+            this.serversTab.Controls.Add(this.serversStatusStrip);
             this.serversTab.Controls.Add(this.serversLv);
             this.serversTab.Location = new System.Drawing.Point(4, 22);
             this.serversTab.Name = "serversTab";
@@ -343,8 +347,6 @@ namespace Data_Package_Tool
             this.serversLv.Dock = System.Windows.Forms.DockStyle.Fill;
             this.serversLv.FullRowSelect = true;
             this.serversLv.HideSelection = false;
-            this.serversLv.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
             this.serversLv.Location = new System.Drawing.Point(3, 3);
             this.serversLv.Name = "serversLv";
             this.serversLv.Size = new System.Drawing.Size(574, 285);
@@ -653,6 +655,30 @@ namespace Data_Package_Tool
             // 
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
             // 
+            // serversStatusStrip
+            // 
+            this.serversStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.serversStatusLb,
+            this.serversPb});
+            this.serversStatusStrip.Location = new System.Drawing.Point(3, 266);
+            this.serversStatusStrip.Name = "serversStatusStrip";
+            this.serversStatusStrip.Size = new System.Drawing.Size(574, 22);
+            this.serversStatusStrip.TabIndex = 1;
+            this.serversStatusStrip.Text = "statusStrip1";
+            // 
+            // serversPb
+            // 
+            this.serversPb.MarqueeAnimationSpeed = 0;
+            this.serversPb.Name = "serversPb";
+            this.serversPb.Size = new System.Drawing.Size(200, 16);
+            // 
+            // serversStatusLb
+            // 
+            this.serversStatusLb.BackColor = System.Drawing.SystemColors.Control;
+            this.serversStatusLb.Name = "serversStatusLb";
+            this.serversStatusLb.Size = new System.Drawing.Size(59, 17);
+            this.serversStatusLb.Text = "Loading...";
+            // 
             // elementHost1
             // 
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -682,12 +708,15 @@ namespace Data_Package_Tool
             this.imagesTab.ResumeLayout(false);
             this.imagesTab.PerformLayout();
             this.serversTab.ResumeLayout(false);
+            this.serversTab.PerformLayout();
             this.serversContextMenu.ResumeLayout(false);
             this.dmsTab.ResumeLayout(false);
             this.dmsContextMenu.ResumeLayout(false);
             this.settingsTab.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.serversStatusStrip.ResumeLayout(false);
+            this.serversStatusStrip.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -756,6 +785,9 @@ namespace Data_Package_Tool
         private System.Windows.Forms.ToolStripMenuItem openDmSELFBOTToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ColumnHeader columnHeader12;
+        private System.Windows.Forms.StatusStrip serversStatusStrip;
+        private System.Windows.Forms.ToolStripProgressBar serversPb;
+        private System.Windows.Forms.ToolStripStatusLabel serversStatusLb;
     }
 }
 

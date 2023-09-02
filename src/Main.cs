@@ -261,19 +261,25 @@ namespace Data_Package_Tool
                 }
             });
 
+            LoadStatusText = $"Finished! Parsed {TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {PackageCreationTime.ToShortDateString()}";
             loadingLb.Invoke((MethodInvoker)delegate {
-                loadingLb.Text = $"Finished! Parsed {TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {PackageCreationTime.ToShortDateString()}";
+                loadingLb.Text = LoadStatusText;
             });
         }
         private void loadTimer_Tick(object sender, EventArgs e)
         {
+            if(!loadBw.IsBusy && !guildsBw.IsBusy)
+            {
+                loadTimer.Stop();
+            }
+
             loadingLb.Text = LoadStatusText;
             progressBar1.Value = LoadProgress;
+            serversPb.Value = guildsLoadProgress;
         }
 
         private void loadBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            loadTimer.Stop();
             if (e.Error != null)
             {
                 loadFileBtn.Show();
@@ -600,8 +606,14 @@ namespace Data_Package_Tool
             Properties.Settings.Default.Save();
         }
 
+        private int guildsLoadProgress = 0;
         private void guildsBw_DoWork(object sender, DoWorkEventArgs e)
         {
+            BeginInvoke((MethodInvoker)delegate
+            {
+                serversStatusLb.Visible = true;
+            });
+
             var compiledRegex = new Regex(@"activity/reporting/events.+\.json", RegexOptions.Compiled);
 
             using (var file = File.OpenRead(openFileDialog1.FileName))
@@ -613,12 +625,14 @@ namespace Data_Package_Tool
                     {
                         using (var data = new StreamReader(entry.Open()))
                         {
-                            int lineNum = 0;
+                            long bytesRead = 0;
                             while (!data.EndOfStream)
                             {
-                                lineNum++;
-
                                 var line = data.ReadLine();
+                                bytesRead += line.Length;
+
+                                guildsLoadProgress = (int)((double)bytesRead / (long)entry.Length * 100);
+
                                 ProcessAnalyticsLine(line);
                             }
                         }
@@ -665,6 +679,8 @@ namespace Data_Package_Tool
                 var lvItem = new ListViewItem(values);
                 serversLv.Items.Add(lvItem);
             }
+
+            serversStatusStrip.Visible = false;
         }
 
         private int MassDeleteIdx = 0;
