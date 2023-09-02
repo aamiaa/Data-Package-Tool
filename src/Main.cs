@@ -183,19 +183,13 @@ namespace Data_Package_Tool
                     CurrentGuilds = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json);
                 }
 
-                if (User.avatar_hash != null)
-                {
-                    // Can't create BitmapImage here because it can only be accessed from the thread it was created in
-                    using (var s = zip.GetEntry("account/avatar.png").Open()) // TODO: check if the extension changes when the avatar is animated
-                    {
-                        s.CopyTo(UserAvatar);
-                    }
-                } else
+                if (User.avatar_hash == null)
                 {
                     Properties.Resources._0.Save(UserAvatar, System.Drawing.Imaging.ImageFormat.Png);
                 }
 
                 var messagesRegex = new Regex(@"messages/(c?(\d+))/messages\.csv", RegexOptions.Compiled);
+                var avatarRegex = new Regex(@"account/avatar\.[a-z]+", RegexOptions.Compiled);
                 int i = 0;
                 foreach (var entry in zip.Entries)
                 {
@@ -220,6 +214,14 @@ namespace Data_Package_Tool
                             TotalMessages += channel.messages.Count;
                             Channels.Add(channel);
                             ChannelsMap[channel.id] = channel;
+                        }
+                    } else if(avatarRegex.IsMatch(entry.FullName))
+                    {
+                        using(var s = entry.Open())
+                        {
+                            // Can't create BitmapImage here because it can only be accessed from the thread it was created in
+                            s.CopyTo(UserAvatar);
+                            UserAvatar.Position = 0;
                         }
                     }
                 }

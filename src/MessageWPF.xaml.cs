@@ -1,4 +1,4 @@
-﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ namespace Data_Package_Tool
             InitializeComponent();
             this.SelectedMessage = message;
 
-            if(AvatarSource == null)
+            if (AvatarSource == null)
             {
                 AvatarSource = new BitmapImage();
                 AvatarSource.BeginInit();
