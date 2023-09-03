@@ -1,4 +1,4 @@
-using Data_Package_Tool.Classes;
+﻿using Data_Package_Tool.Classes;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -267,6 +267,35 @@ namespace Data_Package_Tool
                 }
 
                 contentLb.Inlines.Add(new Run(current));
+            }
+
+            // Attachments
+            for(int i=0;i<SelectedMessage.attachments.Count;i++)
+            {
+                if(content != "" || i > 0)
+                {
+                    contentLb.Inlines.Add(new Run("\n"));
+                }
+
+                var attachment = SelectedMessage.attachments[i];
+
+                var img = new Image();
+                img.MaxWidth = 400;
+                img.MaxHeight = 300;
+                img.Stretch = Stretch.Uniform;
+                img.StretchDirection = StretchDirection.DownOnly;
+
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(attachment.url, UriKind.Absolute);
+                bitmap.EndInit();
+                img.Source = bitmap;
+
+                var inlineContainer = new InlineUIContainer(img)
+                {
+                    BaselineAlignment = BaselineAlignment.Center,
+                };
+                contentLb.Inlines.Add(inlineContainer);
             }
         }
 
