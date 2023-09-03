@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Data_Package_Tool"
              mc:Ignorable="d" 
-             d:DesignHeight="67" d:DesignWidth="568">
+             d:DesignHeight="70" d:DesignWidth="568">
     <UserControl.ContextMenu>
         <ContextMenu>
             <MenuItem x:Name="goToMessageMi" Header="Go to message" Click="goToMessageMi_Click"/>
@@ -21,15 +21,15 @@
         </ContextMenu>
     </UserControl.ContextMenu>
     <Grid x:Name="rootGrid" Background="#00000000" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave">
-        <Border CornerRadius="32" HorizontalAlignment="Left" Height="40" Margin="8,21,0,0" VerticalAlignment="Top" Width="40">
+        <Border CornerRadius="32" HorizontalAlignment="Left" Height="40" Margin="8,24,0,0" VerticalAlignment="Top" Width="40">
             <Border.Background>
                 <ImageBrush x:Name="avatarImg" Stretch="Fill"/>
             </Border.Background>
         </Border>
-        <TextBlock x:Name="contentLb" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="64,41,0,0" VerticalAlignment="Top" FontFamily="Source Sans Pro" Foreground="#FFDBDEE1" FontSize="16" Text="Lorem ipsum dolor sit amet" Padding="0,0,5,5">
+        <TextBlock x:Name="contentLb" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="64,44,0,0" VerticalAlignment="Top" FontFamily="Source Sans Pro" Foreground="#FFDBDEE1" FontSize="16" Text="Lorem ipsum dolor sit amet" Padding="0,0,5,5">
         </TextBlock>
         <Label x:Name="metadataLb" Content="Channel: 1234" HorizontalAlignment="Left" Margin="0,-3,0,0" VerticalAlignment="Top" Foreground="#FF949BA4" FontFamily="Source Sans Pro" FontSize="13"/>
-        <Grid HorizontalAlignment="Left" Height="Auto" Margin="60,14,0,0" VerticalAlignment="Top">
+        <Grid HorizontalAlignment="Left" Height="Auto" Margin="60,17,0,0" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
