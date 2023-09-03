@@ -1,4 +1,4 @@
-﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -202,8 +202,9 @@ namespace Data_Package_Tool
                             line = DEmojiStartRegex.Replace(line, ""); // The regex uses ^ so it will only replace the current emoji
                             continue;
                         }
-                    } else if(line.Length >= 2 && char.IsHighSurrogate(c)) // Turn unicode emojis into twemoji
+                    } else // Turn unicode emojis into twemoji
                     {
+                        // FIXME: face_holding_back_tears isn't detected by the regex
                         var match = UEmojiStartRegex.Match(line);
                         if(match.Success)
                         {
@@ -211,8 +212,14 @@ namespace Data_Package_Tool
                             current = "";
 
                             string emoji = match.Groups[1].Value;
-                            var codepoints = new List<int>();
 
+                            // Strip off variation selector, used by heart emoji for example
+                            // https://github.com/twitter/twemoji/blob/d94f4cf793e6d5ca592aa00f58a88f6a4229ad43/scripts/build.js#L347
+                            if (!emoji.Contains("\u200D")) {
+                                Regex.Replace(emoji, @"\uFE0F", "");
+                            }
+
+                            var codepoints = new List<int>();
                             for(int j=0;j<emoji.Length;j++)
                             {
                                 if(emoji.Length >= j + 2 && char.IsSurrogatePair(emoji[j], emoji[j + 1]))
