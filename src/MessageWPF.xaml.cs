@@ -1,4 +1,4 @@
-﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -61,7 +61,7 @@ namespace Data_Package_Tool
             }
 
             // Set username
-            usernameLb.Content = user.GetTag();
+            usernameLb.Content = user.global_name ?? user.GetTag();
 
             // Set metadata
             var channel = message.channel;

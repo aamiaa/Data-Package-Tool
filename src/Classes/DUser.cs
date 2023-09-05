@@ -10,6 +10,7 @@ namespace Data_Package_Tool.Classes
     {
         public string id;
         public string username;
+        public string global_name;
         public string discriminator;
         public string avatar_hash;
 
