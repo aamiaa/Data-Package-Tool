@@ -1,4 +1,4 @@
-﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes;
 using Data_Package_Tool.Forms;
 using Microsoft.VisualBasic;
 using System;
@@ -645,6 +645,8 @@ namespace Data_Package_Tool
 
         private void guildsBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            AllInvites = AllInvites.OrderBy(o => DateTime.Parse(o.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)).ToList();
+
             foreach (var eventData in AllInvites)
             {
                 var guild = AllJoinedGuilds.Find(x => x.id == eventData.guild);
