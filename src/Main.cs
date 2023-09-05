@@ -1,4 +1,4 @@
-using Data_Package_Tool.Classes;
+﻿using Data_Package_Tool.Classes;
 using Data_Package_Tool.Forms;
 using Microsoft.VisualBasic;
 using System;
@@ -80,7 +80,7 @@ namespace Data_Package_Tool
         private void ProcessAnalyticsLine(string line)
         {
             // Pro optimization
-            if(!line.StartsWith("{\"event_type\":\"guild_joined") && !line.Contains("{\"event_type\":\"create_guild") && !line.Contains("{\"event_type\":\"accepted_instant_invite"))
+            if(!line.StartsWith("{\"event_type\":\"guild_joined") && !line.StartsWith("{\"event_type\":\"create_guild") && !line.StartsWith("{\"event_type\":\"accepted_instant_invite"))
             {
                 return;
             }
