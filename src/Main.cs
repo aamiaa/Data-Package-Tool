@@ -645,7 +645,7 @@ namespace Data_Package_Tool
 
         private void guildsBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            AllInvites = AllInvites.OrderBy(o => DateTime.Parse(o.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)).ToList();
+            AllInvites = AllInvites.OrderBy(o => DateTime.Parse(o.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind).Ticks).ToList();
 
             foreach (var eventData in AllInvites)
             {
@@ -660,9 +660,20 @@ namespace Data_Package_Tool
                         timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)
                     });
                 }
-                else if (!guild.invites.Contains(eventData.invite))
+                else
                 {
-                    guild.invites.Add(eventData.invite);
+                    if (!guild.invites.Contains(eventData.invite))
+                    {
+                        guild.invites.Add(eventData.invite);
+                    }
+
+                    // Handle the case where the original join didn't create a guild_join event, but did create accepted_instant_invite, and then a rejoin created a newer guild_join
+                    // (i.e. use older date from accepted_instant_invite if there is one)
+                    var joinDate = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind);
+                    if(joinDate.Ticks < guild.timestamp.Ticks)
+                    {
+                        guild.timestamp = joinDate;
+                    }
                 }
             }
 
