@@ -1,15 +1,15 @@
-﻿using Microsoft.VisualBasic.ApplicationServices;
+﻿using Data_Package_Tool.Helpers;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
+using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Data_Package_Tool.Classes
 {
-    public static class Util
+    public static class Discord
     {
         public static void LaunchDiscordProtocol(string url)
         {
@@ -99,6 +99,42 @@ namespace Data_Package_Tool.Classes
             }
             catch (Exception)
             {
+                return false;
+            }
+        }
+
+        public static bool OpenDMFlow(string userId)
+        {
+            DHeaders.Init();
+
+            string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
+            if (token == "") return false;
+            if (!Discord.ValidateToken(token, Main.User.id))
+            {
+                Util.MsgBoxErr(Consts.InvalidTokenError);
+                return false;
+            }
+            Main.AccountToken = token;
+
+            var body = new Dictionary<string, string[]>
+            {
+                { "recipients", new string[] { userId } }
+            };
+
+            var response = DRequest.Request("POST", "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
+            {
+                {"Authorization", token},
+                {"Content-Type", "application/json"},
+                {"X-Context-Properties", Convert.ToBase64String(Encoding.UTF8.GetBytes("{}"))}
+            }, Newtonsoft.Json.JsonConvert.SerializeObject(body), true);
+
+            if (response.response.StatusCode == HttpStatusCode.OK)
+            {
+                return true;
+            }
+            else
+            {
+                Util.MsgBoxErr($"Request error: {response.response.StatusCode} {response.body}");
                 return false;
             }
         }

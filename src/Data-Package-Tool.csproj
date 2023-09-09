@@ -56,59 +56,61 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attachment.cs">
+    <Compile Include="Forms\Attachment.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Attachment.Designer.cs">
+    <Compile Include="Forms\Attachment.Designer.cs">
       <DependentUpon>Attachment.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\DAnalyticsEvent.cs" />
-    <Compile Include="Classes\DAnalyticsGuild.cs" />
-    <Compile Include="Classes\DAttachment.cs" />
-    <Compile Include="Classes\DChannel.cs" />
-    <Compile Include="Classes\DMessage.cs" />
-    <Compile Include="Classes\DRelationship.cs" />
+    <Compile Include="Classes\Parsing\DAnalyticsEvent.cs" />
+    <Compile Include="Classes\Parsing\DAnalyticsGuild.cs" />
+    <Compile Include="Classes\Parsing\DAttachment.cs" />
+    <Compile Include="Classes\Parsing\DChannel.cs" />
+    <Compile Include="Classes\Parsing\DMessage.cs" />
+    <Compile Include="Classes\Parsing\DRelationship.cs" />
     <Compile Include="Classes\DRequest.cs" />
-    <Compile Include="Classes\DUser.cs" />
-    <Compile Include="Classes\PartialGuild.cs" />
-    <Compile Include="Classes\Util.cs" />
+    <Compile Include="Classes\Parsing\DUser.cs" />
+    <Compile Include="Classes\Parsing\DPartialGuild.cs" />
+    <Compile Include="Helpers\Consts.cs" />
+    <Compile Include="Helpers\Discord.cs" />
     <Compile Include="Forms\DmsLvItemComparer.cs" />
-    <Compile Include="SearchOptionsPrompt.cs">
+    <Compile Include="Forms\SearchOptionsPrompt.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SearchOptionsPrompt.Designer.cs">
+    <Compile Include="Forms\SearchOptionsPrompt.Designer.cs">
       <DependentUpon>SearchOptionsPrompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="MessageListWPF.xaml.cs">
+    <Compile Include="Forms\MessageListWPF.xaml.cs">
       <DependentUpon>MessageListWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Util.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="MassDeletePrompt.cs">
+    <Compile Include="Forms\MassDeletePrompt.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MassDeletePrompt.Designer.cs">
+    <Compile Include="Forms\MassDeletePrompt.Designer.cs">
       <DependentUpon>MassDeletePrompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="MessageWPF.xaml.cs">
+    <Compile Include="Forms\MessageWPF.xaml.cs">
       <DependentUpon>MessageWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Attachment.resx">
+    <EmbeddedResource Include="Forms\Attachment.resx">
       <DependentUpon>Attachment.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SearchOptionsPrompt.resx">
+    <EmbeddedResource Include="Forms\SearchOptionsPrompt.resx">
       <DependentUpon>SearchOptionsPrompt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MassDeletePrompt.resx">
+    <EmbeddedResource Include="Forms\MassDeletePrompt.resx">
       <DependentUpon>MassDeletePrompt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -139,11 +141,11 @@
     <None Include="Resources\0.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MessageListWPF.xaml">
+    <Page Include="Forms\MessageListWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MessageWPF.xaml">
+    <Page Include="Forms\MessageWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

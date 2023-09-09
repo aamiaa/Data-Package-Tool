@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualBasic.FileIO;
 
-namespace Data_Package_Tool.Classes
+namespace Data_Package_Tool.Classes.Parsing
 {
     public class DChannel
     {
         public string id;
         public int type;
         public string name;
-        public PartialGuild guild;
+        public DPartialGuild guild;
         public List<DMessage> messages = new List<DMessage>();
         public string[] recipients;
 

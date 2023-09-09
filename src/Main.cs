@@ -1,5 +1,7 @@
 ﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Forms;
+using Data_Package_Tool.Helpers;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -12,7 +14,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -243,7 +244,7 @@ namespace Data_Package_Tool
                     var relationship = User.relationships.ToList().Find(x => x.id == recipientId);
                     if (relationship != null) recipientUsername = relationship.user.GetTag();
 
-                    string[] values = { Util.SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString(), User.notes.ContainsKey(recipientId) ? User.notes[recipientId] : "" };
+                    string[] values = { Discord.SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString(), User.notes.ContainsKey(recipientId) ? User.notes[recipientId] : "" };
                     var lvItem = new ListViewItem(values);
 
                     if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
@@ -287,7 +288,7 @@ namespace Data_Package_Tool
                 loadFileBtn.Show();
                 progressBar1.Hide();
 
-                MessageBox.Show($"An error occurred:\n\n{e.Error.ToString()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Util.MsgBoxErr($"An error occurred:\n\n{e.Error.ToString()}");
                 return;
             }
             
@@ -317,7 +318,7 @@ namespace Data_Package_Tool
                     new Regex(searchTb.Text);
                 } catch(Exception ex)
                 {
-                    MessageBox.Show($"Invalid regex: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Util.MsgBoxErr($"Invalid regex: {ex.Message}");
                     return;
                 }
             }
@@ -712,7 +713,7 @@ namespace Data_Package_Tool
 
             if(LastSearchResults == null || LastSearchResults.Count == 0)
             {
-                MessageBox.Show("You need to search for something first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Util.MsgBoxErr("You need to search for something first!");
                 return;
             }
 
@@ -746,7 +747,7 @@ namespace Data_Package_Tool
                     searchTb.Enabled = true;
                     searchBtn.Enabled = true;
 
-                    MessageBox.Show("Mass Delete Finished!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Util.MsgBoxInfo("Mass Delete Finished!");
                     return;
                 }
 
@@ -778,12 +779,12 @@ namespace Data_Package_Tool
                     case HttpStatusCode.Forbidden:
                         break;
                     default:
-                        MessageBox.Show($"Request error: {res.response.StatusCode} {res.body}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Util.MsgBoxErr($"Request error: {res.response.StatusCode} {res.body}");
                         return;
                 }
             } catch(Exception ex)
             {
-                MessageBox.Show($"Request error: {ex}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Util.MsgBoxErr($"Request error: {ex}");
             }
 
             massDeleteTimer.Start();
@@ -825,16 +826,16 @@ namespace Data_Package_Tool
             string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
             if (ChannelsMap[channelId].has_duplicates)
             {
-                MessageBox.Show("You have multiple dm channels with this recipient. There is no guarantee that Discord will open the right one.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
             try
             {
-                Util.LaunchDiscordProtocol($"users/{userId}");
+                Discord.LaunchDiscordProtocol($"users/{userId}");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Util.MsgBoxErr(ex.Message);
             }
         }
 
@@ -844,39 +845,12 @@ namespace Data_Package_Tool
             string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
             if (ChannelsMap[channelId].has_duplicates)
             {
-                MessageBox.Show("You have multiple dm channels with this recipient. There is no guarantee that Discord will open the right one.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            DHeaders.Init();
-
-            string token = Interaction.InputBox("Enter your token", "Prompt", AccountToken);
-            if (token == "") return;
-            if (!Util.ValidateToken(token, User.id))
+            if(Discord.OpenDMFlow(userId))
             {
-                MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            AccountToken = token;
-
-            var body = new Dictionary<string, string[]>
-            {
-                { "recipients", new string[] { userId } }
-            };
-
-            var response = DRequest.Request("POST", "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
-            {
-                {"Authorization", token},
-                {"Content-Type", "application/json"},
-                {"X-Context-Properties", Convert.ToBase64String(Encoding.UTF8.GetBytes("{}"))}
-            }, Newtonsoft.Json.JsonConvert.SerializeObject(body), true);
-
-            if (response.response.StatusCode == HttpStatusCode.OK)
-            {
-                Util.LaunchDiscordProtocol($"channels/@me/{channelId}");
-            }
-            else
-            {
-                MessageBox.Show($"Request error: {response.response.StatusCode} {response.body}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Discord.LaunchDiscordProtocol($"channels/@me/{channelId}");
             }
         }
 

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Data_Package_Tool.Classes
+namespace Data_Package_Tool.Classes.Parsing
 {
     public class DUser
     {
@@ -15,7 +12,6 @@ namespace Data_Package_Tool.Classes
         public string avatar_hash;
 
         public DRelationship[] relationships;
-        public dynamic[] user_sessions;
 
         public Dictionary<string, string> notes;
 

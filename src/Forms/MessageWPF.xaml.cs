@@ -1,27 +1,19 @@
 ﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes.Parsing;
+using Data_Package_Tool.Helpers;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 namespace Data_Package_Tool
 {
     /// <summary>
@@ -326,17 +318,17 @@ namespace Data_Package_Tool
         {
             if(SelectedMessage.channel.has_duplicates)
             {
-                System.Windows.Forms.MessageBox.Show("You have multiple dm channels with this recipient. There is no guarantee that Discord will open the right one.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+                Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
             try
             {
                 var link = SelectedMessage.GetMessageLink();
-                Util.LaunchDiscordProtocol($"channels/{link}");
+                Discord.LaunchDiscordProtocol($"channels/{link}");
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                Util.MsgBoxErr(ex.Message);
             }
         }
 
@@ -366,16 +358,16 @@ namespace Data_Package_Tool
         {
             if (SelectedMessage.channel.has_duplicates)
             {
-                System.Windows.Forms.MessageBox.Show("You have multiple dm channels with this recipient. There is no guarantee that Discord will open the right one.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+                Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
             try
             {
-                Util.LaunchDiscordProtocol($"users/{SelectedMessage.channel.GetOtherDMRecipient(Main.User)}");
+                Discord.LaunchDiscordProtocol($"users/{SelectedMessage.channel.GetOtherDMRecipient(Main.User)}");
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                Util.MsgBoxErr(ex.Message);
             }
         }
 
@@ -408,38 +400,13 @@ namespace Data_Package_Tool
         {
             if (SelectedMessage.channel.has_duplicates)
             {
-                System.Windows.Forms.MessageBox.Show("You have multiple dm channels with this recipient. There is no guarantee that Discord will open the right one.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+                Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            DHeaders.Init();
-
-            string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
-            if (token == "") return;
-            if (!Util.ValidateToken(token, Main.User.id))
-            {
-                System.Windows.Forms.MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-                return;
-            }
-            Main.AccountToken = token;
-
-            var body = new Dictionary<string, string[]>
-            {
-                { "recipients", new string[] { SelectedMessage.channel.GetOtherDMRecipient(Main.User) } }
-            };
-
-            var response = DRequest.Request("POST", "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
-            {
-                {"Authorization", token},
-                {"Content-Type", "application/json"},
-                {"X-Context-Properties", Convert.ToBase64String(Encoding.UTF8.GetBytes("{}"))}
-            }, Newtonsoft.Json.JsonConvert.SerializeObject(body), true);
-
-            if(response.response.StatusCode == System.Net.HttpStatusCode.OK)
+            string userId = SelectedMessage.channel.GetOtherDMRecipient(Main.User);
+            if (Discord.OpenDMFlow(userId))
             {
                 goToMessageMi_Click(sender, e);
-            }  else
-            {
-                System.Windows.Forms.MessageBox.Show($"Request error: {response.response.StatusCode} {response.body}", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
 
@@ -449,9 +416,9 @@ namespace Data_Package_Tool
 
             string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
             if (token == "") return;
-            if (!Util.ValidateToken(token, Main.User.id))
+            if (!Discord.ValidateToken(token, Main.User.id))
             {
-                System.Windows.Forms.MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                Util.MsgBoxErr(Consts.InvalidTokenError);
                 return;
             }
             Main.AccountToken = token;
@@ -472,7 +439,7 @@ namespace Data_Package_Tool
                     Properties.Settings.Default.Save();
                     break;
                 default:
-                    System.Windows.Forms.MessageBox.Show($"Request error: {res.response.StatusCode} {res.body}", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                    Util.MsgBoxErr($"Request error: {res.response.StatusCode} {res.body}");
                     return;
             }
         }

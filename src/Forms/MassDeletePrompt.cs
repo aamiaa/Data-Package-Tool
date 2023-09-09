@@ -1,12 +1,6 @@
 ﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Helpers;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Data_Package_Tool
@@ -28,9 +22,9 @@ namespace Data_Package_Tool
 
         private void saveBtn_Click(object sender, EventArgs e)
         {
-            if(!Util.ValidateToken(tokenTb.Text, Main.User.id))
+            if(!Discord.ValidateToken(tokenTb.Text, Main.User.id))
             {
-                MessageBox.Show("Entered token is invalid or doesn't belong to the same account!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Util.MsgBoxErr(Consts.InvalidTokenError);
                 return;
             }
 
