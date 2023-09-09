@@ -55,7 +55,7 @@ namespace Data_Package_Tool.Classes.Parsing
 
                             if (attachment.IsImage())
                             {
-                                Main.AllAttachments.Add(attachment);
+                                Main.DataPackage.Attachments.Add(attachment);
                             }
                         }
                     }

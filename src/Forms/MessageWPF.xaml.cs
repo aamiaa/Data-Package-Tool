@@ -40,7 +40,7 @@ namespace Data_Package_Tool
             {
                 AvatarSource = new BitmapImage();
                 AvatarSource.BeginInit();
-                AvatarSource.StreamSource = Main.UserAvatar;
+                AvatarSource.StreamSource = Main.DataPackage.Avatar;
                 AvatarSource.CacheOption = BitmapCacheOption.OnLoad;
                 AvatarSource.EndInit();
                 AvatarSource.Freeze();
@@ -363,7 +363,7 @@ namespace Data_Package_Tool
 
             try
             {
-                Discord.LaunchDiscordProtocol($"users/{SelectedMessage.channel.GetOtherDMRecipient(Main.User)}");
+                Discord.LaunchDiscordProtocol($"users/{SelectedMessage.channel.GetOtherDMRecipient(Main.DataPackage.User)}");
             }
             catch (Exception ex)
             {
@@ -388,7 +388,7 @@ namespace Data_Package_Tool
 
         private void copyUserIdMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(SelectedMessage.channel.GetOtherDMRecipient(Main.User));
+            Clipboard.SetText(SelectedMessage.channel.GetOtherDMRecipient(Main.DataPackage.User));
         }
 
         private void copyGuildIdMi_Click(object sender, RoutedEventArgs e)
@@ -403,7 +403,7 @@ namespace Data_Package_Tool
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            string userId = SelectedMessage.channel.GetOtherDMRecipient(Main.User);
+            string userId = SelectedMessage.channel.GetOtherDMRecipient(Main.DataPackage.User);
             if (Discord.OpenDMFlow(userId))
             {
                 goToMessageMi_Click(sender, e);
@@ -416,7 +416,7 @@ namespace Data_Package_Tool
 
             string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
             if (token == "") return;
-            if (!Discord.ValidateToken(token, Main.User.id))
+            if (!Discord.ValidateToken(token, Main.DataPackage.User.id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return;

@@ -70,14 +70,14 @@ namespace Data_Package_Tool
 
         private void copyUserIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(SelectedAttachment.message.channel.GetOtherDMRecipient(Main.User));
+            Clipboard.SetText(SelectedAttachment.message.channel.GetOtherDMRecipient(Main.DataPackage.User));
         }
 
         private void viewUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                Discord.LaunchDiscordProtocol($"users/{SelectedAttachment.message.channel.GetOtherDMRecipient(Main.User)}");
+                Discord.LaunchDiscordProtocol($"users/{SelectedAttachment.message.channel.GetOtherDMRecipient(Main.DataPackage.User)}");
             } catch(Exception ex)
             {
                 Util.MsgBoxErr(ex.Message);
@@ -86,9 +86,9 @@ namespace Data_Package_Tool
 
         private void openDmSELFBOTToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string userId = SelectedAttachment.message.channel.GetOtherDMRecipient(Main.User);
+            string userId = SelectedAttachment.message.channel.GetOtherDMRecipient(Main.DataPackage.User);
             string channelId = SelectedAttachment.message.channel.id;
-            if (Main.ChannelsMap[channelId].has_duplicates)
+            if (Main.DataPackage.ChannelsMap[channelId].has_duplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }

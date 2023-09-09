@@ -89,11 +89,9 @@ namespace Data_Package_Tool
             this.ptbRb = new System.Windows.Forms.RadioButton();
             this.stableRb = new System.Windows.Forms.RadioButton();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.guildsBw = new System.ComponentModel.BackgroundWorker();
             this.massDeleteTimer = new System.Windows.Forms.Timer(this.components);
             this.searchBw = new System.ComponentModel.BackgroundWorker();
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
-            this.loadBw = new System.ComponentModel.BackgroundWorker();
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
@@ -354,6 +352,7 @@ namespace Data_Package_Tool
             this.serversStatusStrip.Size = new System.Drawing.Size(574, 22);
             this.serversStatusStrip.TabIndex = 1;
             this.serversStatusStrip.Text = "statusStrip1";
+            this.serversStatusStrip.Visible = false;
             // 
             // serversStatusLb
             // 
@@ -662,11 +661,6 @@ namespace Data_Package_Tool
             // 
             this.openFileDialog1.Filter = "Discord Package files|*.zip";
             // 
-            // guildsBw
-            // 
-            this.guildsBw.DoWork += new System.ComponentModel.DoWorkEventHandler(this.guildsBw_DoWork);
-            this.guildsBw.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.guildsBw_RunWorkerCompleted);
-            // 
             // massDeleteTimer
             // 
             this.massDeleteTimer.Tick += new System.EventHandler(this.massDeleteTimer_Tick);
@@ -679,11 +673,6 @@ namespace Data_Package_Tool
             // searchTimer
             // 
             this.searchTimer.Tick += new System.EventHandler(this.searchTimer_Tick);
-            // 
-            // loadBw
-            // 
-            this.loadBw.DoWork += new System.ComponentModel.DoWorkEventHandler(this.loadBw_DoWork);
-            this.loadBw.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.loadBw_RunWorkerCompleted);
             // 
             // loadTimer
             // 
@@ -754,7 +743,6 @@ namespace Data_Package_Tool
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
         private MessageListWPF listWPF1;
-        private System.ComponentModel.BackgroundWorker guildsBw;
         private System.Windows.Forms.Button massDeleteBtn;
         private System.Windows.Forms.Timer massDeleteTimer;
         private System.Windows.Forms.Button messagesNextBtn;
@@ -766,7 +754,6 @@ namespace Data_Package_Tool
         private System.Windows.Forms.Button searchOptionsBtn;
         private System.ComponentModel.BackgroundWorker searchBw;
         private System.Windows.Forms.Timer searchTimer;
-        private System.ComponentModel.BackgroundWorker loadBw;
         private System.Windows.Forms.Timer loadTimer;
         private System.Windows.Forms.TabPage dmsTab;
         private System.Windows.Forms.ListView dmsLv;

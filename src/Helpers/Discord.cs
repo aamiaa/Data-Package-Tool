@@ -109,7 +109,7 @@ namespace Data_Package_Tool.Classes
 
             string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
             if (token == "") return false;
-            if (!Discord.ValidateToken(token, Main.User.id))
+            if (!Discord.ValidateToken(token, Main.DataPackage.User.id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return false;

@@ -7,33 +7,24 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Data_Package_Tool
 {
     public partial class Main : Form
     {
-        private readonly int MaxResults = 500;
-        private int TotalMessages = 0;
-        private List<DChannel> Channels = new List<DChannel>();
-        private DateTime PackageCreationTime;
-        
-        public static DUser User;
-        public static MemoryStream UserAvatar = new MemoryStream();
-        public static List<DAttachment> AllAttachments = new List<DAttachment>();
-        public static List<DAnalyticsGuild> AllJoinedGuilds = new List<DAnalyticsGuild>();
-        public static Dictionary<string, DChannel> ChannelsMap = new Dictionary<string, DChannel>();
-        public static dynamic CurrentGuilds;
+        public static DataPackage DataPackage = new DataPackage();
+
         public static string AccountToken = "";
+        private static readonly int MaxSearchResults = 500;
+
         public Main()
         {
             InitializeComponent();
@@ -73,68 +64,96 @@ namespace Data_Package_Tool
 
         private void DisplayMessage(DMessage message)
         {
-            var msgControl = new MessageWPF(message, User);
+            var msgControl = new MessageWPF(message, DataPackage.User);
             ((MessageListWPF)elementHost1.Child).AddToList(msgControl);
         }
 
-        private List<DAnalyticsEvent> AllInvites = new List<DAnalyticsEvent>();
-        private void ProcessAnalyticsLine(string line)
+        private void LoadDMChannels()
         {
-            // Pro optimization
-            if(!line.StartsWith("{\"event_type\":\"guild_joined") && !line.StartsWith("{\"event_type\":\"create_guild") && !line.StartsWith("{\"event_type\":\"accepted_instant_invite"))
+            dmsLv.Items.Clear();
+
+            var dmChannels = DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
+            var duplicateChannelsMap = new Dictionary<string, dynamic>();
+
+            tabControl1.TabPages[4].Text = $"Direct Messages - {dmChannels.Count}";
+
+            foreach (var dmChannel in dmChannels)
             {
-                return;
+                string recipientId = dmChannel.GetOtherDMRecipient(DataPackage.User);
+                string recipientUsername = "";
+                var relationship = DataPackage.User.relationships.ToList().Find(x => x.id == recipientId);
+                if (relationship != null) recipientUsername = relationship.user.GetTag();
+
+                string[] values = { Discord.SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString(), DataPackage.User.notes.ContainsKey(recipientId) ? DataPackage.User.notes[recipientId] : "" };
+                var lvItem = new ListViewItem(values);
+
+                if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
+                {
+                    duplicateChannelsMap[recipientId].item.BackColor = Color.Yellow;
+                    lvItem.BackColor = Color.Yellow;
+
+                    duplicateChannelsMap[recipientId].channel.has_duplicates = true;
+                    dmChannel.has_duplicates = true;
+                }
+                else
+                {
+                    duplicateChannelsMap[recipientId] = new { item = lvItem, channel = dmChannel };
+                }
+
+                dmsLv.Items.Add(lvItem);
+            }
+        }
+
+        private void LoadJoinedGuilds()
+        {
+            DataPackage.AcceptedInvites = DataPackage.AcceptedInvites.OrderBy(o => DateTime.Parse(o.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind).Ticks).ToList();
+
+            foreach (var eventData in DataPackage.AcceptedInvites)
+            {
+                var guild = DataPackage.JoinedGuilds.Find(x => x.id == eventData.guild);
+                if (guild == null)
+                {
+                    DataPackage.JoinedGuilds.Add(new DAnalyticsGuild
+                    {
+                        id = eventData.guild,
+                        join_type = "invite",
+                        invites = new List<string> { eventData.invite },
+                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)
+                    });
+                }
+                else
+                {
+                    if (!guild.invites.Contains(eventData.invite))
+                    {
+                        guild.invites.Add(eventData.invite);
+                    }
+
+                    // Handle the case where the original join didn't create a guild_join event, but did create accepted_instant_invite, and then a rejoin created a newer guild_join
+                    // (i.e. use older date from accepted_instant_invite if there is one)
+                    var joinDate = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind);
+                    if (joinDate.Ticks < guild.timestamp.Ticks)
+                    {
+                        guild.timestamp = joinDate;
+                    }
+                }
             }
 
-            var eventData = Newtonsoft.Json.JsonConvert.DeserializeObject<DAnalyticsEvent>(line);
+            DataPackage.JoinedGuilds = DataPackage.JoinedGuilds.OrderByDescending(o => o.timestamp.Ticks).ToList();
 
-            switch (eventData.event_type)
+            tabControl1.TabPages[3].Text = $"Servers - {DataPackage.JoinedGuilds.Count}";
+
+            serversLv.Items.Clear();
+            foreach (var guild in DataPackage.JoinedGuilds)
             {
-                case "guild_joined":
-                case "guild_joined_pending":
-                    var idx = AllJoinedGuilds.FindIndex(x => x.id == eventData.guild_id);
-                    if (idx > -1)
-                    {
-                        var guild = AllJoinedGuilds[idx];
-                        if (eventData.invite_code != null && !guild.invites.Contains(eventData.invite_code))
-                        {
-                            guild.invites.Add(eventData.invite_code);
-                        }
+                string guildName = "";
+                if (DataPackage.Guilds[guild.id] != null)
+                {
+                    guildName = DataPackage.Guilds[guild.id];
+                }
 
-                        // Get the earliest join date
-                        var timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind);
-                        if(timestamp < guild.timestamp)
-                        {
-                            guild.timestamp = timestamp;
-                        }
-                    }
-                    else
-                    {
-                        AllJoinedGuilds.Add(new DAnalyticsGuild
-                        {
-                            id = eventData.guild_id,
-                            join_type = eventData.join_type,
-                            join_method = eventData.join_method,
-                            application_id = eventData.application_id,
-                            location = eventData.location,
-                            invites = (eventData.invite_code != null ? new List<string> { eventData.invite_code } : new List<string>()),
-                            timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
-                        });
-                    }
-                    break;
-                case "create_guild":
-                    Debug.WriteLine(eventData.timestamp.Replace("\"", ""));
-                    AllJoinedGuilds.Add(new DAnalyticsGuild
-                    {
-                        id = eventData.guild_id,
-                        join_type = "created by you",
-                        invites = new List<string>(),
-                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
-                    });
-                    break;
-                case "accepted_instant_invite":
-                    if(eventData.guild != null) AllInvites.Add(eventData);
-                    break;
+                string[] values = { guild.timestamp.ToShortDateString(), guild.id, guildName, guild.join_type, guild.location, String.Join(", ", guild.invites.ToArray()) };
+                var lvItem = new ListViewItem(values);
+                serversLv.Items.Add(lvItem);
             }
         }
 
@@ -145,154 +164,59 @@ namespace Data_Package_Tool
                 loadFileBtn.Hide();
                 progressBar1.Show();
 
-                guildsBw.RunWorkerAsync();
-                loadBw.RunWorkerAsync();
+                Task task = new Task(() =>
+                {
+                    try
+                    {
+                        DataPackage.Load(openFileDialog1.FileName);
+                    } catch (Exception ex)
+                    {
+                        BeginInvoke((MethodInvoker)delegate
+                        {
+                            loadFileBtn.Show();
+                            progressBar1.Hide();
+
+                            Util.MsgBoxErr($"An error occurred:\n\n{ex.ToString()}");
+                        });
+                    }
+                });
+                task.ContinueWith(t =>
+                {
+                    LoadDMChannels();
+
+                    loadingLb.Text = DataPackage.LoadStatus.Status;
+                    progressBar1.Value = progressBar1.Maximum;
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                var guildsTask = new Task(() =>
+                {
+                    DataPackage.LoadGuilds(openFileDialog1.FileName);
+                });
+                guildsTask.ContinueWith(t =>
+                {
+                    LoadJoinedGuilds();
+
+                    serversStatusStrip.Visible = false;
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                serversStatusStrip.Visible = true;
+                task.Start();
+                guildsTask.Start();
+
                 loadTimer.Start();
             }
         }
-
-        private string LoadStatusText = "";
-        private int LoadProgress = 0;
-        private void loadBw_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var startTime = DateTime.Now;
-
-            using (var file = File.OpenRead(openFileDialog1.FileName))
-            using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
-            {
-                progressBar1.Invoke((MethodInvoker)delegate {
-                    progressBar1.Maximum = zip.Entries.Count;
-                });
-
-                var userFile = zip.GetEntry("account/user.json");
-                if (userFile == null)
-                {
-                    throw new Exception("Invalid data package: missing user.json");
-                }
-
-                PackageCreationTime = userFile.LastWriteTime.DateTime;
-
-                using (var r = new StreamReader(userFile.Open()))
-                {
-                    var json = r.ReadToEnd();
-                    User = Newtonsoft.Json.JsonConvert.DeserializeObject<DUser>(json);
-                }
-
-                using (var r = new StreamReader(zip.GetEntry("servers/index.json").Open()))
-                {
-                    var json = r.ReadToEnd();
-                    CurrentGuilds = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json);
-                }
-
-                if (User.avatar_hash == null)
-                {
-                    Properties.Resources._0.Save(UserAvatar, System.Drawing.Imaging.ImageFormat.Png);
-                }
-
-                var messagesRegex = new Regex(@"messages/(c?(\d+))/messages\.csv", RegexOptions.Compiled);
-                var avatarRegex = new Regex(@"account/avatar\.[a-z]+", RegexOptions.Compiled);
-                int i = 0;
-                foreach (var entry in zip.Entries)
-                {
-                    i++;
-                    LoadStatusText = $"Reading {entry.FullName}\n{i}/{zip.Entries.Count}";
-                    LoadProgress = i;
-
-                    var match = messagesRegex.Match(entry.FullName);
-                    if (match.Success)
-                    {
-                        var channelId = match.Groups[2].Value;
-                        var folderName = match.Groups[1].Value; // folder name might not start with "c" in older versions
-                        using (var rJson = new StreamReader(zip.GetEntry($"messages/{folderName}/channel.json").Open()))
-                        using (var rCsv = new StreamReader(entry.Open()))
-                        {
-                            var json = rJson.ReadToEnd();
-                            var csv = rCsv.ReadToEnd();
-
-                            var channel = Newtonsoft.Json.JsonConvert.DeserializeObject<DChannel>(json);
-                            channel.LoadMessages(csv);
-
-                            TotalMessages += channel.messages.Count;
-                            Channels.Add(channel);
-                            ChannelsMap[channel.id] = channel;
-                        }
-                    } else if(avatarRegex.IsMatch(entry.FullName))
-                    {
-                        using(var s = entry.Open())
-                        {
-                            // Can't create BitmapImage here because it can only be accessed from the thread it was created in
-                            s.CopyTo(UserAvatar);
-                            UserAvatar.Position = 0;
-                        }
-                    }
-                }
-            }
-
-            AllAttachments = AllAttachments.OrderByDescending(o => Int64.Parse(o.message.id)).ToList();
-
-            dmsLv.Invoke((MethodInvoker)delegate
-            {
-                var dmChannels = Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
-                var duplicateChannelsMap = new Dictionary<string, dynamic>();
-
-                tabControl1.TabPages[4].Text = $"Direct Messages - {dmChannels.Count}";
-
-                foreach (var dmChannel in dmChannels)
-                {
-                    string recipientId = dmChannel.GetOtherDMRecipient(User);
-                    string recipientUsername = "";
-                    var relationship = User.relationships.ToList().Find(x => x.id == recipientId);
-                    if (relationship != null) recipientUsername = relationship.user.GetTag();
-
-                    string[] values = { Discord.SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString(), User.notes.ContainsKey(recipientId) ? User.notes[recipientId] : "" };
-                    var lvItem = new ListViewItem(values);
-
-                    if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
-                    {
-                        duplicateChannelsMap[recipientId].item.BackColor = Color.Yellow;
-                        lvItem.BackColor = Color.Yellow;
-
-                        duplicateChannelsMap[recipientId].channel.has_duplicates = true;
-                        dmChannel.has_duplicates = true;
-                    }
-                    else
-                    {
-                        duplicateChannelsMap[recipientId] = new { item = lvItem, channel = dmChannel };
-                    }
-
-                    dmsLv.Items.Add(lvItem);
-                }
-            });
-
-            LoadStatusText = $"Finished! Parsed {TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {PackageCreationTime.ToShortDateString()}";
-            loadingLb.Invoke((MethodInvoker)delegate {
-                loadingLb.Text = LoadStatusText;
-            });
-        }
         private void loadTimer_Tick(object sender, EventArgs e)
         {
-            if(!loadBw.IsBusy && !guildsBw.IsBusy)
+            if(DataPackage.LoadStatus.Finished && DataPackage.GuildsLoadStatus.Finished)
             {
                 loadTimer.Stop();
             }
 
-            loadingLb.Text = LoadStatusText;
-            progressBar1.Value = LoadProgress;
-            serversPb.Value = guildsLoadProgress;
-        }
-
-        private void loadBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Error != null)
-            {
-                loadFileBtn.Show();
-                progressBar1.Hide();
-
-                Util.MsgBoxErr($"An error occurred:\n\n{e.Error.ToString()}");
-                return;
-            }
-            
-            progressBar1.Value = progressBar1.Maximum;
+            loadingLb.Text = DataPackage.LoadStatus.Status;
+            progressBar1.Maximum = DataPackage.LoadStatus.Max;
+            progressBar1.Value = DataPackage.LoadStatus.Progress;
+            serversPb.Value = DataPackage.GuildsLoadStatus.Progress;
         }
 
         private List<DMessage> LastSearchResults;
@@ -300,8 +224,8 @@ namespace Data_Package_Tool
         private void LoadSearchResults()
         {
             ((MessageListWPF)elementHost1.Child).Clear();
-            resultsCountLb.Text = $"{SearchResultsOffset + 1}-{Math.Min(SearchResultsOffset + MaxResults, LastSearchResults.Count)} of {LastSearchResults.Count}";
-            for (int i = SearchResultsOffset; i < SearchResultsOffset + MaxResults; i++)
+            resultsCountLb.Text = $"{SearchResultsOffset + 1}-{Math.Min(SearchResultsOffset + MaxSearchResults, LastSearchResults.Count)} of {LastSearchResults.Count}";
+            for (int i = SearchResultsOffset; i < SearchResultsOffset + MaxSearchResults; i++)
             {
                 if(i >= LastSearchResults.Count) return;
 
@@ -355,7 +279,7 @@ namespace Data_Package_Tool
                 compiledRegex = new Regex(searchText, RegexOptions.Compiled);
             }
 
-            foreach (var channel in Channels)
+            foreach (var channel in DataPackage.Channels)
             {
                 // Filters
                 if (channel.IsDM() && Properties.Settings.Default.SearchExcludeDMs) continue;
@@ -401,9 +325,9 @@ namespace Data_Package_Tool
         {
             if (LastSearchResults.Count > 0)
             {
-                if (LastSearchResults.Count >= MaxResults)
+                if (LastSearchResults.Count >= MaxSearchResults)
                 {
-                    resultsCountLb.Text = $"{SearchResultsOffset + 1}-{SearchResultsOffset + MaxResults} of {LastSearchResults.Count}";
+                    resultsCountLb.Text = $"{SearchResultsOffset + 1}-{SearchResultsOffset + MaxSearchResults} of {LastSearchResults.Count}";
                 }
                 else
                 {
@@ -420,9 +344,9 @@ namespace Data_Package_Tool
             {
                 LoadSearchResults();
 
-                if (LastSearchResults.Count >= MaxResults)
+                if (LastSearchResults.Count >= MaxSearchResults)
                 {
-                    resultsCountLb.Text = $"{SearchResultsOffset + 1}-{SearchResultsOffset + MaxResults} of {LastSearchResults.Count}";
+                    resultsCountLb.Text = $"{SearchResultsOffset + 1}-{SearchResultsOffset + MaxSearchResults} of {LastSearchResults.Count}";
                 }
                 else
                 {
@@ -493,13 +417,13 @@ namespace Data_Package_Tool
 
         private void messagesPrevBtn_Click(object sender, EventArgs e)
         {
-            SearchResultsOffset -= MaxResults;
+            SearchResultsOffset -= MaxSearchResults;
             LoadSearchResults();
         }
 
         private void messagesNextBtn_Click(object sender, EventArgs e)
         {
-            SearchResultsOffset += MaxResults;
+            SearchResultsOffset += MaxSearchResults;
             LoadSearchResults();
         }
 
@@ -509,7 +433,7 @@ namespace Data_Package_Tool
         private int imageSquareSize = 200;
         private void LoadImages()
         {
-            if(AllAttachments.Count == 0)
+            if(DataPackage.Attachments.Count == 0)
             {
                 imagesCountLb.Text = $"No images found";
                 return;
@@ -519,10 +443,10 @@ namespace Data_Package_Tool
             imagesPrevBtn.Enabled = false;
 
             if (imagesOffset < 0) imagesOffset = 0;
-            if (imagesOffset >= AllAttachments.Count || imagesOffset + imagesPerPage >= AllAttachments.Count) imagesOffset = AllAttachments.Count - imagesPerPage;
+            if (imagesOffset >= DataPackage.Attachments.Count || imagesOffset + imagesPerPage >= DataPackage.Attachments.Count) imagesOffset = DataPackage.Attachments.Count - imagesPerPage;
 
             imagesPanel.Controls.Clear();
-            imagesCountLb.Text = $"{imagesOffset + 1}-{imagesOffset + imagesPerPage} of {AllAttachments.Count}";
+            imagesCountLb.Text = $"{imagesOffset + 1}-{imagesOffset + imagesPerPage} of {DataPackage.Attachments.Count}";
 
             for (int i = 0; i < imagesPerPage; i++)
             {
@@ -533,7 +457,7 @@ namespace Data_Package_Tool
                     loc = new Point(imagesPanel.Controls.Count % imagesPerRow == 0 ? 3 : last.Location.X + last.Size.Width + 6, imagesPanel.Controls.Count % imagesPerRow == 0 ? last.Location.Y + imageSquareSize + 44 : last.Location.Y);
                 }
 
-                var attachment = AllAttachments[imagesOffset + i];
+                var attachment = DataPackage.Attachments[imagesOffset + i];
 
                 var pb = new Attachment(attachment)
                 {
@@ -607,96 +531,6 @@ namespace Data_Package_Tool
             }
 
             Properties.Settings.Default.Save();
-        }
-
-        private int guildsLoadProgress = 0;
-        private void guildsBw_DoWork(object sender, DoWorkEventArgs e)
-        {
-            BeginInvoke((MethodInvoker)delegate
-            {
-                serversStatusLb.Visible = true;
-            });
-
-            var compiledRegex = new Regex(@"activity/reporting/events.+\.json", RegexOptions.Compiled);
-
-            using (var file = File.OpenRead(openFileDialog1.FileName))
-            using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
-            {
-                foreach (var entry in zip.Entries)
-                {
-                    if (compiledRegex.IsMatch(entry.FullName))
-                    {
-                        using (var data = new StreamReader(entry.Open()))
-                        {
-                            long bytesRead = 0;
-                            while (!data.EndOfStream)
-                            {
-                                var line = data.ReadLine();
-                                bytesRead += line.Length;
-
-                                guildsLoadProgress = (int)((double)bytesRead / (long)entry.Length * 100);
-
-                                ProcessAnalyticsLine(line);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void guildsBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            AllInvites = AllInvites.OrderBy(o => DateTime.Parse(o.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind).Ticks).ToList();
-
-            foreach (var eventData in AllInvites)
-            {
-                var guild = AllJoinedGuilds.Find(x => x.id == eventData.guild);
-                if (guild == null)
-                {
-                    AllJoinedGuilds.Add(new DAnalyticsGuild
-                    {
-                        id = eventData.guild,
-                        join_type = "invite",
-                        invites = new List<string> { eventData.invite },
-                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)
-                    });
-                }
-                else
-                {
-                    if (!guild.invites.Contains(eventData.invite))
-                    {
-                        guild.invites.Add(eventData.invite);
-                    }
-
-                    // Handle the case where the original join didn't create a guild_join event, but did create accepted_instant_invite, and then a rejoin created a newer guild_join
-                    // (i.e. use older date from accepted_instant_invite if there is one)
-                    var joinDate = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind);
-                    if(joinDate.Ticks < guild.timestamp.Ticks)
-                    {
-                        guild.timestamp = joinDate;
-                    }
-                }
-            }
-
-            AllJoinedGuilds = AllJoinedGuilds.OrderByDescending(o => o.timestamp.Ticks).ToList();
-
-            tabControl1.TabPages[3].Text = $"Servers - {AllJoinedGuilds.Count}";
-
-            serversLv.Items.Clear();
-            foreach (var guild in AllJoinedGuilds)
-            {
-                string guildName = "";
-                if(CurrentGuilds[guild.id] != null)
-                {
-                    guildName = CurrentGuilds[guild.id];
-                }
-
-                string[] values = { guild.timestamp.ToShortDateString(), guild.id, guildName, guild.join_type, guild.location, String.Join(", ", guild.invites.ToArray()) };
-                var lvItem = new ListViewItem(values);
-                serversLv.Items.Add(lvItem);
-            }
-
-            serversStatusStrip.Visible = false;
         }
 
         private int MassDeleteIdx = 0;
@@ -824,7 +658,7 @@ namespace Data_Package_Tool
         {
             string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
             string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
-            if (ChannelsMap[channelId].has_duplicates)
+            if (DataPackage.ChannelsMap[channelId].has_duplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
@@ -843,7 +677,7 @@ namespace Data_Package_Tool
         {
             string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
             string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
-            if (ChannelsMap[channelId].has_duplicates)
+            if (DataPackage.ChannelsMap[channelId].has_duplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }

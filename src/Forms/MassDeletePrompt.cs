@@ -22,7 +22,7 @@ namespace Data_Package_Tool
 
         private void saveBtn_Click(object sender, EventArgs e)
         {
-            if(!Discord.ValidateToken(tokenTb.Text, Main.User.id))
+            if(!Discord.ValidateToken(tokenTb.Text, Main.DataPackage.User.id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return;

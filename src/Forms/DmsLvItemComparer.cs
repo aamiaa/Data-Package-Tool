@@ -20,8 +20,8 @@ namespace Data_Package_Tool.Forms
 
             int val;
 
-            var channelX = Main.ChannelsMap[lvX.SubItems[1].Text];
-            var channelY = Main.ChannelsMap[lvY.SubItems[1].Text];
+            var channelX = Main.DataPackage.ChannelsMap[lvX.SubItems[1].Text];
+            var channelY = Main.DataPackage.ChannelsMap[lvY.SubItems[1].Text];
 
             switch (col)
             {
