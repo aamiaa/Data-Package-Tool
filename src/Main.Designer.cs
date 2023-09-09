@@ -42,6 +42,8 @@ namespace Data_Package_Tool
             this.massDeleteBtn = new System.Windows.Forms.Button();
             this.resultsCountLb = new System.Windows.Forms.Label();
             this.messagesPanel = new System.Windows.Forms.Panel();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.searchBtn = new System.Windows.Forms.Button();
             this.searchTb = new System.Windows.Forms.TextBox();
             this.imagesTab = new System.Windows.Forms.TabPage();
@@ -50,6 +52,9 @@ namespace Data_Package_Tool
             this.imagesNextBtn = new System.Windows.Forms.Button();
             this.imagesPrevBtn = new System.Windows.Forms.Button();
             this.serversTab = new System.Windows.Forms.TabPage();
+            this.serversStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.serversStatusLb = new System.Windows.Forms.ToolStripStatusLabel();
+            this.serversPb = new System.Windows.Forms.ToolStripProgressBar();
             this.serversLv = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -90,23 +95,18 @@ namespace Data_Package_Tool
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
             this.loadBw = new System.ComponentModel.BackgroundWorker();
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
-            this.serversStatusStrip = new System.Windows.Forms.StatusStrip();
-            this.serversPb = new System.Windows.Forms.ToolStripProgressBar();
-            this.serversStatusLb = new System.Windows.Forms.ToolStripStatusLabel();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
             this.messagesTab.SuspendLayout();
             this.messagesPanel.SuspendLayout();
             this.imagesTab.SuspendLayout();
             this.serversTab.SuspendLayout();
+            this.serversStatusStrip.SuspendLayout();
             this.serversContextMenu.SuspendLayout();
             this.dmsTab.SuspendLayout();
             this.dmsContextMenu.SuspendLayout();
             this.settingsTab.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.serversStatusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -251,6 +251,16 @@ namespace Data_Package_Tool
             this.messagesPanel.Size = new System.Drawing.Size(568, 251);
             this.messagesPanel.TabIndex = 2;
             // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(568, 251);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.listWPF1;
+            // 
             // searchBtn
             // 
             this.searchBtn.Location = new System.Drawing.Point(198, 6);
@@ -333,6 +343,30 @@ namespace Data_Package_Tool
             this.serversTab.Size = new System.Drawing.Size(580, 291);
             this.serversTab.TabIndex = 4;
             this.serversTab.Text = "Servers";
+            // 
+            // serversStatusStrip
+            // 
+            this.serversStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.serversStatusLb,
+            this.serversPb});
+            this.serversStatusStrip.Location = new System.Drawing.Point(3, 266);
+            this.serversStatusStrip.Name = "serversStatusStrip";
+            this.serversStatusStrip.Size = new System.Drawing.Size(574, 22);
+            this.serversStatusStrip.TabIndex = 1;
+            this.serversStatusStrip.Text = "statusStrip1";
+            // 
+            // serversStatusLb
+            // 
+            this.serversStatusLb.BackColor = System.Drawing.SystemColors.Control;
+            this.serversStatusLb.Name = "serversStatusLb";
+            this.serversStatusLb.Size = new System.Drawing.Size(59, 17);
+            this.serversStatusLb.Text = "Loading...";
+            // 
+            // serversPb
+            // 
+            this.serversPb.MarqueeAnimationSpeed = 0;
+            this.serversPb.Name = "serversPb";
+            this.serversPb.Size = new System.Drawing.Size(200, 16);
             // 
             // serversLv
             // 
@@ -655,40 +689,6 @@ namespace Data_Package_Tool
             // 
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
             // 
-            // serversStatusStrip
-            // 
-            this.serversStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.serversStatusLb,
-            this.serversPb});
-            this.serversStatusStrip.Location = new System.Drawing.Point(3, 266);
-            this.serversStatusStrip.Name = "serversStatusStrip";
-            this.serversStatusStrip.Size = new System.Drawing.Size(574, 22);
-            this.serversStatusStrip.TabIndex = 1;
-            this.serversStatusStrip.Text = "statusStrip1";
-            // 
-            // serversPb
-            // 
-            this.serversPb.MarqueeAnimationSpeed = 0;
-            this.serversPb.Name = "serversPb";
-            this.serversPb.Size = new System.Drawing.Size(200, 16);
-            // 
-            // serversStatusLb
-            // 
-            this.serversStatusLb.BackColor = System.Drawing.SystemColors.Control;
-            this.serversStatusLb.Name = "serversStatusLb";
-            this.serversStatusLb.Size = new System.Drawing.Size(59, 17);
-            this.serversStatusLb.Text = "Loading...";
-            // 
-            // elementHost1
-            // 
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(568, 251);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.listWPF1;
-            // 
             // Main
             // 
             this.AcceptButton = this.searchBtn;
@@ -709,14 +709,14 @@ namespace Data_Package_Tool
             this.imagesTab.PerformLayout();
             this.serversTab.ResumeLayout(false);
             this.serversTab.PerformLayout();
+            this.serversStatusStrip.ResumeLayout(false);
+            this.serversStatusStrip.PerformLayout();
             this.serversContextMenu.ResumeLayout(false);
             this.dmsTab.ResumeLayout(false);
             this.dmsContextMenu.ResumeLayout(false);
             this.settingsTab.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.serversStatusStrip.ResumeLayout(false);
-            this.serversStatusStrip.PerformLayout();
             this.ResumeLayout(false);
 
         }

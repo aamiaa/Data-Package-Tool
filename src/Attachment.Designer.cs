@@ -33,11 +33,12 @@ namespace Data_Package_Tool
             this.imagePb = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.jumpToMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewUserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.copyChannelIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyUserIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyGuildIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewUserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyUserIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openDmSELFBOTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.imagePb)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -59,12 +60,13 @@ namespace Data_Package_Tool
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.jumpToMessageToolStripMenuItem,
             this.viewUserToolStripMenuItem,
+            this.openDmSELFBOTToolStripMenuItem,
             this.toolStripSeparator1,
             this.copyChannelIdToolStripMenuItem,
             this.copyGuildIdToolStripMenuItem,
             this.copyUserIdToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 142);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 164);
             // 
             // jumpToMessageToolStripMenuItem
             // 
@@ -73,10 +75,18 @@ namespace Data_Package_Tool
             this.jumpToMessageToolStripMenuItem.Text = "Jump to message";
             this.jumpToMessageToolStripMenuItem.Click += new System.EventHandler(this.jumpToMessageToolStripMenuItem_Click);
             // 
+            // viewUserToolStripMenuItem
+            // 
+            this.viewUserToolStripMenuItem.Enabled = false;
+            this.viewUserToolStripMenuItem.Name = "viewUserToolStripMenuItem";
+            this.viewUserToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewUserToolStripMenuItem.Text = "View user";
+            this.viewUserToolStripMenuItem.Click += new System.EventHandler(this.viewUserToolStripMenuItem_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(163, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // copyChannelIdToolStripMenuItem
             // 
@@ -84,14 +94,6 @@ namespace Data_Package_Tool
             this.copyChannelIdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.copyChannelIdToolStripMenuItem.Text = "Copy channel id";
             this.copyChannelIdToolStripMenuItem.Click += new System.EventHandler(this.copyChannelIdToolStripMenuItem_Click);
-            // 
-            // copyUserIdToolStripMenuItem
-            // 
-            this.copyUserIdToolStripMenuItem.Enabled = false;
-            this.copyUserIdToolStripMenuItem.Name = "copyUserIdToolStripMenuItem";
-            this.copyUserIdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.copyUserIdToolStripMenuItem.Text = "Copy user id";
-            this.copyUserIdToolStripMenuItem.Click += new System.EventHandler(this.copyUserIdToolStripMenuItem_Click);
             // 
             // copyGuildIdToolStripMenuItem
             // 
@@ -101,13 +103,21 @@ namespace Data_Package_Tool
             this.copyGuildIdToolStripMenuItem.Text = "Copy guild id";
             this.copyGuildIdToolStripMenuItem.Click += new System.EventHandler(this.copyGuildIdToolStripMenuItem_Click);
             // 
-            // viewUserToolStripMenuItem
+            // copyUserIdToolStripMenuItem
             // 
-            this.viewUserToolStripMenuItem.Enabled = false;
-            this.viewUserToolStripMenuItem.Name = "viewUserToolStripMenuItem";
-            this.viewUserToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.viewUserToolStripMenuItem.Text = "View user";
-            this.viewUserToolStripMenuItem.Click += new System.EventHandler(this.viewUserToolStripMenuItem_Click);
+            this.copyUserIdToolStripMenuItem.Enabled = false;
+            this.copyUserIdToolStripMenuItem.Name = "copyUserIdToolStripMenuItem";
+            this.copyUserIdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyUserIdToolStripMenuItem.Text = "Copy user id";
+            this.copyUserIdToolStripMenuItem.Click += new System.EventHandler(this.copyUserIdToolStripMenuItem_Click);
+            // 
+            // openDmSELFBOTToolStripMenuItem
+            // 
+            this.openDmSELFBOTToolStripMenuItem.Enabled = false;
+            this.openDmSELFBOTToolStripMenuItem.Name = "openDmSELFBOTToolStripMenuItem";
+            this.openDmSELFBOTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openDmSELFBOTToolStripMenuItem.Text = "Open dm (SELFBOT)";
+            this.openDmSELFBOTToolStripMenuItem.Click += new System.EventHandler(this.openDmSELFBOTToolStripMenuItem_Click);
             // 
             // Attachment
             // 
@@ -131,5 +141,6 @@ namespace Data_Package_Tool
         private System.Windows.Forms.ToolStripMenuItem copyUserIdToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyGuildIdToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewUserToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openDmSELFBOTToolStripMenuItem;
     }
 }
