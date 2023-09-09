@@ -148,6 +148,11 @@ namespace Data_Package_Tool
                 });
                 task.ContinueWith(t =>
                 {
+                    foreach(var messageId in Properties.Settings.Default.DeletedMessageIDs)
+                    {
+                        if (DataPackage.MessagesMap.ContainsKey(messageId)) DataPackage.MessagesMap[messageId].deleted = true;
+                    }
+
                     LoadDMChannels();
 
                     loadingLb.Text = DataPackage.LoadStatus.Status;
@@ -280,13 +285,6 @@ namespace Data_Package_Tool
             }
 
             LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.id)).ToList();
-            foreach(var message in LastSearchResults)
-            {
-                if(Properties.Settings.Default.DeletedMessageIDs.Contains(message.id))
-                {
-                    message.deleted = true;
-                }
-            }
         }
 
         private void searchTimer_Tick(object sender, EventArgs e)

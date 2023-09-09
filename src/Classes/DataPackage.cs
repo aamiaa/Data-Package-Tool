@@ -27,6 +27,7 @@ namespace Data_Package_Tool.Classes
         public dynamic Guilds;
         public List<DChannel> Channels = new List<DChannel>();
         public Dictionary<string, DChannel> ChannelsMap = new Dictionary<string, DChannel>();
+        public Dictionary<string, DMessage> MessagesMap = new Dictionary<string, DMessage>();
 
         public List<DAnalyticsGuild> JoinedGuilds = new List<DAnalyticsGuild>();
         public List<DAnalyticsEvent> AcceptedInvites = new List<DAnalyticsEvent>();
@@ -106,6 +107,11 @@ namespace Data_Package_Tool.Classes
 
                             var channel = Newtonsoft.Json.JsonConvert.DeserializeObject<DChannel>(json);
                             channel.LoadMessages(csv);
+
+                            foreach(var msg in channel.messages)
+                            {
+                                this.MessagesMap.Add(msg.id, msg);
+                            }
 
                             this.TotalMessages += channel.messages.Count;
                             this.Channels.Add(channel);
