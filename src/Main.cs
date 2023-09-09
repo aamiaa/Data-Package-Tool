@@ -106,40 +106,6 @@ namespace Data_Package_Tool
 
         private void LoadJoinedGuilds()
         {
-            DataPackage.AcceptedInvites = DataPackage.AcceptedInvites.OrderBy(o => DateTime.Parse(o.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind).Ticks).ToList();
-
-            foreach (var eventData in DataPackage.AcceptedInvites)
-            {
-                var guild = DataPackage.JoinedGuilds.Find(x => x.id == eventData.guild);
-                if (guild == null)
-                {
-                    DataPackage.JoinedGuilds.Add(new DAnalyticsGuild
-                    {
-                        id = eventData.guild,
-                        join_type = "invite",
-                        invites = new List<string> { eventData.invite },
-                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)
-                    });
-                }
-                else
-                {
-                    if (!guild.invites.Contains(eventData.invite))
-                    {
-                        guild.invites.Add(eventData.invite);
-                    }
-
-                    // Handle the case where the original join didn't create a guild_join event, but did create accepted_instant_invite, and then a rejoin created a newer guild_join
-                    // (i.e. use older date from accepted_instant_invite if there is one)
-                    var joinDate = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind);
-                    if (joinDate.Ticks < guild.timestamp.Ticks)
-                    {
-                        guild.timestamp = joinDate;
-                    }
-                }
-            }
-
-            DataPackage.JoinedGuilds = DataPackage.JoinedGuilds.OrderByDescending(o => o.timestamp.Ticks).ToList();
-
             tabControl1.TabPages[3].Text = $"Servers - {DataPackage.JoinedGuilds.Count}";
 
             serversLv.Items.Clear();
@@ -223,6 +189,8 @@ namespace Data_Package_Tool
         private int SearchResultsOffset = 0;
         private void LoadSearchResults()
         {
+            if (LastSearchResults == null || LastSearchResults.Count == 0) return;
+
             ((MessageListWPF)elementHost1.Child).Clear();
             resultsCountLb.Text = $"{SearchResultsOffset + 1}-{Math.Min(SearchResultsOffset + MaxSearchResults, LastSearchResults.Count)} of {LastSearchResults.Count}";
             for (int i = SearchResultsOffset; i < SearchResultsOffset + MaxSearchResults; i++)
@@ -417,12 +385,17 @@ namespace Data_Package_Tool
 
         private void messagesPrevBtn_Click(object sender, EventArgs e)
         {
+            if (SearchResultsOffset - MaxSearchResults < 0) return;
+
             SearchResultsOffset -= MaxSearchResults;
             LoadSearchResults();
         }
 
         private void messagesNextBtn_Click(object sender, EventArgs e)
         {
+            if (LastSearchResults.Count <= MaxSearchResults) return;
+            if(SearchResultsOffset + MaxSearchResults > LastSearchResults.Count) return;
+
             SearchResultsOffset += MaxSearchResults;
             LoadSearchResults();
         }

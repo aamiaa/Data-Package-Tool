@@ -157,6 +157,40 @@ namespace Data_Package_Tool.Classes
                 }
             }
 
+            this.AcceptedInvites = this.AcceptedInvites.OrderBy(o => DateTime.Parse(o.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind).Ticks).ToList();
+
+            foreach (var eventData in this.AcceptedInvites)
+            {
+                var guild = this.JoinedGuilds.Find(x => x.id == eventData.guild);
+                if (guild == null)
+                {
+                    this.JoinedGuilds.Add(new DAnalyticsGuild
+                    {
+                        id = eventData.guild,
+                        join_type = "invite",
+                        invites = new List<string> { eventData.invite },
+                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)
+                    });
+                }
+                else
+                {
+                    if (!guild.invites.Contains(eventData.invite))
+                    {
+                        guild.invites.Add(eventData.invite);
+                    }
+
+                    // Handle the case where the original join didn't create a guild_join event, but did create accepted_instant_invite, and then a rejoin created a newer guild_join
+                    // (i.e. use older date from accepted_instant_invite if there is one)
+                    var joinDate = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind);
+                    if (joinDate.Ticks < guild.timestamp.Ticks)
+                    {
+                        guild.timestamp = joinDate;
+                    }
+                }
+            }
+
+            this.JoinedGuilds = this.JoinedGuilds.OrderByDescending(o => o.timestamp.Ticks).ToList();
+
             this.GuildsLoadStatus.Finished = true;
         }
 
