@@ -246,7 +246,7 @@ namespace Data_Package_Tool
             Regex compiledRegex = null;
             if (Properties.Settings.Default.SearchMode == "words")
             {
-                compiledRegex = new Regex($"^{String.Join("", Regex.Escape(searchText).Split(' ').Select(x => $"(?=.*?\\b{x}\\b)").ToArray())}", RegexOptions.Compiled); // https://stackoverflow.com/a/70484431
+                compiledRegex = new Regex($"^{String.Join("", searchText.Split(' ').Select(x => $"(?=.*?\\b{Regex.Escape(x)}\\b)").ToArray())}", RegexOptions.Compiled); // https://stackoverflow.com/a/70484431
             } else if(Properties.Settings.Default.SearchMode == "regex")
             {
                 compiledRegex = new Regex(searchText, RegexOptions.Compiled);
@@ -354,7 +354,7 @@ namespace Data_Package_Tool
             foreach (var msg in FilterMessages(channel.messages))
             {
 
-                if (msg.content.Contains(searchText))
+                if (msg.content.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     LastSearchResults.Add(msg);
                     count++;
