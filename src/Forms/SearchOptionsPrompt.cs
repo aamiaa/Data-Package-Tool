@@ -31,6 +31,7 @@ namespace Data_Package_Tool
             excludeGuildsCb.Checked = Properties.Settings.Default.SearchExcludeGuilds;
             excludeDmsCb.Checked = Properties.Settings.Default.SearchExcludeDMs;
             excludeGroupDmsCb.Checked = Properties.Settings.Default.SearchExcludeGDMs;
+            caseSensitiveCb.Checked = Properties.Settings.Default.SearchCaseSensitive;
             beforeDateCb.Checked = Properties.Settings.Default.SearchBeforeEnabled;
             afterDateCb.Checked = Properties.Settings.Default.SearchAfterEnabled;
 
@@ -81,6 +82,7 @@ namespace Data_Package_Tool
             Properties.Settings.Default.SearchExcludeGDMs = excludeGroupDmsCb.Checked;
             Properties.Settings.Default.SearchBeforeEnabled = beforeDateCb.Checked;
             Properties.Settings.Default.SearchAfterEnabled = afterDateCb.Checked;
+            Properties.Settings.Default.SearchCaseSensitive = caseSensitiveCb.Checked;
 
             var excludeIds = new StringCollection();
             foreach(string item in excludedIdsLb.Items)

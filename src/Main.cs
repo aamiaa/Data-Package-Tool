@@ -244,13 +244,17 @@ namespace Data_Package_Tool
 
             // Optimization - precompile regex and reuse it
             Regex compiledRegex = null;
+            var regexOptions = Properties.Settings.Default.SearchCaseSensitive ? RegexOptions.Compiled : RegexOptions.Compiled | RegexOptions.IgnoreCase;
             if (Properties.Settings.Default.SearchMode == "words")
             {
-                compiledRegex = new Regex($"^{String.Join("", searchText.Split(' ').Select(x => $"(?=.*?\\b{Regex.Escape(x)}\\b)").ToArray())}", RegexOptions.Compiled); // https://stackoverflow.com/a/70484431
+                compiledRegex = new Regex($"^{String.Join("", searchText.Split(' ').Select(x => $"(?=.*?\\b{Regex.Escape(x)}\\b)").ToArray())}", regexOptions); // https://stackoverflow.com/a/70484431
             } else if(Properties.Settings.Default.SearchMode == "regex")
             {
-                compiledRegex = new Regex(searchText, RegexOptions.Compiled);
+                compiledRegex = new Regex(searchText, regexOptions);
             }
+
+            // Optimization - do this once instead of a possible if statement every time
+            StringComparison stringComp = Properties.Settings.Default.SearchCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
             foreach (var channel in DataPackage.Channels)
             {
@@ -272,7 +276,7 @@ namespace Data_Package_Tool
                 // Optimization - single condition which picks the function, rather than running the condition on every iteration
                 if (Properties.Settings.Default.SearchMode == "exact")
                 {
-                    count += SearchExact(searchText, channel);
+                    count += SearchExact(searchText, stringComp, channel);
                 }
                 else if (Properties.Settings.Default.SearchMode == "words")
                 {
@@ -347,14 +351,14 @@ namespace Data_Package_Tool
             return m is List<DMessage> l ? l : m.ToList();
         }
 
-        private int SearchExact(string searchText, DChannel channel)
+        private int SearchExact(string searchText, StringComparison stringComp, DChannel channel)
         {
             int count = 0;
 
             foreach (var msg in FilterMessages(channel.messages))
             {
 
-                if (msg.content.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                if (msg.content.IndexOf(searchText, stringComp) >= 0)
                 {
                     LastSearchResults.Add(msg);
                     count++;

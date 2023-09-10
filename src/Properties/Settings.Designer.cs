@@ -163,5 +163,17 @@ namespace Data_Package_Tool.Properties {
                 this["SearchAfterDate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SearchCaseSensitive {
+            get {
+                return ((bool)(this["SearchCaseSensitive"]));
+            }
+            set {
+                this["SearchCaseSensitive"] = value;
+            }
+        }
     }
 }
