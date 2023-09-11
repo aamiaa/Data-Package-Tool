@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,15 +33,6 @@ namespace Data_Package_Tool.Forms
         public static readonly DependencyProperty FileNameProperty =
             DependencyProperty.Register("FileName", typeof(string), typeof(FileAttachmentWPF));
 
-        public string FileSize
-        {
-            get { return (string)GetValue(FileSizeProperty); }
-            set { SetValue(FileSizeProperty, value); }
-        }
-
-        public static readonly DependencyProperty FileSizeProperty =
-            DependencyProperty.Register("FileSize", typeof(string), typeof(FileAttachmentWPF));
-
         public string Url
         {
             get { return (string)GetValue(UrlProperty); }
@@ -56,6 +50,27 @@ namespace Data_Package_Tool.Forms
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(e.Uri.ToString());
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            string url = this.Url;
+            ThreadPool.QueueUserWorkItem(state =>
+            {
+                string fileSize = "Unknown size";
+                try
+                {
+                    var res = DRequest.Request("HEAD", url, null, null, false);
+                    var size = res.response.ContentLength;
+                    fileSize = Util.SizeSuffix(size, 2);
+                }
+                catch (Exception) { }
+
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    fileSizeLb.Text = fileSize;
+                }));
+            });
         }
     }
 }

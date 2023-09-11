@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Data_Package_Tool.Forms"
              mc:Ignorable="d" 
              d:DesignHeight="74" d:DesignWidth="432" Width="432" Height="74"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             DataContext="{Binding RelativeSource={RelativeSource Self}}" Loaded="UserControl_Loaded">
     <Border BorderBrush="#FF232428" BorderThickness="1" CornerRadius="8" Background="#FF2B2D31">
         <Grid>
             <Image Source="/Resources/FileIcon.png" HorizontalAlignment="Left" Margin="17,0,0,0" Width="30" Height="40"/>
@@ -25,7 +25,7 @@
                     <Run Text="{Binding FileName}" d:Text="message.txt"></Run>
                 </Hyperlink>
                 <LineBreak/>
-                <Run Text="{Binding FileSize}" FontSize="11" Foreground="#FF80848E" d:Text="69 bytes"></Run>
+                <Run x:Name="fileSizeLb" FontSize="11" Foreground="#FF80848E" d:Text="69 bytes"/>
             </TextBlock>
         </Grid>
     </Border>

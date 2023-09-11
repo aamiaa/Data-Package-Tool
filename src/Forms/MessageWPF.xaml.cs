@@ -342,19 +342,9 @@ namespace Data_Package_Tool
                     contentLb.Inlines.Add(inlineContainer);
                 } else
                 {
-                    string fileSize = "Unknown size";
-                    try
-                    {
-                        var res = DRequest.Request("HEAD", attachment.url, null, null, false);
-                        var size = res.response.ContentLength;
-                        fileSize = Util.SizeSuffix(size, 2);
-                    }
-                    catch (Exception) { }
-
                     var file = new FileAttachmentWPF
                     {
                         FileName = attachment.url.Split('/').Last(),
-                        FileSize = fileSize,
                         Url = attachment.url
                     };
 
