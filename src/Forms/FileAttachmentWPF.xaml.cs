@@ -30,13 +30,21 @@ namespace Data_Package_Tool.Forms
         public static readonly DependencyProperty FileNameProperty =
             DependencyProperty.Register("FileName", typeof(string), typeof(FileAttachmentWPF));
 
+        public string FileSize
+        {
+            get { return (string)GetValue(FileSizeProperty); }
+            set { SetValue(FileSizeProperty, value); }
+        }
+
+        public static readonly DependencyProperty FileSizeProperty =
+            DependencyProperty.Register("FileSize", typeof(string), typeof(FileAttachmentWPF));
+
         public string Url
         {
             get { return (string)GetValue(UrlProperty); }
             set { SetValue(UrlProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Url.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty UrlProperty =
             DependencyProperty.Register("Url", typeof(string), typeof(FileAttachmentWPF));
 

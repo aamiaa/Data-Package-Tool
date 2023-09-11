@@ -25,7 +25,7 @@
                     <Run Text="{Binding FileName}" d:Text="message.txt"></Run>
                 </Hyperlink>
                 <LineBreak/>
-                <Run FontSize="11" Foreground="#FF80848E">Unknown size</Run>
+                <Run Text="{Binding FileSize}" FontSize="11" Foreground="#FF80848E" d:Text="69 bytes"></Run>
             </TextBlock>
         </Grid>
     </Border>
