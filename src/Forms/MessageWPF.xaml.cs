@@ -1,5 +1,6 @@
 ﻿using Data_Package_Tool.Classes;
 using Data_Package_Tool.Classes.Parsing;
+using Data_Package_Tool.Forms;
 using Data_Package_Tool.Helpers;
 using Microsoft.VisualBasic;
 using System;
@@ -313,32 +314,46 @@ namespace Data_Package_Tool
             bool firstAttachment = true;
             foreach(var attachment in Message.attachments)
             {
-                if (!attachment.IsImage()) return;
-
                 if(content != "" || !firstAttachment)
                 {
                     contentLb.Inlines.Add(new Run("\n"));
                 }
                 firstAttachment = false;
 
-                var img = new Image();
-                img.MaxWidth = 400;
-                img.MaxHeight = 300;
-                img.Stretch = Stretch.Uniform;
-                img.StretchDirection = StretchDirection.DownOnly;
-
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(attachment.url, UriKind.Absolute);
-                bitmap.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
-                bitmap.EndInit();
-                img.Source = bitmap;
-
-                var inlineContainer = new InlineUIContainer(img)
+                if(attachment.IsImage())
                 {
-                    BaselineAlignment = BaselineAlignment.Center,
-                };
-                contentLb.Inlines.Add(inlineContainer);
+                    var img = new Image();
+                    img.MaxWidth = 400;
+                    img.MaxHeight = 300;
+                    img.Stretch = Stretch.Uniform;
+                    img.StretchDirection = StretchDirection.DownOnly;
+
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(attachment.url, UriKind.Absolute);
+                    bitmap.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
+                    bitmap.EndInit();
+                    img.Source = bitmap;
+
+                    var inlineContainer = new InlineUIContainer(img)
+                    {
+                        BaselineAlignment = BaselineAlignment.Center,
+                    };
+                    contentLb.Inlines.Add(inlineContainer);
+                } else
+                {
+                    var file = new FileAttachmentWPF
+                    {
+                        FileName = attachment.url.Split('/').Last(),
+                        Url = attachment.url
+                    };
+
+                    var inlineContainer = new InlineUIContainer(file)
+                    {
+                        BaselineAlignment = BaselineAlignment.Center
+                    };
+                    contentLb.Inlines.Add(inlineContainer);
+                }
             }
         }
 
