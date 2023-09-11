@@ -11,7 +11,7 @@
                   ItemsSource="{Binding Messages}"
                   Grid.Row="1"
                   Background="{x:Null}"
-                  BorderBrush="{x:Null}"
+                  BorderThickness="0,0,0,0"
                   VirtualizingPanel.ScrollUnit="Pixel"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   VirtualizingPanel.VirtualizationMode="Recycling">
