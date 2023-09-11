@@ -62,12 +62,6 @@ namespace Data_Package_Tool
             }
         }
 
-        private void DisplayMessage(DMessage message)
-        {
-            var msgControl = new MessageWPF(message, DataPackage.User);
-            ((MessageListWPF)elementHost1.Child).AddToList(msgControl);
-        }
-
         private void LoadDMChannels()
         {
             dmsLv.Items.Clear();
@@ -198,13 +192,7 @@ namespace Data_Package_Tool
 
             ((MessageListWPF)elementHost1.Child).Clear();
             resultsCountLb.Text = $"{SearchResultsOffset + 1}-{Math.Min(SearchResultsOffset + MaxSearchResults, LastSearchResults.Count)} of {LastSearchResults.Count}";
-            for (int i = SearchResultsOffset; i < SearchResultsOffset + MaxSearchResults; i++)
-            {
-                if(i >= LastSearchResults.Count) return;
-
-                var msg = LastSearchResults[i];
-                DisplayMessage(msg);
-            }
+            ((MessageListWPF)elementHost1.Child).DisplayMessages(DataPackage.User, LastSearchResults, SearchResultsOffset, Math.Min(LastSearchResults.Count-1, SearchResultsOffset + MaxSearchResults));
         }
         private void searchBtn_Click(object sender, EventArgs e)
         {
@@ -225,8 +213,6 @@ namespace Data_Package_Tool
             searchOptionsBtn.Enabled = false;
             messagesPrevBtn.Enabled = false;
             messagesNextBtn.Enabled = false;
-            messagesPanel.Hide();
-            //messagesPanel.Controls.Clear();
             ((MessageListWPF)elementHost1.Child).Clear();
 
             searchBw.RunWorkerAsync();
@@ -327,7 +313,6 @@ namespace Data_Package_Tool
                 resultsCountLb.Text = "No results";
             }
 
-            messagesPanel.Show();
             searchBtn.Enabled = true;
             searchTb.Enabled = true;
             searchOptionsBtn.Enabled = true;
@@ -576,7 +561,7 @@ namespace Data_Package_Tool
                     case HttpStatusCode.NotFound:
                     case HttpStatusCode.NoContent:
                         msg.deleted = true;
-                        ((MessageListWPF)elementHost1.Child).RemoveMessage(msg.id);
+                        //((MessageListWPF)elementHost1.Child).RemoveMessage(msg.id);
 
                         Properties.Settings.Default.DeletedMessageIDs.Add(msg.id);
                         Properties.Settings.Default.Save();

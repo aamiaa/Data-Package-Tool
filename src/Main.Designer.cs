@@ -41,9 +41,6 @@ namespace Data_Package_Tool
             this.messagesPrevBtn = new System.Windows.Forms.Button();
             this.massDeleteBtn = new System.Windows.Forms.Button();
             this.resultsCountLb = new System.Windows.Forms.Label();
-            this.messagesPanel = new System.Windows.Forms.Panel();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.searchBtn = new System.Windows.Forms.Button();
             this.searchTb = new System.Windows.Forms.TextBox();
             this.imagesTab = new System.Windows.Forms.TabPage();
@@ -93,10 +90,11 @@ namespace Data_Package_Tool
             this.searchBw = new System.ComponentModel.BackgroundWorker();
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
             this.messagesTab.SuspendLayout();
-            this.messagesPanel.SuspendLayout();
             this.imagesTab.SuspendLayout();
             this.serversTab.SuspendLayout();
             this.serversStatusStrip.SuspendLayout();
@@ -172,12 +170,12 @@ namespace Data_Package_Tool
             // messagesTab
             // 
             this.messagesTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(51)))), ((int)(((byte)(56)))));
+            this.messagesTab.Controls.Add(this.elementHost1);
             this.messagesTab.Controls.Add(this.searchOptionsBtn);
             this.messagesTab.Controls.Add(this.messagesNextBtn);
             this.messagesTab.Controls.Add(this.messagesPrevBtn);
             this.messagesTab.Controls.Add(this.massDeleteBtn);
             this.messagesTab.Controls.Add(this.resultsCountLb);
-            this.messagesTab.Controls.Add(this.messagesPanel);
             this.messagesTab.Controls.Add(this.searchBtn);
             this.messagesTab.Controls.Add(this.searchTb);
             this.messagesTab.Location = new System.Drawing.Point(4, 22);
@@ -236,28 +234,6 @@ namespace Data_Package_Tool
             this.resultsCountLb.Name = "resultsCountLb";
             this.resultsCountLb.Size = new System.Drawing.Size(0, 13);
             this.resultsCountLb.TabIndex = 3;
-            // 
-            // messagesPanel
-            // 
-            this.messagesPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.messagesPanel.AutoScroll = true;
-            this.messagesPanel.Controls.Add(this.elementHost1);
-            this.messagesPanel.Location = new System.Drawing.Point(6, 32);
-            this.messagesPanel.Name = "messagesPanel";
-            this.messagesPanel.Size = new System.Drawing.Size(568, 251);
-            this.messagesPanel.TabIndex = 2;
-            // 
-            // elementHost1
-            // 
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(568, 251);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.listWPF1;
             // 
             // searchBtn
             // 
@@ -678,6 +654,18 @@ namespace Data_Package_Tool
             // 
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
             // 
+            // elementHost1
+            // 
+            this.elementHost1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.elementHost1.Location = new System.Drawing.Point(3, 29);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(574, 259);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.listWPF1;
+            // 
             // Main
             // 
             this.AcceptButton = this.searchBtn;
@@ -693,7 +681,6 @@ namespace Data_Package_Tool
             this.loadTb.ResumeLayout(false);
             this.messagesTab.ResumeLayout(false);
             this.messagesTab.PerformLayout();
-            this.messagesPanel.ResumeLayout(false);
             this.imagesTab.ResumeLayout(false);
             this.imagesTab.PerformLayout();
             this.serversTab.ResumeLayout(false);
@@ -722,7 +709,6 @@ namespace Data_Package_Tool
         private System.Windows.Forms.Label loadingLb;
         private System.Windows.Forms.Button searchBtn;
         private System.Windows.Forms.TextBox searchTb;
-        private System.Windows.Forms.Panel messagesPanel;
         private System.Windows.Forms.Label resultsCountLb;
         private System.Windows.Forms.Button imagesNextBtn;
         private System.Windows.Forms.Button imagesPrevBtn;

@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using Data_Package_Tool.Classes.Parsing;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Data_Package_Tool
@@ -8,36 +11,30 @@ namespace Data_Package_Tool
     /// </summary>
     public partial class MessageListWPF : UserControl
     {
+        public class MessageAndUser
+        {
+            public DUser User { get; set; }
+            public DMessage Message { get; set; }
+        }
+
+        public ObservableCollection<MessageAndUser> Messages { get; set; } = new ObservableCollection<MessageAndUser>();
         public MessageListWPF()
         {
             InitializeComponent();
+            this.DataContext = this;
         }
 
         public void Clear()
         {
-            mainGrid.RowDefinitions.Clear();
-            mainGrid.Children.Clear();
+            Messages.Clear();
         }
 
-        public void AddToList(UIElement child)
+        public void DisplayMessages(DUser user, List<DMessage> messages, int startIdx, int endIdx)
         {
-            mainGrid.RowDefinitions.Add(new RowDefinition
+            for(int i=startIdx;i<=endIdx;i++)
             {
-                Height = GridLength.Auto
-            });
-            child.SetValue(Grid.RowProperty, mainGrid.RowDefinitions.Count - 1);
-            mainGrid.Children.Add(child);
-        }
-
-        public void RemoveMessage(string messageId)
-        {
-            foreach(MessageWPF msg in mainGrid.Children)
-            {
-                if(msg.SelectedMessage.id == messageId)
-                {
-                    msg.MarkDeleted();
-                    break;
-                }
+                var message = messages[i];
+                Messages.Add(new MessageAndUser { User = user, Message = message });
             }
         }
     }

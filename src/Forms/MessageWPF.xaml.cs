@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Cache;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,7 +22,26 @@ namespace Data_Package_Tool
     /// </summary>
     public partial class MessageWPF : UserControl
     {
-        public DMessage SelectedMessage;
+        public DMessage Message
+        {
+            get { return (DMessage)GetValue(MessageProperty); }
+            set { SetValue(MessageProperty, value); }
+        }
+
+        public static readonly DependencyProperty MessageProperty =
+            DependencyProperty.Register("Message", typeof(DMessage), typeof(MessageWPF));
+
+        public DUser User
+        {
+            get { return (DUser)GetValue(UserProperty); }
+            set { SetValue(UserProperty, value); }
+        }
+
+        public static readonly DependencyProperty UserProperty =
+            DependencyProperty.Register("User", typeof(DUser), typeof(MessageWPF));
+
+
+
         public bool IsDeleted = false;
         public static BitmapImage AvatarSource;
 
@@ -31,11 +51,13 @@ namespace Data_Package_Tool
         private static Regex DEmojiRegex = new Regex(@"<a?:\w+:\d+>", RegexOptions.Compiled);
         private static Regex DEmojiStartRegex = new Regex(@"^<(a?):\w+:(\d+)>", RegexOptions.Compiled);
         private static Regex URLRegex = new Regex(@"^(https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9@:%_\+.,~#?&\/=]*))", RegexOptions.Compiled);
-        public MessageWPF(DMessage message, DUser user)
+        public MessageWPF()
         {
             InitializeComponent();
-            this.SelectedMessage = message;
+        }
 
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
             if (AvatarSource == null)
             {
                 AvatarSource = new BitmapImage();
@@ -46,17 +68,17 @@ namespace Data_Package_Tool
                 AvatarSource.Freeze();
             }
 
-            if (message.channel.IsDM())
+            if (Message.channel.IsDM())
             {
                 viewUserMi.IsEnabled = true;
                 openDMMi.IsEnabled = true;
             }
 
             // Set username
-            usernameLb.Content = user.global_name ?? user.GetTag();
+            usernameLb.Content = User.global_name ?? User.GetTag();
 
             // Set metadata
-            var channel = message.channel;
+            var channel = Message.channel;
             string metadata = "Channel: ";
             if (channel.name != null)
             {
@@ -73,12 +95,13 @@ namespace Data_Package_Tool
             {
                 copyUserIdMi.IsEnabled = true;
 
-                var recipientId = channel.GetOtherDMRecipient(user);
-                var recipientUserRelationship = Array.Find(user.relationships, x => x.id == recipientId);
-                if(recipientUserRelationship != null)
+                var recipientId = channel.GetOtherDMRecipient(User);
+                var recipientUserRelationship = Array.Find(User.relationships, x => x.id == recipientId);
+                if (recipientUserRelationship != null)
                 {
                     metadata += $"DMs with {recipientUserRelationship.user.GetTag()}";
-                } else
+                }
+                else
                 {
                     metadata += $"DMs with {recipientId}";
                 }
@@ -103,22 +126,22 @@ namespace Data_Package_Tool
                 }
             }
 
-            if (message.attachments.Count > 0)
+            if (Message.attachments.Count > 0)
             {
-                metadata += $", {message.attachments.Count} attachments";
+                metadata += $", {Message.attachments.Count} attachments";
             }
 
             metadataLb.Content = metadata;
 
             // Set content and timestamp
-            ParseAndSet(message.content);
-            dateLb.Content = message.timestamp.ToShortDateString() + " " + message.timestamp.ToShortTimeString();
+            ParseAndSet(Message.content);
+            dateLb.Content = Message.timestamp.ToShortDateString() + " " + Message.timestamp.ToShortTimeString();
 
             // Set avatar
             avatarImg.ImageSource = AvatarSource;
 
             // Add red tint if the message was deleted with mass deleter
-            if(message.deleted)
+            if (Message.deleted)
             {
                 MarkDeleted();
             }
@@ -183,6 +206,7 @@ namespace Data_Package_Tool
                             BitmapImage bitmap = new BitmapImage();
                             bitmap.BeginInit();
                             bitmap.UriSource = new Uri($"https://cdn.discordapp.com/emojis/{emojiId}.{(isAnimated ? "gif" : "png")}?size={(isOnlyEmojis ? "96" : "44")}&quality=lossless", UriKind.Absolute);
+                            bitmap.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
                             bitmap.EndInit();
                             img.Source = bitmap;
 
@@ -263,6 +287,7 @@ namespace Data_Package_Tool
                             BitmapImage bitmap = new BitmapImage();
                             bitmap.BeginInit();
                             bitmap.UriSource = new Uri($"https://twemoji.maxcdn.com/v/14.0.2/72x72/{codepoint}.png", UriKind.Absolute);
+                            bitmap.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
                             bitmap.EndInit();
                             img.Source = bitmap;
 
@@ -285,14 +310,14 @@ namespace Data_Package_Tool
             }
 
             // Attachments
-            for(int i=0;i<SelectedMessage.attachments.Count;i++)
+            for(int i=0;i<Message.attachments.Count;i++)
             {
                 if(content != "" || i > 0)
                 {
                     contentLb.Inlines.Add(new Run("\n"));
                 }
 
-                var attachment = SelectedMessage.attachments[i];
+                var attachment = Message.attachments[i];
 
                 var img = new Image();
                 img.MaxWidth = 400;
@@ -303,6 +328,7 @@ namespace Data_Package_Tool
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.UriSource = new Uri(attachment.url, UriKind.Absolute);
+                bitmap.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
                 bitmap.EndInit();
                 img.Source = bitmap;
 
@@ -316,14 +342,14 @@ namespace Data_Package_Tool
 
         private void goToMessageMi_Click(object sender, RoutedEventArgs e)
         {
-            if(SelectedMessage.channel.has_duplicates)
+            if(Message.channel.has_duplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
             try
             {
-                var link = SelectedMessage.GetMessageLink();
+                var link = Message.GetMessageLink();
                 Discord.LaunchDiscordProtocol($"channels/{link}");
             }
             catch (Exception ex)
@@ -356,14 +382,14 @@ namespace Data_Package_Tool
 
         private void viewUserMi_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedMessage.channel.has_duplicates)
+            if (Message.channel.has_duplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
             try
             {
-                Discord.LaunchDiscordProtocol($"users/{SelectedMessage.channel.GetOtherDMRecipient(Main.DataPackage.User)}");
+                Discord.LaunchDiscordProtocol($"users/{Message.channel.GetOtherDMRecipient(Main.DataPackage.User)}");
             }
             catch (Exception ex)
             {
@@ -373,12 +399,12 @@ namespace Data_Package_Tool
 
         private void copyMessageMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(SelectedMessage.content);
+            Clipboard.SetText(Message.content);
         }
 
         private void copyChannelIdMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(SelectedMessage.channel.id);
+            Clipboard.SetText(Message.channel.id);
         }
 
         private void copyMetadataMi_Click(object sender, RoutedEventArgs e)
@@ -388,22 +414,22 @@ namespace Data_Package_Tool
 
         private void copyUserIdMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(SelectedMessage.channel.GetOtherDMRecipient(Main.DataPackage.User));
+            Clipboard.SetText(Message.channel.GetOtherDMRecipient(Main.DataPackage.User));
         }
 
         private void copyGuildIdMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(SelectedMessage.channel.guild.id);
+            Clipboard.SetText(Message.channel.guild.id);
         }
 
         private void openDMMi_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedMessage.channel.has_duplicates)
+            if (Message.channel.has_duplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            string userId = SelectedMessage.channel.GetOtherDMRecipient(Main.DataPackage.User);
+            string userId = Message.channel.GetOtherDMRecipient(Main.DataPackage.User);
             if (Discord.OpenDMFlow(userId))
             {
                 goToMessageMi_Click(sender, e);
@@ -423,7 +449,7 @@ namespace Data_Package_Tool
             }
             Main.AccountToken = token;
 
-            var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{SelectedMessage.channel.id}/messages/{SelectedMessage.id}", new Dictionary<string, string>
+            var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{Message.channel.id}/messages/{Message.id}", new Dictionary<string, string>
             {
                 {"Authorization", token}
             });
@@ -432,10 +458,10 @@ namespace Data_Package_Tool
             {
                 case HttpStatusCode.NotFound:
                 case HttpStatusCode.NoContent:
-                    SelectedMessage.deleted = true;
+                    Message.deleted = true;
                     this.MarkDeleted();
 
-                    Properties.Settings.Default.DeletedMessageIDs.Add(SelectedMessage.id);
+                    Properties.Settings.Default.DeletedMessageIDs.Add(Message.id);
                     Properties.Settings.Default.Save();
                     break;
                 default:
