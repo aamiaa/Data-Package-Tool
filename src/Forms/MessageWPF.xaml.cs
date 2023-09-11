@@ -310,14 +310,16 @@ namespace Data_Package_Tool
             }
 
             // Attachments
-            for(int i=0;i<Message.attachments.Count;i++)
+            bool firstAttachment = true;
+            foreach(var attachment in Message.attachments)
             {
-                if(content != "" || i > 0)
+                if (!attachment.IsImage()) return;
+
+                if(content != "" || !firstAttachment)
                 {
                     contentLb.Inlines.Add(new Run("\n"));
                 }
-
-                var attachment = Message.attachments[i];
+                firstAttachment = false;
 
                 var img = new Image();
                 img.MaxWidth = 400;
