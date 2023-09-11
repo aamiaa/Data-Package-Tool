@@ -213,8 +213,6 @@ namespace Data_Package_Tool
             searchOptionsBtn.Enabled = false;
             messagesPrevBtn.Enabled = false;
             messagesNextBtn.Enabled = false;
-            messagesPanel.Hide();
-            //messagesPanel.Controls.Clear();
             ((MessageListWPF)elementHost1.Child).Clear();
 
             searchBw.RunWorkerAsync();
@@ -315,7 +313,6 @@ namespace Data_Package_Tool
                 resultsCountLb.Text = "No results";
             }
 
-            messagesPanel.Show();
             searchBtn.Enabled = true;
             searchTb.Enabled = true;
             searchOptionsBtn.Enabled = true;
