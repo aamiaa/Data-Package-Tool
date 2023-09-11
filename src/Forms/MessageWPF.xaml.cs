@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Cache;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -205,6 +206,7 @@ namespace Data_Package_Tool
                             BitmapImage bitmap = new BitmapImage();
                             bitmap.BeginInit();
                             bitmap.UriSource = new Uri($"https://cdn.discordapp.com/emojis/{emojiId}.{(isAnimated ? "gif" : "png")}?size={(isOnlyEmojis ? "96" : "44")}&quality=lossless", UriKind.Absolute);
+                            bitmap.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
                             bitmap.EndInit();
                             img.Source = bitmap;
 
@@ -285,6 +287,7 @@ namespace Data_Package_Tool
                             BitmapImage bitmap = new BitmapImage();
                             bitmap.BeginInit();
                             bitmap.UriSource = new Uri($"https://twemoji.maxcdn.com/v/14.0.2/72x72/{codepoint}.png", UriKind.Absolute);
+                            bitmap.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
                             bitmap.EndInit();
                             img.Source = bitmap;
 
@@ -325,6 +328,7 @@ namespace Data_Package_Tool
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.UriSource = new Uri(attachment.url, UriKind.Absolute);
+                bitmap.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
                 bitmap.EndInit();
                 img.Source = bitmap;
 
