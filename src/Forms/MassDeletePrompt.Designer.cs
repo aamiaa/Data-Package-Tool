@@ -33,7 +33,7 @@ namespace Data_Package_Tool
             this.label1 = new System.Windows.Forms.Label();
             this.delayTb = new System.Windows.Forms.TrackBar();
             this.delayLb = new System.Windows.Forms.Label();
-            this.saveBtn = new System.Windows.Forms.Button();
+            this.startBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.delayTb)).BeginInit();
             this.SuspendLayout();
             // 
@@ -75,23 +75,23 @@ namespace Data_Package_Tool
             this.delayLb.TabIndex = 3;
             this.delayLb.Text = "Delay: 1500ms";
             // 
-            // saveBtn
+            // startBtn
             // 
-            this.saveBtn.Location = new System.Drawing.Point(180, 197);
-            this.saveBtn.Name = "saveBtn";
-            this.saveBtn.Size = new System.Drawing.Size(75, 23);
-            this.saveBtn.TabIndex = 4;
-            this.saveBtn.Text = "Save";
-            this.saveBtn.UseVisualStyleBackColor = true;
-            this.saveBtn.Click += new System.EventHandler(this.saveBtn_Click);
+            this.startBtn.Location = new System.Drawing.Point(180, 197);
+            this.startBtn.Name = "startBtn";
+            this.startBtn.Size = new System.Drawing.Size(75, 23);
+            this.startBtn.TabIndex = 4;
+            this.startBtn.Text = "Start";
+            this.startBtn.UseVisualStyleBackColor = true;
+            this.startBtn.Click += new System.EventHandler(this.startBtn_Click);
             // 
             // MassDeletePrompt
             // 
-            this.AcceptButton = this.saveBtn;
+            this.AcceptButton = this.startBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(416, 232);
-            this.Controls.Add(this.saveBtn);
+            this.Controls.Add(this.startBtn);
             this.Controls.Add(this.delayLb);
             this.Controls.Add(this.delayTb);
             this.Controls.Add(this.label1);
@@ -116,6 +116,6 @@ namespace Data_Package_Tool
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TrackBar delayTb;
         private System.Windows.Forms.Label delayLb;
-        private System.Windows.Forms.Button saveBtn;
+        private System.Windows.Forms.Button startBtn;
     }
 }

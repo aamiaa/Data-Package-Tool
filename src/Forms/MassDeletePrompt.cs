@@ -20,7 +20,7 @@ namespace Data_Package_Tool
             delayLb.Text = $"Delay: {delayTb.Value * 100}ms";
         }
 
-        private void saveBtn_Click(object sender, EventArgs e)
+        private void startBtn_Click(object sender, EventArgs e)
         {
             if(!Discord.ValidateToken(tokenTb.Text, Main.DataPackage.User.id))
             {
