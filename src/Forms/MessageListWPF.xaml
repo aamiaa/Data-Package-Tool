@@ -3,12 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Data_Package_Tool"
+             xmlns:local="clr-namespace:Data_Package_Tool" xmlns:UserControl="clr-namespace:Data_Package_Tool"
              mc:Ignorable="d" 
              d:DesignHeight="251" d:DesignWidth="568">
     <Grid>
-        <ScrollViewer x:Name="mainScroll">
-            <Grid x:Name="mainGrid"/>
-        </ScrollViewer>
+        <ListView x:Name="mainList" ItemsSource="{Binding Messages}" Grid.Row="1" Background="{x:Null}" VirtualizingPanel.ScrollUnit="Pixel" BorderBrush="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.VirtualizationMode="Recycling">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Focusable" Value="false"/>
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListViewItem">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <local:MessageWPF Message="{Binding Message}" User="{Binding User}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </UserControl>
