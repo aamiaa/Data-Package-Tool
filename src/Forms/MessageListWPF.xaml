@@ -7,7 +7,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="251" d:DesignWidth="568">
     <Grid>
-        <ListView x:Name="mainList" ItemsSource="{Binding Messages}" Grid.Row="1" Background="{x:Null}" VirtualizingPanel.ScrollUnit="Pixel" BorderBrush="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.VirtualizationMode="Recycling">
+        <ListView x:Name="mainList"
+                  ItemsSource="{Binding Messages}"
+                  Grid.Row="1"
+                  Background="{x:Null}"
+                  BorderBrush="{x:Null}"
+                  VirtualizingPanel.ScrollUnit="Pixel"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="Focusable" Value="false"/>
