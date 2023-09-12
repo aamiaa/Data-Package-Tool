@@ -151,6 +151,10 @@ namespace Data_Package_Tool
 
                     loadingLb.Text = DataPackage.LoadStatus.Status;
                     progressBar1.Value = progressBar1.Maximum;
+
+                    searchBtn.Enabled = true;
+                    messagesPrevBtn.Enabled = true;
+                    messagesNextBtn.Enabled = true;
                 }, TaskScheduler.FromCurrentSynchronizationContext());
 
                 var guildsTask = new Task(() =>
@@ -586,12 +590,16 @@ namespace Data_Package_Tool
 
         private void copyIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if(serversLv.SelectedItems.Count == 0) return;
+
             string guildId = serversLv.SelectedItems[0].SubItems[1].Text;
             Clipboard.SetText(guildId);
         }
 
         private void copyInvitesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (serversLv.SelectedItems.Count == 0) return;
+
             string invites = serversLv.SelectedItems[0].SubItems[5].Text;
             Clipboard.SetText(invites);
         }
@@ -604,18 +612,24 @@ namespace Data_Package_Tool
 
         private void copyUserIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (dmsLv.SelectedItems.Count == 0) return;
+
             string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
             Clipboard.SetText(userId);
         }
 
         private void copyChannelIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (dmsLv.SelectedItems.Count == 0) return;
+
             string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
             Clipboard.SetText(channelId);
         }
 
         private void viewUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (dmsLv.SelectedItems.Count == 0) return;
+
             string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
             string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
             if (DataPackage.ChannelsMap[channelId].has_duplicates)
@@ -635,6 +649,8 @@ namespace Data_Package_Tool
 
         private void openDmSELFBOTToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (dmsLv.SelectedItems.Count == 0) return;
+
             string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
             string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
             if (DataPackage.ChannelsMap[channelId].has_duplicates)

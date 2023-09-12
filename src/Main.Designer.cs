@@ -197,6 +197,7 @@ namespace Data_Package_Tool
             // 
             // messagesNextBtn
             // 
+            this.messagesNextBtn.Enabled = false;
             this.messagesNextBtn.Location = new System.Drawing.Point(352, 5);
             this.messagesNextBtn.Name = "messagesNextBtn";
             this.messagesNextBtn.Size = new System.Drawing.Size(20, 20);
@@ -207,6 +208,7 @@ namespace Data_Package_Tool
             // 
             // messagesPrevBtn
             // 
+            this.messagesPrevBtn.Enabled = false;
             this.messagesPrevBtn.Location = new System.Drawing.Point(326, 5);
             this.messagesPrevBtn.Name = "messagesPrevBtn";
             this.messagesPrevBtn.Size = new System.Drawing.Size(20, 20);
@@ -237,6 +239,7 @@ namespace Data_Package_Tool
             // 
             // searchBtn
             // 
+            this.searchBtn.Enabled = false;
             this.searchBtn.Location = new System.Drawing.Point(198, 6);
             this.searchBtn.Name = "searchBtn";
             this.searchBtn.Size = new System.Drawing.Size(55, 20);
