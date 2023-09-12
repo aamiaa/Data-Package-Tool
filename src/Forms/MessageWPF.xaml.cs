@@ -327,6 +327,11 @@ namespace Data_Package_Tool
                     img.MaxHeight = 300;
                     img.Stretch = Stretch.Uniform;
                     img.StretchDirection = StretchDirection.DownOnly;
+                    img.Cursor = Cursors.Hand;
+                    img.MouseUp += (s, e) =>
+                    {
+                        if (e.ChangedButton == MouseButton.Left) Process.Start(attachment.url);
+                    };
 
                     BitmapImage bitmap = new BitmapImage();
                     bitmap.BeginInit();
