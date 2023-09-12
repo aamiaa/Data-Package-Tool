@@ -117,4 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label2.Text" xml:space="preserve">
+    <value>This will start deleting all messages currently displayed in search results from Discord.
+Note that this counts as self-botting, which is against Discord's Terms of Service, and might get your account banned.</value>
+  </data>
 </root>
