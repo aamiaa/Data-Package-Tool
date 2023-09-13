@@ -6,14 +6,15 @@ Note: This is my first C# app, sorry for bad code or development mistakes
 [Download the latest release](https://github.com/aamiaa/Data-Package-Tool/releases)
 
 ## Features
-- Search your messages, jump to them in your client
+- Search your messages
+- Jump to messages in your client
 - Mass delete messages*
 - Reopen lost DMs*
 - Browse all images you've sent
 - View all servers you've joined, along with invites you've used
 - View all DMs you've talked in
 
-\* Requires your token and might get you banned!
+\* Requires your account token. Note that this falls under selfbotting, which is against Discord's [Community Guidelines](https://discord.com/guidelines#:~:text=Do%20not%20use%20self%2Dbots%20or%20user%2Dbots) and might get your account banned. 
 
 ## Screenshots
 ![image](https://i.imgur.com/TfaBPzR.png)
