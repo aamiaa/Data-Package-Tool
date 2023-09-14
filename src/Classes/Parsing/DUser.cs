@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Data_Package_Tool.Classes.Parsing
 {
@@ -12,27 +13,25 @@ namespace Data_Package_Tool.Classes.Parsing
         public string avatar_hash;
 
         public DRelationship[] relationships;
-
         public Dictionary<string, string> notes;
 
-        public string GetAvatarURL()
+        private int DefaultAvatarId
         {
-            if(avatar_hash != null)
+            get
             {
-                return $"https://cdn.discordapp.com/avatars/{id}/{avatar_hash}.png?size=64";
+                if(this.IsPomelo())
+                {
+                    return (int)((Int64.Parse(this.id) >> 22) % 6);
+                } else
+                {
+                    return Int32.Parse(this.discriminator) % 5;
+                }
             }
-
-            if(IsPomelo())
-            {
-                return $"https://cdn.discordapp.com/embed/avatars/{(Int64.Parse(id) >> 22) % 6}.png?size=64";
-            }
-
-            return $"https://cdn.discordapp.com/embed/avatars/{Int32.Parse(discriminator) % 5}.png?size=64";
         }
 
         public bool IsPomelo()
         {
-            return discriminator == "0" || discriminator == "0000";
+            return this.discriminator == "0" || this.discriminator == "0000";
         }
 
         public string GetTag()
@@ -43,6 +42,27 @@ namespace Data_Package_Tool.Classes.Parsing
             }
 
             return $"{this.username}#{this.discriminator}";
+        }
+
+        public Bitmap GetDefaultAvatar()
+        {
+            switch (this.DefaultAvatarId)
+            {
+                case 0:
+                    return Properties.Resources.DefaultAvatar0;
+                case 1:
+                    return Properties.Resources.DefaultAvatar1;
+                case 2:
+                    return Properties.Resources.DefaultAvatar2;
+                case 3:
+                    return Properties.Resources.DefaultAvatar3;
+                case 4:
+                    return Properties.Resources.DefaultAvatar4;
+                case 5:
+                    return Properties.Resources.DefaultAvatar5;
+                default:
+                    throw new Exception("This shouldn't happen");
+            }
         }
     }
 }
