@@ -89,7 +89,7 @@ namespace Data_Package_Tool.Classes
             return DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime;
         }
 
-        public static bool ValidateToken(string token, string userId)
+        public static bool ValidateToken(string token, string userId = null)
         {
             var parts = token.Split('.');
 
@@ -99,7 +99,8 @@ namespace Data_Package_Tool.Classes
             try
             {
                 var tokenUserId = Encoding.UTF8.GetString(Convert.FromBase64String(userIdPart));
-                return tokenUserId == userId;
+                if(userId != null) return tokenUserId == userId;
+                return true;
             }
             catch (Exception)
             {

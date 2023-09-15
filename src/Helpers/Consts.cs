@@ -6,5 +6,7 @@
         public static readonly string InvalidTokenError = "Entered token is invalid or doesn't belong to the same account!";
         public static readonly string MissingTokenError = "You must enter your account token in the Settings tab to use this function.";
         public static readonly string MissingBotTokenError = "You must enter a bot token in the Settings tab to use this function.";
+        public static readonly string InvalidBotTokenError = "Entered token is invalid!";
+        public static readonly string WrongTokenType = "Entered bot token belongs to your own account!";
     }
 }

@@ -111,6 +111,16 @@ namespace Data_Package_Tool.Forms
                 Util.MsgBoxErr(Consts.MissingBotTokenError);
                 return;
             }
+            if(!Discord.ValidateToken(Discord.BotToken))
+            {
+                Util.MsgBoxErr(Consts.InvalidBotTokenError);
+                return;
+            }
+            if(Discord.ValidateToken(Discord.BotToken, Main.DataPackage.User.id))
+            {
+                Util.MsgBoxErr(Consts.WrongTokenType);
+                return;
+            }
 
             var res = DRequest.Request("GET", $"https://discord.com/api/v9/users/{this.UserId}", new Dictionary<string, string>
             {
