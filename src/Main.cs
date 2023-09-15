@@ -609,24 +609,6 @@ namespace Data_Package_Tool
             prompt.ShowDialog();
         }
 
-        private int dmsLvSortColumn = -1;
-        private void dmsLv_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-            /*if(e.Column != dmsLvSortColumn)
-            {
-                dmsLvSortColumn = e.Column;
-                dmsLv.Sorting = SortOrder.Ascending;
-            } else
-            {
-                if (dmsLv.Sorting == SortOrder.Ascending)
-                    dmsLv.Sorting = SortOrder.Descending;
-                else
-                    dmsLv.Sorting = SortOrder.Ascending;
-            }
-
-            dmsLv.ListViewItemSorter = new DmsLvItemComparer(e.Column, dmsLv.Sorting);*/
-        }
-
         private void userTokenTb_TextChanged(object sender, EventArgs e)
         {
             Discord.UserToken = userTokenTb.Text;

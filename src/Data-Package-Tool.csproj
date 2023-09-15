@@ -83,7 +83,6 @@
     </Compile>
     <Compile Include="Helpers\Consts.cs" />
     <Compile Include="Helpers\Discord.cs" />
-    <Compile Include="Forms\DmsLvItemComparer.cs" />
     <Compile Include="Forms\SearchOptionsPrompt.cs">
       <SubType>Form</SubType>
     </Compile>
