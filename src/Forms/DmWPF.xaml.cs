@@ -168,6 +168,11 @@ namespace Data_Package_Tool.Forms
             Clipboard.SetText(this.UserId);
         }
 
+        private void copyNoteMi_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(this.Note);
+        }
+
         private void viewUserMi_Click(object sender, RoutedEventArgs e)
         {
             if (Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates)
