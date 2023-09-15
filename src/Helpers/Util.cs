@@ -5,24 +5,24 @@ namespace Data_Package_Tool.Helpers
 {
     public class Util
     {
-        public static void MsgBox(string msg, string title = "Data Package Tool")
+        public static DialogResult MsgBox(string msg, string title = "Data Package Tool", MessageBoxButtons btns = MessageBoxButtons.OK)
         {
-            MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.None);
+            return MessageBox.Show(msg, title, btns, MessageBoxIcon.None);
         }
 
-        public static void MsgBoxInfo(string msg, string title = "Information")
+        public static DialogResult MsgBoxInfo(string msg, string title = "Information", MessageBoxButtons btns = MessageBoxButtons.OK)
         {
-            MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return MessageBox.Show(msg, title, btns, MessageBoxIcon.Information);
         }
 
-        public static void MsgBoxWarn(string msg, string title = "Warning")
+        public static DialogResult MsgBoxWarn(string msg, string title = "Warning", MessageBoxButtons btns = MessageBoxButtons.OK)
         {
-            MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return MessageBox.Show(msg, title, btns, MessageBoxIcon.Warning);
         }
 
-        public static void MsgBoxErr(string msg, string title = "Error")
+        public static DialogResult MsgBoxErr(string msg, string title = "Error", MessageBoxButtons btns = MessageBoxButtons.OK)
         {
-            MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return MessageBox.Show(msg, title, btns, MessageBoxIcon.Error);
         }
 
         // https://stackoverflow.com/a/14488941

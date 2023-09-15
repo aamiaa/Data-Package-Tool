@@ -452,7 +452,7 @@ namespace Data_Package_Tool
             }
 
             string userId = Message.channel.GetOtherDMRecipient(Main.DataPackage.User);
-            if (Discord.OpenDMFlow(userId))
+            if (Discord.OpenDMFlow(userId, Message.channel.id))
             {
                 goToMessageMi_Click(sender, e);
             }

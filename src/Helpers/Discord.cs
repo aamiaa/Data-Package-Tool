@@ -89,6 +89,12 @@ namespace Data_Package_Tool.Classes
             return DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime;
         }
 
+        public static string TimestampToSnowflake(DateTime timestamp)
+        {
+            long t = ((DateTimeOffset)timestamp).ToUnixTimeMilliseconds() - 1420070400000;
+            return (t << 22).ToString();
+        }
+
         public static bool ValidateToken(string token, string userId = null)
         {
             var parts = token.Split('.');
@@ -113,7 +119,7 @@ namespace Data_Package_Tool.Classes
             }
         }
 
-        public static bool OpenDMFlow(string userId)
+        public static bool OpenDMFlow(string userId, string expectedChannelId = null)
         {
             if(UserToken == null)
             {
@@ -142,6 +148,34 @@ namespace Data_Package_Tool.Classes
 
             if (response.response.StatusCode == HttpStatusCode.OK)
             {
+                string channelId = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.body).id;
+                if(expectedChannelId != null && expectedChannelId != channelId)
+                {
+                    var result = Util.MsgBoxWarn("Discord didn't open your selected dm. You can still attempt to reopen it by sending a message in it.\n\nWould you like to send a message in your selected dm?", "Warning", System.Windows.Forms.MessageBoxButtons.YesNoCancel);
+                    if(result == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        string msg = Interaction.InputBox("Enter message to send");
+                        if (msg == "") return false;
+
+                        var msgResponse = DRequest.Request("POST", $"https://discord.com/api/v9/channels/{expectedChannelId}/messages", new Dictionary<string, string>
+                        {
+                            {"Authorization", UserToken},
+                            {"Content-Type", "application/json"}
+                        }, Newtonsoft.Json.JsonConvert.SerializeObject(new Dictionary<string, dynamic>
+                        {
+                            {"content", msg},
+                            {"flags", 0},
+                            {"nonce", Discord.TimestampToSnowflake(DateTime.Now)},
+                            {"tts", false}
+                        }), true);
+
+                        if(msgResponse.response.StatusCode != HttpStatusCode.OK)
+                        {
+                            Util.MsgBoxErr($"Failed to send dm: {msgResponse.response.StatusCode} {msgResponse.body}");
+                            return false;
+                        }
+                    }
+                }
                 return true;
             }
             else

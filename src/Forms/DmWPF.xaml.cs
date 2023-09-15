@@ -157,7 +157,7 @@ namespace Data_Package_Tool.Forms
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            if (Discord.OpenDMFlow(this.UserId))
+            if (Discord.OpenDMFlow(this.UserId, this.ChannelId))
             {
                 Discord.LaunchDiscordProtocol($"channels/@me/{this.ChannelId}");
             }

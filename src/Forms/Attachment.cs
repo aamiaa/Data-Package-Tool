@@ -93,7 +93,7 @@ namespace Data_Package_Tool
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            if(Discord.OpenDMFlow(userId))
+            if(Discord.OpenDMFlow(userId, SelectedAttachment.message.channel.id))
             {
                 Discord.LaunchDiscordProtocol($"channels/@me/{channelId}");
             }
