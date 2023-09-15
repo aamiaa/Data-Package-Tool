@@ -96,6 +96,11 @@ namespace Data_Package_Tool.Classes
             if (parts.Length != 3) return false;
 
             var userIdPart = parts[0];
+            int padding = userIdPart.Length % 4;
+            if(padding != 0)
+            {
+                userIdPart += new string('=', 4 - padding);
+            }
             try
             {
                 var tokenUserId = Encoding.UTF8.GetString(Convert.FromBase64String(userIdPart));
