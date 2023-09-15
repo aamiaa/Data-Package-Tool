@@ -120,5 +120,64 @@ namespace Data_Package_Tool.Forms
                 });
             }
         }
+
+        private int currentColumn = 1;
+        private void nameLb_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (currentColumn != 0)
+            {
+                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages.OrderBy(x => x.Username));
+            }
+            else
+            {
+                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages.Reverse());
+            }
+
+            currentColumn = 0;
+            mainList.ItemsSource = DirectMessages;
+        }
+        private void firstDmDateLb_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if(currentColumn != 1)
+            {
+                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages.OrderByDescending(x => Int64.Parse(x.ChannelId)));
+            } else
+            {
+                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages.Reverse());
+            }
+
+            currentColumn = 1;
+            mainList.ItemsSource = DirectMessages;
+        }
+
+        private void yourMessagesLb_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (currentColumn != 2)
+            {
+                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages.OrderByDescending(x => x.MessagesCount));
+            }
+            else
+            {
+                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages.Reverse());
+            }
+
+            currentColumn = 2;
+            mainList.ItemsSource = DirectMessages;
+        }
+
+        private void noteLb_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (currentColumn != 3)
+            {
+                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages.OrderByDescending(x => x.Note));
+            }
+            else
+            {
+                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages.Reverse());
+            }
+
+            currentColumn = 3;
+            mainList.ItemsSource = DirectMessages;
+        }
     }
 }

@@ -6,6 +6,19 @@
              xmlns:local="clr-namespace:Data_Package_Tool.Forms"
              mc:Ignorable="d" 
              d:DesignHeight="251" d:DesignWidth="568">
+    <UserControl.Resources>
+        <Style x:Key="columnLabel" TargetType="Label">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FFF2F3F5"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="Source Sans Pro"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF3a3c42"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid Height="30" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
@@ -16,11 +29,11 @@
                 <ColumnDefinition Width="135" />
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Column="0" Foreground="#FFF2F3F5" VerticalAlignment="Center" FontFamily="Source Sans Pro" Content="Name"/>
-            <Label Grid.Column="1" Foreground="#FFF2F3F5" VerticalAlignment="Center" FontFamily="Source Sans Pro" Content="First DM Date"/>
-            <Label Grid.Column="2" Foreground="#FFF2F3F5" VerticalAlignment="Center" FontFamily="Source Sans Pro" Content="Your Messages"/>
-            <Label Grid.Column="3" Foreground="#FFF2F3F5" VerticalAlignment="Center" FontFamily="Source Sans Pro" Content="Note"/>
-            <Label Grid.Column="4" Foreground="#FFF2F3F5" VerticalAlignment="Center" FontFamily="Source Sans Pro" Content="Actions"/>
+            <Label Grid.Column="0" x:Name="nameLb" Style="{StaticResource columnLabel}" Content="Name" MouseLeftButtonUp="nameLb_MouseLeftButtonUp"/>
+            <Label Grid.Column="1" x:Name="firstDmDateLb" Style="{StaticResource columnLabel}" Content="First DM Date" MouseLeftButtonUp="firstDmDateLb_MouseLeftButtonUp"/>
+            <Label Grid.Column="2" x:Name="yourMessagesLb" Style="{StaticResource columnLabel}" Content="Your Messages" MouseLeftButtonUp="yourMessagesLb_MouseLeftButtonUp"/>
+            <Label Grid.Column="3" x:Name="noteLb" Style="{StaticResource columnLabel}" Content="Note" MouseLeftButtonUp="noteLb_MouseLeftButtonUp"/>
+            <Label Grid.Column="4" Style="{StaticResource columnLabel}" Content="Actions"/>
         </Grid>
         <ListView x:Name="mainList"
                   ItemsSource="{Binding DirectMessages}"
