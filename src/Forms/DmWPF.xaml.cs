@@ -1,4 +1,7 @@
-﻿using Data_Package_Tool.Classes.Parsing;
+﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes.Parsing;
+using Data_Package_Tool.Helpers;
+using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,6 +33,15 @@ namespace Data_Package_Tool.Forms
 
         public static readonly DependencyProperty UserIdProperty =
             DependencyProperty.Register("UserId", typeof(string), typeof(DmWPF));
+
+        public string ChannelId
+        {
+            get { return (string)GetValue(ChannelIdProperty); }
+            set { SetValue(ChannelIdProperty, value); }
+        }
+
+        public static readonly DependencyProperty ChannelIdProperty =
+            DependencyProperty.Register("ChannelId", typeof(string), typeof(DmWPF));
 
         public string Username
         {
@@ -89,6 +101,46 @@ namespace Data_Package_Tool.Forms
         public DmWPF()
         {
             InitializeComponent();
+        }
+
+        private void fetchBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void openDmBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates)
+            {
+                Util.MsgBoxWarn(Consts.DuplicateDMWarning);
+            }
+
+            if (Discord.OpenDMFlow(this.UserId))
+            {
+                Discord.LaunchDiscordProtocol($"channels/@me/{this.ChannelId}");
+            }
+        }
+
+        private void copyUserIdMi_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(this.UserId);
+        }
+
+        private void viewUserMi_Click(object sender, RoutedEventArgs e)
+        {
+            if (Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates)
+            {
+                Util.MsgBoxWarn(Consts.DuplicateDMWarning);
+            }
+
+            try
+            {
+                Discord.LaunchDiscordProtocol($"users/{this.UserId}");
+            }
+            catch (Exception ex)
+            {
+                Util.MsgBoxErr(ex.Message);
+            }
         }
     }
 }

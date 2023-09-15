@@ -81,9 +81,20 @@ namespace Data_Package_Tool
         private void LoadDMChannels()
         {
             var dmChannels = DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
-            var duplicateChannelsMap = new Dictionary<string, dynamic>();
+            var duplicateChannelsMap = new Dictionary<string, DChannel>();
 
             tabControl1.TabPages[4].Text = $"Direct Messages - {dmChannels.Count}";
+
+            foreach(var dmChannel in dmChannels)
+            {
+                string recipientId = dmChannel.GetOtherDMRecipient(DataPackage.User);
+                if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
+                {
+                    duplicateChannelsMap[recipientId].has_duplicates = true;
+                    dmChannel.has_duplicates = true;
+                }
+                duplicateChannelsMap[recipientId] = dmChannel;
+            }
 
             ((DmsListWPF)elementHost2.Child).DisplayMessages(DataPackage.User, dmChannels);
         }

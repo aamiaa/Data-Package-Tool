@@ -28,6 +28,7 @@ namespace Data_Package_Tool.Forms
         public class DmsListEntry
         {
             public string UserId { get; set; }
+            public string ChannelId { get; set; }
             public string Username { get; set; }
             public BitmapImage Avatar { get; set; }
             public string Date { get; set; }
@@ -66,6 +67,7 @@ namespace Data_Package_Tool.Forms
                 DirectMessages.Add(new DmsListEntry
                 { 
                     UserId = recipientId,
+                    ChannelId = channel.id,
                     Username = relationship != null ? relationship.user.GetTag() : "(Unknown User)",
                     Avatar = avatar,
                     Date = Discord.SnowflakeToTimestap(channel.id).ToShortDateString(),

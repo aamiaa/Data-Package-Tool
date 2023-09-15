@@ -46,6 +46,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <local:DmWPF UserId="{Binding UserId}"
+                                 ChannelId="{Binding ChannelId}"
                                  Username="{Binding Username}"
                                  Avatar="{Binding Avatar}"
                                  MessagesCount="{Binding MessagesCount}"

@@ -22,8 +22,8 @@
     </UserControl.Style>
     <UserControl.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Copy user id"/>
-            <MenuItem Header="View user"/>
+            <MenuItem x:Name="copyUserIdMi" Header="Copy user id" Click="copyUserIdMi_Click"/>
+            <MenuItem x:Name="viewUserMi" Header="View user" Click="viewUserMi_Click"/>
         </ContextMenu>
     </UserControl.ContextMenu>
     <Grid x:Name="rootGrid" Background="#00000000">
@@ -50,7 +50,7 @@
         <TextBlock Grid.Column="3" Text="{Binding Note}" d:Text="some guy from x server" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFF2F3F5" FontSize="14" FontFamily="Source Sans Pro" TextTrimming="CharacterEllipsis"/>
 
         <Grid Grid.Column="4">
-            <Button Content="Fetch"
+            <Button x:Name="fetchBtn" Content="Fetch"
                     Cursor="Hand"
                     Visibility="{Binding Path=NeedsFetching, Converter={StaticResource BoolToVis}}"
                     HorizontalAlignment="Right"
@@ -58,7 +58,7 @@
                     Width="50" Height="32"
                     Background="#FF5865F2" Foreground="#FFF2F3F5"
                     FontSize="12" FontFamily="Source Sans Pro"
-                    BorderThickness="0,0,0,0">
+                    BorderThickness="0,0,0,0" Click="fetchBtn_Click">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="3"/>
@@ -112,14 +112,14 @@
                     </EventTrigger>
                 </Button.Triggers>
             </Button>
-            <Button Content="Open DM"
+            <Button x:Name="openDmBtn" Content="Open DM"
                     Cursor="Hand"
                     HorizontalAlignment="Right"
                     Margin="0,0,10,0"
                     Width="65" Height="32"
                     Background="#FF5865F2" Foreground="#FFF2F3F5"
                     FontSize="12" FontFamily="Source Sans Pro"
-                    BorderThickness="0,0,0,0">
+                    BorderThickness="0,0,0,0" Click="openDmBtn_Click">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="3"/>
