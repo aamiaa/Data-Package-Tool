@@ -82,7 +82,7 @@ namespace Data_Package_Tool.Classes
 
                 if (User.avatar_hash == null)
                 {
-                    this.User.GetDefaultAvatar().Save(this.Avatar, System.Drawing.Imaging.ImageFormat.Png);
+                    this.User.GetDefaultAvatarBitmap().Save(this.Avatar, System.Drawing.Imaging.ImageFormat.Png);
                 }
 
                 var messagesRegex = new Regex(@"messages/(c?(\d+))/messages\.csv", RegexOptions.Compiled);

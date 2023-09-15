@@ -6,11 +6,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Windows.Media.Imaging;
 
 namespace Data_Package_Tool.Classes
 {
     public static class Discord
     {
+        public static List<BitmapImage> DefaultAvatars = new List<BitmapImage>(); // It's necessary to reuse the same images to save ram
         public static void LaunchDiscordProtocol(string url)
         {
             string instance = Properties.Settings.Default.UseDiscordInstance;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Media.Imaging;
 
 namespace Data_Package_Tool.Classes.Parsing
 {
@@ -11,6 +12,7 @@ namespace Data_Package_Tool.Classes.Parsing
         public string global_name;
         public string discriminator;
         public string avatar_hash;
+        public string avatar; // relationship user field
 
         public DRelationship[] relationships;
         public Dictionary<string, string> notes;
@@ -44,25 +46,30 @@ namespace Data_Package_Tool.Classes.Parsing
             return $"{this.username}#{this.discriminator}";
         }
 
-        public Bitmap GetDefaultAvatar()
+        public string GetAvatarURL()
         {
-            switch (this.DefaultAvatarId)
+            string avatarHash = this.avatar_hash ?? this.avatar;
+            if (avatarHash != null)
             {
-                case 0:
-                    return Properties.Resources.DefaultAvatar0;
-                case 1:
-                    return Properties.Resources.DefaultAvatar1;
-                case 2:
-                    return Properties.Resources.DefaultAvatar2;
-                case 3:
-                    return Properties.Resources.DefaultAvatar3;
-                case 4:
-                    return Properties.Resources.DefaultAvatar4;
-                case 5:
-                    return Properties.Resources.DefaultAvatar5;
-                default:
-                    throw new Exception("This shouldn't happen");
+                return $"https://cdn.discordapp.com/avatars/{id}/{avatarHash}.png?size=64";
             }
+
+            if (IsPomelo())
+            {
+                return $"https://cdn.discordapp.com/embed/avatars/{this.DefaultAvatarId}.png?size=64";
+            }
+
+            return $"https://cdn.discordapp.com/embed/avatars/{this.DefaultAvatarId}.png?size=64";
+        }
+
+        public Bitmap GetDefaultAvatarBitmap()
+        {
+            return Properties.Resources.ResourceManager.GetObject($"DefaultAvatar{this.DefaultAvatarId}") as Bitmap;
+        }
+
+        public BitmapImage GetDefaultAvatarBitmapImage()
+        {
+            return Discord.DefaultAvatars[DefaultAvatarId];
         }
     }
 }

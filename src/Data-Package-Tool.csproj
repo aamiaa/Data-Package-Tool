@@ -72,6 +72,12 @@
     <Compile Include="Classes\DRequest.cs" />
     <Compile Include="Classes\Parsing\DUser.cs" />
     <Compile Include="Classes\Parsing\DPartialGuild.cs" />
+    <Compile Include="Forms\DmsListWPF.xaml.cs">
+      <DependentUpon>DmsListWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DmWPF.xaml.cs">
+      <DependentUpon>DmWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FileAttachmentWPF.xaml.cs">
       <DependentUpon>FileAttachmentWPF.xaml</DependentUpon>
     </Compile>
@@ -145,6 +151,14 @@
     <None Include="Resources\0.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Forms\DmsListWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\DmWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\FileAttachmentWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
