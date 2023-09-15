@@ -17,7 +17,7 @@
             </Grid.ColumnDefinitions>
 
             <Label Grid.Column="0" Foreground="#FFF2F3F5" VerticalAlignment="Center" FontFamily="Source Sans Pro" Content="Name"/>
-            <Label Grid.Column="1" Foreground="#FFF2F3F5" VerticalAlignment="Center" FontFamily="Source Sans Pro" Content="Creation Date"/>
+            <Label Grid.Column="1" Foreground="#FFF2F3F5" VerticalAlignment="Center" FontFamily="Source Sans Pro" Content="First DM Date"/>
             <Label Grid.Column="2" Foreground="#FFF2F3F5" VerticalAlignment="Center" FontFamily="Source Sans Pro" Content="Your Messages"/>
             <Label Grid.Column="3" Foreground="#FFF2F3F5" VerticalAlignment="Center" FontFamily="Source Sans Pro" Content="Note"/>
             <Label Grid.Column="4" Foreground="#FFF2F3F5" VerticalAlignment="Center" FontFamily="Source Sans Pro" Content="Actions"/>
