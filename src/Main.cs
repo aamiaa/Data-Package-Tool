@@ -24,7 +24,6 @@ namespace Data_Package_Tool
     {
         public static DataPackage DataPackage = new DataPackage();
 
-        public static string AccountToken = "";
         private static readonly int MaxSearchResults = 500;
 
         public Main()
@@ -522,7 +521,6 @@ namespace Data_Package_Tool
             {
                 MassDeleteIdx = 0;
                 massDeleteTimer.Interval = prompt.GetDelay();
-                AccountToken = prompt.GetToken();
 
                 searchTb.Enabled = false;
                 searchBtn.Enabled = false;
@@ -558,7 +556,7 @@ namespace Data_Package_Tool
             {
                 var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{msg.channel.id}/messages/{msg.id}", new Dictionary<string, string>
                 {
-                    {"Authorization", AccountToken}
+                    {"Authorization", Discord.UserToken}
                 });
                 
                 switch(res.response.StatusCode)
@@ -611,60 +609,6 @@ namespace Data_Package_Tool
             prompt.ShowDialog();
         }
 
-        private void copyUserIdToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            /*if (dmsLv.SelectedItems.Count == 0) return;
-
-            string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
-            Clipboard.SetText(userId);*/
-        }
-
-        private void copyChannelIdToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            /*if (dmsLv.SelectedItems.Count == 0) return;
-
-            string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
-            Clipboard.SetText(channelId);*/
-        }
-
-        private void viewUserToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            /*if (dmsLv.SelectedItems.Count == 0) return;
-
-            string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
-            string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
-            if (DataPackage.ChannelsMap[channelId].has_duplicates)
-            {
-                Util.MsgBoxWarn(Consts.DuplicateDMWarning);
-            }
-
-            try
-            {
-                Discord.LaunchDiscordProtocol($"users/{userId}");
-            }
-            catch (Exception ex)
-            {
-                Util.MsgBoxErr(ex.Message);
-            }*/
-        }
-
-        private void openDmSELFBOTToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            /*if (dmsLv.SelectedItems.Count == 0) return;
-
-            string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
-            string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
-            if (DataPackage.ChannelsMap[channelId].has_duplicates)
-            {
-                Util.MsgBoxWarn(Consts.DuplicateDMWarning);
-            }
-
-            if(Discord.OpenDMFlow(userId))
-            {
-                Discord.LaunchDiscordProtocol($"channels/@me/{channelId}");
-            }*/
-        }
-
         private int dmsLvSortColumn = -1;
         private void dmsLv_ColumnClick(object sender, ColumnClickEventArgs e)
         {
@@ -681,6 +625,16 @@ namespace Data_Package_Tool
             }
 
             dmsLv.ListViewItemSorter = new DmsLvItemComparer(e.Column, dmsLv.Sorting);*/
+        }
+
+        private void userTokenTb_TextChanged(object sender, EventArgs e)
+        {
+            Discord.UserToken = userTokenTb.Text;
+        }
+
+        private void botTokenTb_TextChanged(object sender, EventArgs e)
+        {
+            Discord.BotToken = botTokenTb.Text;
         }
     }
 }

@@ -4,8 +4,10 @@ using Data_Package_Tool.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,16 +27,57 @@ namespace Data_Package_Tool.Forms
     /// </summary>
     public partial class DmsListWPF : UserControl
     {
-        public class DmsListEntry
+        public class DmsListEntry : INotifyPropertyChanged
         {
+            public event PropertyChangedEventHandler PropertyChanged;
+            private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
             public string UserId { get; set; }
             public string ChannelId { get; set; }
-            public string Username { get; set; }
-            public BitmapImage Avatar { get; set; }
+            private string UsernameVal;
+            public string Username
+            {
+                get
+                {
+                    return this.UsernameVal;
+                }
+                set
+                {
+                    this.UsernameVal = value;
+                    NotifyPropertyChanged();
+                }
+            }
+            private BitmapImage AvatarValue;
+            public BitmapImage Avatar
+            {
+                get
+                {
+                    return this.AvatarValue;
+                }
+                set
+                {
+                    this.AvatarValue = value;
+                    NotifyPropertyChanged();
+                }
+            }
             public string Date { get; set; }
             public int MessagesCount { get; set; }
             public string Note { get; set; }
-            public bool NeedsFetching { get; set; }
+            private bool NeedsFetchingValue;
+            public bool NeedsFetching
+            {
+                get
+                {
+                    return this.NeedsFetchingValue;
+                }
+                set
+                {
+                    this.NeedsFetchingValue = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
         public ObservableCollection<DmsListEntry> DirectMessages { get; set; } = new ObservableCollection<DmsListEntry>();

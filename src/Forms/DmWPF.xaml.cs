@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static Data_Package_Tool.Forms.DmsListWPF;
 
 namespace Data_Package_Tool.Forms
 {
@@ -105,7 +106,38 @@ namespace Data_Package_Tool.Forms
 
         private void fetchBtn_Click(object sender, RoutedEventArgs e)
         {
+            if(Discord.BotToken == null)
+            {
+                Util.MsgBoxErr(Consts.MissingBotTokenError);
+                return;
+            }
 
+            var res = DRequest.Request("GET", $"https://discord.com/api/v9/users/{this.UserId}", new Dictionary<string, string>
+            {
+                {"Authorization", $"Bot {Discord.BotToken}"}
+            }, null, false);
+
+            if(res.response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                DmsListEntry DataContext = this.DataContext as DmsListEntry;
+                DUser recipient = Newtonsoft.Json.JsonConvert.DeserializeObject<DUser>(res.body);
+
+                DataContext.Username = recipient.GetTag();
+                if (recipient.avatar != null)
+                {
+                    var avatar = new BitmapImage();
+                    avatar.BeginInit();
+                    avatar.UriSource = new Uri(recipient.GetAvatarURL());
+                    avatar.CacheOption = BitmapCacheOption.OnLoad;
+                    avatar.EndInit();
+
+                    DataContext.Avatar = avatar;
+                }
+                DataContext.NeedsFetching = false;
+            } else
+            {
+                Util.MsgBoxErr($"Status code {res.response.StatusCode} - {res.body}");
+            }
         }
 
         private void openDmBtn_Click(object sender, RoutedEventArgs e)

@@ -11,8 +11,6 @@ namespace Data_Package_Tool
         public MassDeletePrompt()
         {
             InitializeComponent();
-
-            tokenTb.Text = Main.AccountToken;
         }
 
         private void delayTb_Scroll(object sender, EventArgs e)
@@ -22,7 +20,12 @@ namespace Data_Package_Tool
 
         private void startBtn_Click(object sender, EventArgs e)
         {
-            if(!Discord.ValidateToken(tokenTb.Text, Main.DataPackage.User.id))
+            if (Discord.UserToken == null)
+            {
+                Util.MsgBoxErr(Consts.MissingTokenError);
+                return;
+            }
+            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return;
@@ -30,11 +33,6 @@ namespace Data_Package_Tool
 
             DialogSuccess = true;
             Close();
-        }
-
-        public string GetToken()
-        {
-            return tokenTb.Text;
         }
 
         public int GetDelay()

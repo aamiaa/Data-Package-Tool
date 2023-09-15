@@ -460,20 +460,22 @@ namespace Data_Package_Tool
 
         private void deleteMessageMi_Click(object sender, RoutedEventArgs e)
         {
-            DHeaders.Init();
-
-            string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
-            if (token == "") return;
-            if (!Discord.ValidateToken(token, Main.DataPackage.User.id))
+            if(Discord.UserToken == null)
+            {
+                Util.MsgBoxErr(Consts.MissingTokenError);
+                return;
+            }
+            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return;
             }
-            Main.AccountToken = token;
+
+            DHeaders.Init();
 
             var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{Message.channel.id}/messages/{Message.id}", new Dictionary<string, string>
             {
-                {"Authorization", token}
+                {"Authorization", Discord.UserToken}
             });
 
             switch (res.response.StatusCode)

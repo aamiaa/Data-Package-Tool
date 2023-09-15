@@ -13,6 +13,8 @@ namespace Data_Package_Tool.Classes
     public static class Discord
     {
         public static List<BitmapImage> DefaultAvatars = new List<BitmapImage>(); // It's necessary to reuse the same images to save ram
+        public static string UserToken;
+        public static string BotToken;
         public static void LaunchDiscordProtocol(string url)
         {
             string instance = Properties.Settings.Default.UseDiscordInstance;
@@ -107,16 +109,18 @@ namespace Data_Package_Tool.Classes
 
         public static bool OpenDMFlow(string userId)
         {
-            DHeaders.Init();
-
-            string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
-            if (token == "") return false;
-            if (!Discord.ValidateToken(token, Main.DataPackage.User.id))
+            if(UserToken == null)
+            {
+                Util.MsgBoxErr(Consts.MissingTokenError);
+                return false;
+            }
+            if (!Discord.ValidateToken(UserToken, Main.DataPackage.User.id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return false;
             }
-            Main.AccountToken = token;
+
+            DHeaders.Init();
 
             var body = new Dictionary<string, string[]>
             {
@@ -125,7 +129,7 @@ namespace Data_Package_Tool.Classes
 
             var response = DRequest.Request("POST", "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
             {
-                {"Authorization", token},
+                {"Authorization", UserToken},
                 {"Content-Type", "application/json"},
                 {"X-Context-Properties", Convert.ToBase64String(Encoding.UTF8.GetBytes("{}"))}
             }, Newtonsoft.Json.JsonConvert.SerializeObject(body), true);
