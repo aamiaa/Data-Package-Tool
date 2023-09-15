@@ -36,6 +36,8 @@ namespace Data_Package_Tool
             this.loadFileBtn = new System.Windows.Forms.Button();
             this.loadingLb = new System.Windows.Forms.Label();
             this.messagesTab = new System.Windows.Forms.TabPage();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.searchOptionsBtn = new System.Windows.Forms.Button();
             this.messagesNextBtn = new System.Windows.Forms.Button();
             this.messagesPrevBtn = new System.Windows.Forms.Button();
@@ -63,20 +65,14 @@ namespace Data_Package_Tool
             this.copyIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyInvitesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dmsTab = new System.Windows.Forms.TabPage();
-            this.dmsLv = new System.Windows.Forms.ListView();
-            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.dmsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.viewUserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openDmSELFBOTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.copyUserIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyChannelIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.elementHost2 = new System.Windows.Forms.Integration.ElementHost();
+            this.dmsListWPF1 = new Data_Package_Tool.Forms.DmsListWPF();
             this.settingsTab = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.botTokenTb = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.userTokenTb = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.webCanaryRb = new System.Windows.Forms.RadioButton();
             this.webPTBRb = new System.Windows.Forms.RadioButton();
@@ -90,8 +86,6 @@ namespace Data_Package_Tool
             this.searchBw = new System.ComponentModel.BackgroundWorker();
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
             this.loadTimer = new System.Windows.Forms.Timer(this.components);
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.listWPF1 = new Data_Package_Tool.MessageListWPF();
             this.tabControl1.SuspendLayout();
             this.loadTb.SuspendLayout();
             this.messagesTab.SuspendLayout();
@@ -100,8 +94,8 @@ namespace Data_Package_Tool
             this.serversStatusStrip.SuspendLayout();
             this.serversContextMenu.SuspendLayout();
             this.dmsTab.SuspendLayout();
-            this.dmsContextMenu.SuspendLayout();
             this.settingsTab.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -184,6 +178,18 @@ namespace Data_Package_Tool
             this.messagesTab.Size = new System.Drawing.Size(580, 291);
             this.messagesTab.TabIndex = 0;
             this.messagesTab.Text = "Messages";
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.elementHost1.Location = new System.Drawing.Point(3, 29);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(574, 259);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.listWPF1;
             // 
             // searchOptionsBtn
             // 
@@ -421,7 +427,7 @@ namespace Data_Package_Tool
             // dmsTab
             // 
             this.dmsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(51)))), ((int)(((byte)(56)))));
-            this.dmsTab.Controls.Add(this.dmsLv);
+            this.dmsTab.Controls.Add(this.elementHost2);
             this.dmsTab.Location = new System.Drawing.Point(4, 22);
             this.dmsTab.Name = "dmsTab";
             this.dmsTab.Padding = new System.Windows.Forms.Padding(3);
@@ -429,104 +435,20 @@ namespace Data_Package_Tool
             this.dmsTab.TabIndex = 5;
             this.dmsTab.Text = "Direct Messages";
             // 
-            // dmsLv
+            // elementHost2
             // 
-            this.dmsLv.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader7,
-            this.columnHeader8,
-            this.columnHeader9,
-            this.columnHeader10,
-            this.columnHeader11,
-            this.columnHeader12});
-            this.dmsLv.ContextMenuStrip = this.dmsContextMenu;
-            this.dmsLv.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dmsLv.FullRowSelect = true;
-            this.dmsLv.HideSelection = false;
-            this.dmsLv.Location = new System.Drawing.Point(3, 3);
-            this.dmsLv.Name = "dmsLv";
-            this.dmsLv.Size = new System.Drawing.Size(574, 285);
-            this.dmsLv.TabIndex = 0;
-            this.dmsLv.UseCompatibleStateImageBehavior = false;
-            this.dmsLv.View = System.Windows.Forms.View.Details;
-            this.dmsLv.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.dmsLv_ColumnClick);
-            // 
-            // columnHeader7
-            // 
-            this.columnHeader7.Text = "Date";
-            this.columnHeader7.Width = 83;
-            // 
-            // columnHeader8
-            // 
-            this.columnHeader8.Text = "Channel Id";
-            this.columnHeader8.Width = 110;
-            // 
-            // columnHeader9
-            // 
-            this.columnHeader9.Text = "User Id";
-            this.columnHeader9.Width = 132;
-            // 
-            // columnHeader10
-            // 
-            this.columnHeader10.Text = "Username";
-            this.columnHeader10.Width = 147;
-            // 
-            // columnHeader11
-            // 
-            this.columnHeader11.Text = "# of your msgs";
-            this.columnHeader11.Width = 81;
-            // 
-            // columnHeader12
-            // 
-            this.columnHeader12.Text = "Note";
-            this.columnHeader12.Width = 300;
-            // 
-            // dmsContextMenu
-            // 
-            this.dmsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.viewUserToolStripMenuItem,
-            this.openDmSELFBOTToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.copyUserIdToolStripMenuItem,
-            this.copyChannelIdToolStripMenuItem});
-            this.dmsContextMenu.Name = "dmsContextMenu";
-            this.dmsContextMenu.Size = new System.Drawing.Size(181, 98);
-            // 
-            // viewUserToolStripMenuItem
-            // 
-            this.viewUserToolStripMenuItem.Name = "viewUserToolStripMenuItem";
-            this.viewUserToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.viewUserToolStripMenuItem.Text = "View user";
-            this.viewUserToolStripMenuItem.Click += new System.EventHandler(this.viewUserToolStripMenuItem_Click);
-            // 
-            // openDmSELFBOTToolStripMenuItem
-            // 
-            this.openDmSELFBOTToolStripMenuItem.Name = "openDmSELFBOTToolStripMenuItem";
-            this.openDmSELFBOTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openDmSELFBOTToolStripMenuItem.Text = "Open dm (SELFBOT)";
-            this.openDmSELFBOTToolStripMenuItem.Click += new System.EventHandler(this.openDmSELFBOTToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
-            // 
-            // copyUserIdToolStripMenuItem
-            // 
-            this.copyUserIdToolStripMenuItem.Name = "copyUserIdToolStripMenuItem";
-            this.copyUserIdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.copyUserIdToolStripMenuItem.Text = "Copy user id";
-            this.copyUserIdToolStripMenuItem.Click += new System.EventHandler(this.copyUserIdToolStripMenuItem_Click);
-            // 
-            // copyChannelIdToolStripMenuItem
-            // 
-            this.copyChannelIdToolStripMenuItem.Name = "copyChannelIdToolStripMenuItem";
-            this.copyChannelIdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.copyChannelIdToolStripMenuItem.Text = "Copy channel id";
-            this.copyChannelIdToolStripMenuItem.Click += new System.EventHandler(this.copyChannelIdToolStripMenuItem_Click);
+            this.elementHost2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost2.Location = new System.Drawing.Point(3, 3);
+            this.elementHost2.Name = "elementHost2";
+            this.elementHost2.Size = new System.Drawing.Size(574, 285);
+            this.elementHost2.TabIndex = 0;
+            this.elementHost2.Text = "elementHost2";
+            this.elementHost2.Child = this.dmsListWPF1;
             // 
             // settingsTab
             // 
             this.settingsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(51)))), ((int)(((byte)(56)))));
+            this.settingsTab.Controls.Add(this.groupBox2);
             this.settingsTab.Controls.Add(this.groupBox1);
             this.settingsTab.Location = new System.Drawing.Point(4, 22);
             this.settingsTab.Name = "settingsTab";
@@ -534,6 +456,54 @@ namespace Data_Package_Tool
             this.settingsTab.Size = new System.Drawing.Size(580, 291);
             this.settingsTab.TabIndex = 3;
             this.settingsTab.Text = "Settings";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.botTokenTb);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.userTokenTb);
+            this.groupBox2.ForeColor = System.Drawing.SystemColors.Control;
+            this.groupBox2.Location = new System.Drawing.Point(301, 6);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(271, 121);
+            this.groupBox2.TabIndex = 2;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Tokens required to use some functions";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 69);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(56, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Bot token:";
+            // 
+            // botTokenTb
+            // 
+            this.botTokenTb.Location = new System.Drawing.Point(6, 85);
+            this.botTokenTb.Name = "botTokenTb";
+            this.botTokenTb.Size = new System.Drawing.Size(259, 20);
+            this.botTokenTb.TabIndex = 2;
+            this.botTokenTb.TextChanged += new System.EventHandler(this.botTokenTb_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 23);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(62, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "User token:";
+            // 
+            // userTokenTb
+            // 
+            this.userTokenTb.Location = new System.Drawing.Point(6, 39);
+            this.userTokenTb.Name = "userTokenTb";
+            this.userTokenTb.Size = new System.Drawing.Size(259, 20);
+            this.userTokenTb.TabIndex = 0;
+            this.userTokenTb.TextChanged += new System.EventHandler(this.userTokenTb_TextChanged);
             // 
             // groupBox1
             // 
@@ -657,18 +627,6 @@ namespace Data_Package_Tool
             // 
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
             // 
-            // elementHost1
-            // 
-            this.elementHost1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.elementHost1.Location = new System.Drawing.Point(3, 29);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(574, 259);
-            this.elementHost1.TabIndex = 0;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.listWPF1;
-            // 
             // Main
             // 
             this.AcceptButton = this.searchBtn;
@@ -692,8 +650,9 @@ namespace Data_Package_Tool
             this.serversStatusStrip.PerformLayout();
             this.serversContextMenu.ResumeLayout(false);
             this.dmsTab.ResumeLayout(false);
-            this.dmsContextMenu.ResumeLayout(false);
             this.settingsTab.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -745,25 +704,19 @@ namespace Data_Package_Tool
         private System.Windows.Forms.Timer searchTimer;
         private System.Windows.Forms.Timer loadTimer;
         private System.Windows.Forms.TabPage dmsTab;
-        private System.Windows.Forms.ListView dmsLv;
-        private System.Windows.Forms.ColumnHeader columnHeader7;
-        private System.Windows.Forms.ColumnHeader columnHeader8;
-        private System.Windows.Forms.ColumnHeader columnHeader9;
-        private System.Windows.Forms.ColumnHeader columnHeader10;
-        private System.Windows.Forms.ContextMenuStrip dmsContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem copyUserIdToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem copyChannelIdToolStripMenuItem;
-        private System.Windows.Forms.ColumnHeader columnHeader11;
-        private System.Windows.Forms.ToolStripMenuItem viewUserToolStripMenuItem;
         private System.Windows.Forms.RadioButton webCanaryRb;
         private System.Windows.Forms.RadioButton webPTBRb;
         private System.Windows.Forms.RadioButton webStableRb;
-        private System.Windows.Forms.ToolStripMenuItem openDmSELFBOTToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ColumnHeader columnHeader12;
         private System.Windows.Forms.StatusStrip serversStatusStrip;
         private System.Windows.Forms.ToolStripProgressBar serversPb;
         private System.Windows.Forms.ToolStripStatusLabel serversStatusLb;
+        private System.Windows.Forms.Integration.ElementHost elementHost2;
+        private Forms.DmsListWPF dmsListWPF1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox botTokenTb;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox userTokenTb;
     }
 }
 

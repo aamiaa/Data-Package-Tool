@@ -9,12 +9,14 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 
 namespace Data_Package_Tool
 {
@@ -22,13 +24,26 @@ namespace Data_Package_Tool
     {
         public static DataPackage DataPackage = new DataPackage();
 
-        public static string AccountToken = "";
         private static readonly int MaxSearchResults = 500;
 
         public Main()
         {
             InitializeComponent();
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            for(int i=0;i<=5;i++)
+            {
+                var stream = new MemoryStream();
+                ((Bitmap)Properties.Resources.ResourceManager.GetObject($"DefaultAvatar{i}")).Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+
+                var img = new BitmapImage();
+                img.BeginInit();
+                img.StreamSource = stream;
+                img.CacheOption = BitmapCacheOption.OnLoad;
+                img.EndInit();
+
+                Discord.DefaultAvatars.Add(img);
+            }
 
             if(Properties.Settings.Default.DeletedMessageIDs == null)
             {
@@ -64,38 +79,23 @@ namespace Data_Package_Tool
 
         private void LoadDMChannels()
         {
-            dmsLv.Items.Clear();
-
             var dmChannels = DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
-            var duplicateChannelsMap = new Dictionary<string, dynamic>();
+            var duplicateChannelsMap = new Dictionary<string, DChannel>();
 
             tabControl1.TabPages[4].Text = $"Direct Messages - {dmChannels.Count}";
 
-            foreach (var dmChannel in dmChannels)
+            foreach(var dmChannel in dmChannels)
             {
                 string recipientId = dmChannel.GetOtherDMRecipient(DataPackage.User);
-                string recipientUsername = "";
-                var relationship = DataPackage.User.relationships.ToList().Find(x => x.id == recipientId);
-                if (relationship != null) recipientUsername = relationship.user.GetTag();
-
-                string[] values = { Discord.SnowflakeToTimestap(dmChannel.id).ToShortDateString(), dmChannel.id, recipientId, recipientUsername, dmChannel.messages.Count.ToString(), DataPackage.User.notes.ContainsKey(recipientId) ? DataPackage.User.notes[recipientId] : "" };
-                var lvItem = new ListViewItem(values);
-
                 if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
                 {
-                    duplicateChannelsMap[recipientId].item.BackColor = Color.Yellow;
-                    lvItem.BackColor = Color.Yellow;
-
-                    duplicateChannelsMap[recipientId].channel.has_duplicates = true;
+                    duplicateChannelsMap[recipientId].has_duplicates = true;
                     dmChannel.has_duplicates = true;
                 }
-                else
-                {
-                    duplicateChannelsMap[recipientId] = new { item = lvItem, channel = dmChannel };
-                }
-
-                dmsLv.Items.Add(lvItem);
+                duplicateChannelsMap[recipientId] = dmChannel;
             }
+
+            ((DmsListWPF)elementHost2.Child).DisplayMessages(DataPackage.User, dmChannels);
         }
 
         private void LoadJoinedGuilds()
@@ -521,7 +521,6 @@ namespace Data_Package_Tool
             {
                 MassDeleteIdx = 0;
                 massDeleteTimer.Interval = prompt.GetDelay();
-                AccountToken = prompt.GetToken();
 
                 searchTb.Enabled = false;
                 searchBtn.Enabled = false;
@@ -557,7 +556,7 @@ namespace Data_Package_Tool
             {
                 var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{msg.channel.id}/messages/{msg.id}", new Dictionary<string, string>
                 {
-                    {"Authorization", AccountToken}
+                    {"Authorization", Discord.UserToken}
                 });
                 
                 switch(res.response.StatusCode)
@@ -610,76 +609,14 @@ namespace Data_Package_Tool
             prompt.ShowDialog();
         }
 
-        private void copyUserIdToolStripMenuItem_Click(object sender, EventArgs e)
+        private void userTokenTb_TextChanged(object sender, EventArgs e)
         {
-            if (dmsLv.SelectedItems.Count == 0) return;
-
-            string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
-            Clipboard.SetText(userId);
+            Discord.UserToken = userTokenTb.Text;
         }
 
-        private void copyChannelIdToolStripMenuItem_Click(object sender, EventArgs e)
+        private void botTokenTb_TextChanged(object sender, EventArgs e)
         {
-            if (dmsLv.SelectedItems.Count == 0) return;
-
-            string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
-            Clipboard.SetText(channelId);
-        }
-
-        private void viewUserToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (dmsLv.SelectedItems.Count == 0) return;
-
-            string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
-            string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
-            if (DataPackage.ChannelsMap[channelId].has_duplicates)
-            {
-                Util.MsgBoxWarn(Consts.DuplicateDMWarning);
-            }
-
-            try
-            {
-                Discord.LaunchDiscordProtocol($"users/{userId}");
-            }
-            catch (Exception ex)
-            {
-                Util.MsgBoxErr(ex.Message);
-            }
-        }
-
-        private void openDmSELFBOTToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (dmsLv.SelectedItems.Count == 0) return;
-
-            string userId = dmsLv.SelectedItems[0].SubItems[2].Text;
-            string channelId = dmsLv.SelectedItems[0].SubItems[1].Text;
-            if (DataPackage.ChannelsMap[channelId].has_duplicates)
-            {
-                Util.MsgBoxWarn(Consts.DuplicateDMWarning);
-            }
-
-            if(Discord.OpenDMFlow(userId))
-            {
-                Discord.LaunchDiscordProtocol($"channels/@me/{channelId}");
-            }
-        }
-
-        private int dmsLvSortColumn = -1;
-        private void dmsLv_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-            if(e.Column != dmsLvSortColumn)
-            {
-                dmsLvSortColumn = e.Column;
-                dmsLv.Sorting = SortOrder.Ascending;
-            } else
-            {
-                if (dmsLv.Sorting == SortOrder.Ascending)
-                    dmsLv.Sorting = SortOrder.Descending;
-                else
-                    dmsLv.Sorting = SortOrder.Ascending;
-            }
-
-            dmsLv.ListViewItemSorter = new DmsLvItemComparer(e.Column, dmsLv.Sorting);
+            Discord.BotToken = botTokenTb.Text;
         }
     }
 }

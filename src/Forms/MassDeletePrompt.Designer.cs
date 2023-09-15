@@ -30,8 +30,6 @@ namespace Data_Package_Tool
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MassDeletePrompt));
-            this.tokenTb = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.delayTb = new System.Windows.Forms.TrackBar();
             this.delayLb = new System.Windows.Forms.Label();
             this.startBtn = new System.Windows.Forms.Button();
@@ -39,29 +37,10 @@ namespace Data_Package_Tool
             ((System.ComponentModel.ISupportInitialize)(this.delayTb)).BeginInit();
             this.SuspendLayout();
             // 
-            // tokenTb
-            // 
-            this.tokenTb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tokenTb.Location = new System.Drawing.Point(12, 135);
-            this.tokenTb.Name = "tokenTb";
-            this.tokenTb.Size = new System.Drawing.Size(392, 20);
-            this.tokenTb.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 119);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(88, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Enter your token:";
-            // 
             // delayTb
             // 
             this.delayTb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.delayTb.Location = new System.Drawing.Point(12, 204);
+            this.delayTb.Location = new System.Drawing.Point(12, 131);
             this.delayTb.Maximum = 100;
             this.delayTb.Minimum = 1;
             this.delayTb.Name = "delayTb";
@@ -74,7 +53,7 @@ namespace Data_Package_Tool
             // 
             this.delayLb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.delayLb.AutoSize = true;
-            this.delayLb.Location = new System.Drawing.Point(12, 188);
+            this.delayLb.Location = new System.Drawing.Point(12, 115);
             this.delayLb.Name = "delayLb";
             this.delayLb.Size = new System.Drawing.Size(109, 13);
             this.delayLb.TabIndex = 3;
@@ -83,7 +62,7 @@ namespace Data_Package_Tool
             // startBtn
             // 
             this.startBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.startBtn.Location = new System.Drawing.Point(178, 269);
+            this.startBtn.Location = new System.Drawing.Point(178, 196);
             this.startBtn.Name = "startBtn";
             this.startBtn.Size = new System.Drawing.Size(75, 23);
             this.startBtn.TabIndex = 4;
@@ -107,13 +86,11 @@ namespace Data_Package_Tool
             this.AcceptButton = this.startBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(416, 304);
+            this.ClientSize = new System.Drawing.Size(416, 231);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.startBtn);
             this.Controls.Add(this.delayLb);
             this.Controls.Add(this.delayTb);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.tokenTb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -129,9 +106,6 @@ namespace Data_Package_Tool
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox tokenTb;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TrackBar delayTb;
         private System.Windows.Forms.Label delayLb;
         private System.Windows.Forms.Button startBtn;

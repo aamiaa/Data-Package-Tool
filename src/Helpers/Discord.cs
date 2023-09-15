@@ -6,11 +6,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Windows.Media.Imaging;
 
 namespace Data_Package_Tool.Classes
 {
     public static class Discord
     {
+        public static List<BitmapImage> DefaultAvatars = new List<BitmapImage>(); // It's necessary to reuse the same images to save ram
+        public static string UserToken;
+        public static string BotToken;
         public static void LaunchDiscordProtocol(string url)
         {
             string instance = Properties.Settings.Default.UseDiscordInstance;
@@ -85,17 +89,29 @@ namespace Data_Package_Tool.Classes
             return DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime;
         }
 
-        public static bool ValidateToken(string token, string userId)
+        public static string TimestampToSnowflake(DateTime timestamp)
+        {
+            long t = ((DateTimeOffset)timestamp).ToUnixTimeMilliseconds() - 1420070400000;
+            return (t << 22).ToString();
+        }
+
+        public static bool ValidateToken(string token, string userId = null)
         {
             var parts = token.Split('.');
 
             if (parts.Length != 3) return false;
 
             var userIdPart = parts[0];
+            int padding = userIdPart.Length % 4;
+            if(padding != 0)
+            {
+                userIdPart += new string('=', 4 - padding);
+            }
             try
             {
                 var tokenUserId = Encoding.UTF8.GetString(Convert.FromBase64String(userIdPart));
-                return tokenUserId == userId;
+                if(userId != null) return tokenUserId == userId;
+                return true;
             }
             catch (Exception)
             {
@@ -103,18 +119,20 @@ namespace Data_Package_Tool.Classes
             }
         }
 
-        public static bool OpenDMFlow(string userId)
+        public static bool OpenDMFlow(string userId, string expectedChannelId = null)
         {
-            DHeaders.Init();
-
-            string token = Interaction.InputBox("Enter your token", "Prompt", Main.AccountToken);
-            if (token == "") return false;
-            if (!Discord.ValidateToken(token, Main.DataPackage.User.id))
+            if(UserToken == null)
+            {
+                Util.MsgBoxErr(Consts.MissingTokenError);
+                return false;
+            }
+            if (!Discord.ValidateToken(UserToken, Main.DataPackage.User.id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return false;
             }
-            Main.AccountToken = token;
+
+            DHeaders.Init();
 
             var body = new Dictionary<string, string[]>
             {
@@ -123,13 +141,41 @@ namespace Data_Package_Tool.Classes
 
             var response = DRequest.Request("POST", "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
             {
-                {"Authorization", token},
+                {"Authorization", UserToken},
                 {"Content-Type", "application/json"},
                 {"X-Context-Properties", Convert.ToBase64String(Encoding.UTF8.GetBytes("{}"))}
             }, Newtonsoft.Json.JsonConvert.SerializeObject(body), true);
 
             if (response.response.StatusCode == HttpStatusCode.OK)
             {
+                string channelId = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.body).id;
+                if(expectedChannelId != null && expectedChannelId != channelId)
+                {
+                    var result = Util.MsgBoxWarn("Discord didn't open your selected dm. You can still attempt to reopen it by sending a message in it.\n\nWould you like to send a message in your selected dm?", "Warning", System.Windows.Forms.MessageBoxButtons.YesNoCancel);
+                    if(result == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        string msg = Interaction.InputBox("Enter message to send");
+                        if (msg == "") return false;
+
+                        var msgResponse = DRequest.Request("POST", $"https://discord.com/api/v9/channels/{expectedChannelId}/messages", new Dictionary<string, string>
+                        {
+                            {"Authorization", UserToken},
+                            {"Content-Type", "application/json"}
+                        }, Newtonsoft.Json.JsonConvert.SerializeObject(new Dictionary<string, dynamic>
+                        {
+                            {"content", msg},
+                            {"flags", 0},
+                            {"nonce", Discord.TimestampToSnowflake(DateTime.Now)},
+                            {"tts", false}
+                        }), true);
+
+                        if(msgResponse.response.StatusCode != HttpStatusCode.OK)
+                        {
+                            Util.MsgBoxErr($"Failed to send dm: {msgResponse.response.StatusCode} {msgResponse.body}");
+                            return false;
+                        }
+                    }
+                }
                 return true;
             }
             else
