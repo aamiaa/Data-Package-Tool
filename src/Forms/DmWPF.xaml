@@ -33,7 +33,7 @@
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="0.5*" />
-            <ColumnDefinition Width="135" />
+            <ColumnDefinition Width="140" />
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0">
@@ -51,12 +51,12 @@
         <TextBlock Grid.Column="3" Text="{Binding Note}" d:Text="some guy from x server" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFF2F3F5" FontSize="14" FontFamily="Source Sans Pro" TextTrimming="CharacterEllipsis"/>
 
         <Grid Grid.Column="4">
-            <Button x:Name="fetchBtn" Content="Fetch"
+            <Button x:Name="fetchBtn" Content="Fetch info"
                     Cursor="Hand"
                     Visibility="{Binding Path=NeedsFetching, Converter={StaticResource BoolToVis}}"
                     HorizontalAlignment="Right"
-                    Margin="0,0,80,0"
-                    Width="50" Height="32"
+                    Margin="0,0,75,0"
+                    Width="60" Height="32"
                     Background="#FF5865F2" Foreground="#FFF2F3F5"
                     FontSize="12" FontFamily="Source Sans Pro"
                     BorderThickness="0,0,0,0" Click="fetchBtn_Click">
@@ -117,7 +117,7 @@
                     Cursor="Hand"
                     HorizontalAlignment="Right"
                     Margin="0,0,10,0"
-                    Width="65" Height="32"
+                    Width="60" Height="32"
                     Background="#FF5865F2" Foreground="#FFF2F3F5"
                     FontSize="12" FontFamily="Source Sans Pro"
                     BorderThickness="0,0,0,0" Click="openDmBtn_Click">
