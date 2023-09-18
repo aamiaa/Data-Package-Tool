@@ -189,5 +189,8 @@
   <ItemGroup>
     <None Include="Resources\5.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Newtonsoft.Json.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
