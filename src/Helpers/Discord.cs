@@ -151,8 +151,12 @@ namespace Data_Package_Tool.Classes
                 string channelId = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.body).id;
                 if(expectedChannelId != null && expectedChannelId != channelId)
                 {
+#if DEBUG
+                    var result = Util.MsgBoxWarn($"Discord didn't open your selected dm. You can still attempt to reopen it by sending a message in it.\n\nExpected channel id: {expectedChannelId}\nReceived channel id: {channelId}\nResponse:\n{response.body}\n\nWould you like to send a message in your selected dm?", "Warning", System.Windows.Forms.MessageBoxButtons.YesNoCancel);
+#else
                     var result = Util.MsgBoxWarn("Discord didn't open your selected dm. You can still attempt to reopen it by sending a message in it.\n\nWould you like to send a message in your selected dm?", "Warning", System.Windows.Forms.MessageBoxButtons.YesNoCancel);
-                    if(result == System.Windows.Forms.DialogResult.Yes)
+#endif
+                    if (result == System.Windows.Forms.DialogResult.Yes)
                     {
                         string msg = Interaction.InputBox("Enter message to send");
                         if (msg == "") return false;
