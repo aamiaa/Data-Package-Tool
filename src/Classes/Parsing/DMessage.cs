@@ -26,7 +26,7 @@ namespace Data_Package_Tool.Classes.Parsing
             }
             else
             {
-                throw new Exception($"Couldn't find guild id for channel {this.channel.id} type {this.channel.type}");
+                throw new Exception($"Unable to find the server this message was sent in. This usually happens if you've left the server.");
             }
 
             return $"{guild}/{this.channel.id}/{this.id}";
