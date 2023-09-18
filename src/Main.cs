@@ -231,18 +231,17 @@ namespace Data_Package_Tool
             messagesNextBtn.Enabled = false;
             ((MessageListWPF)elementHost1.Child).Clear();
 
+            LastSearchResults = new List<DMessage>();
+            SearchResultsOffset = 0;
+
             searchBw.RunWorkerAsync();
             searchTimer.Start();
         }
 
         private void searchBw_DoWork(object sender, DoWorkEventArgs e)
         {
-            SearchResultsOffset = 0;
-
             var searchText = searchTb.Text;
             int count = 0;
-
-            LastSearchResults = new List<DMessage>();
 
             // Optimization - precompile regex and reuse it
             Regex compiledRegex = null;
