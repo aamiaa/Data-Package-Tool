@@ -622,12 +622,12 @@ namespace Data_Package_Tool
 
         private void userTokenTb_TextChanged(object sender, EventArgs e)
         {
-            Discord.UserToken = userTokenTb.Text;
+            Discord.UserToken = userTokenTb.Text.Trim();
         }
 
         private void botTokenTb_TextChanged(object sender, EventArgs e)
         {
-            Discord.BotToken = botTokenTb.Text;
+            Discord.BotToken = botTokenTb.Text.Trim();
         }
     }
 }
