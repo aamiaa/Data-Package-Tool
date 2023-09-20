@@ -87,6 +87,8 @@ namespace Data_Package_Tool
                     webCanaryRb.Checked = true;
                     break;
             }
+
+            versionLb.Text = "v" + Application.ProductVersion;
         }
 
         private void LoadDMChannels()

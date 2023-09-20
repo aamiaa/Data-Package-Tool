@@ -68,6 +68,7 @@ namespace Data_Package_Tool
             this.elementHost2 = new System.Windows.Forms.Integration.ElementHost();
             this.dmsListWPF1 = new Data_Package_Tool.Forms.DmsListWPF();
             this.settingsTab = new System.Windows.Forms.TabPage();
+            this.versionLb = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.botTokenTb = new System.Windows.Forms.TextBox();
@@ -448,6 +449,7 @@ namespace Data_Package_Tool
             // settingsTab
             // 
             this.settingsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(51)))), ((int)(((byte)(56)))));
+            this.settingsTab.Controls.Add(this.versionLb);
             this.settingsTab.Controls.Add(this.groupBox2);
             this.settingsTab.Controls.Add(this.groupBox1);
             this.settingsTab.Location = new System.Drawing.Point(4, 22);
@@ -456,6 +458,17 @@ namespace Data_Package_Tool
             this.settingsTab.Size = new System.Drawing.Size(580, 291);
             this.settingsTab.TabIndex = 3;
             this.settingsTab.Text = "Settings";
+            // 
+            // versionLb
+            // 
+            this.versionLb.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.versionLb.ForeColor = System.Drawing.SystemColors.Control;
+            this.versionLb.Location = new System.Drawing.Point(3, 273);
+            this.versionLb.Name = "versionLb";
+            this.versionLb.Size = new System.Drawing.Size(574, 15);
+            this.versionLb.TabIndex = 3;
+            this.versionLb.Text = "v1.2.3";
+            this.versionLb.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             // 
             // groupBox2
             // 
@@ -717,6 +730,7 @@ namespace Data_Package_Tool
         private System.Windows.Forms.TextBox botTokenTb;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox userTokenTb;
+        private System.Windows.Forms.Label versionLb;
     }
 }
 
