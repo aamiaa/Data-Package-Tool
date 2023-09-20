@@ -69,6 +69,16 @@ namespace Data_Package_Tool
                 AvatarSource.Freeze();
             }
 
+            // Reset possibly-changed properties to default, since WPF's virtualization recycles the same controls without restoring their default values
+            IsDeleted = false;
+            rootGrid.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+            viewUserMi.IsEnabled = false;
+            openDMMi.IsEnabled = false;
+            copyUserIdMi.IsEnabled = false;
+            copyGuildIdMi.IsEnabled = false;
+            deleteMessageMi.IsEnabled = true;
+
+
             if (Message.channel.IsDM())
             {
                 viewUserMi.IsEnabled = true;
