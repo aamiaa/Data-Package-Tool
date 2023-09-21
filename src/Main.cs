@@ -277,7 +277,11 @@ namespace Data_Package_Tool
 
                 // Search modes
                 // Optimization - single condition which picks the function, rather than running the condition on every iteration
-                if (Properties.Settings.Default.SearchMode == "exact")
+                if(searchText == "")
+                {
+                    count += SearchNoText(channel);
+                }
+                else if (Properties.Settings.Default.SearchMode == "exact")
                 {
                     count += SearchExact(searchText, stringComp, channel);
                 }
@@ -351,6 +355,19 @@ namespace Data_Package_Tool
             }
 
             return m is List<DMessage> l ? l : m.ToList();
+        }
+
+        private int SearchNoText(DChannel channel)
+        {
+            int count = 0;
+
+            foreach (var msg in FilterMessages(channel.messages))
+            {
+                LastSearchResults.Add(msg);
+                count++;
+            }
+
+            return count;
         }
 
         private int SearchExact(string searchText, StringComparison stringComp, DChannel channel)
