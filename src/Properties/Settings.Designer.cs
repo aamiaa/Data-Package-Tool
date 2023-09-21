@@ -175,5 +175,17 @@ namespace Data_Package_Tool.Properties {
                 this["SearchCaseSensitive"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("desc")]
+        public string SortMode {
+            get {
+                return ((string)(this["SortMode"]));
+            }
+            set {
+                this["SortMode"] = value;
+            }
+        }
     }
 }

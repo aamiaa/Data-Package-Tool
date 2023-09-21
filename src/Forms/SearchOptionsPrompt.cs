@@ -28,6 +28,14 @@ namespace Data_Package_Tool
                 regexMatchRb.Checked = true;
             }
 
+            if(Properties.Settings.Default.SortMode == "asc")
+            {
+                sortOrderCmb.SelectedIndex = 1;
+            } else if(Properties.Settings.Default.SortMode == "desc")
+            {
+                sortOrderCmb.SelectedIndex = 0;
+            }
+
             excludeGuildsCb.Checked = Properties.Settings.Default.SearchExcludeGuilds;
             excludeDmsCb.Checked = Properties.Settings.Default.SearchExcludeDMs;
             excludeGroupDmsCb.Checked = Properties.Settings.Default.SearchExcludeGDMs;
@@ -75,6 +83,15 @@ namespace Data_Package_Tool
             } else if(regexMatchRb.Checked)
             {
                 Properties.Settings.Default.SearchMode = "regex";
+            }
+
+            if (sortOrderCmb.SelectedIndex == 1)
+            {
+                Properties.Settings.Default.SortMode = "asc";
+            }
+            else if (sortOrderCmb.SelectedIndex == 0)
+            {
+                Properties.Settings.Default.SortMode = "desc";
             }
 
             Properties.Settings.Default.SearchExcludeGuilds = excludeGuildsCb.Checked;

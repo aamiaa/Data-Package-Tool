@@ -309,7 +309,13 @@ namespace Data_Package_Tool
                 }
             }
 
-            LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.id)).ToList();
+            if(Properties.Settings.Default.SortMode == "asc")
+            {
+                LastSearchResults = LastSearchResults.OrderBy(o => Int64.Parse(o.id)).ToList();
+            } else
+            {
+                LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.id)).ToList();
+            }
         }
 
         private void searchTimer_Tick(object sender, EventArgs e)
