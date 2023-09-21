@@ -198,5 +198,8 @@
   <ItemGroup>
     <None Include="Resources\LoadingAnim.gif" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\WpfAnimatedGif.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

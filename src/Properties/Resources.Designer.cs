@@ -149,5 +149,15 @@ namespace Data_Package_Tool.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] WpfAnimatedGif {
+            get {
+                object obj = ResourceManager.GetObject("WpfAnimatedGif", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
