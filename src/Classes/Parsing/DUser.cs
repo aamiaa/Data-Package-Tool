@@ -17,6 +17,8 @@ namespace Data_Package_Tool.Classes.Parsing
         public DRelationship[] relationships;
         public Dictionary<string, string> notes;
 
+        public BitmapImage avatar_image;
+
         private int DefaultAvatarId
         {
             get

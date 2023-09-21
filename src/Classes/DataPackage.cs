@@ -9,6 +9,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace Data_Package_Tool.Classes
 {
@@ -129,6 +131,18 @@ namespace Data_Package_Tool.Classes
                     }
                 }
             }
+
+            Dispatcher.CurrentDispatcher.Invoke(() =>
+            {
+                var avImg = new BitmapImage();
+                avImg.BeginInit();
+                avImg.StreamSource = this.Avatar;
+                avImg.CacheOption = BitmapCacheOption.OnLoad;
+                avImg.EndInit();
+                avImg.Freeze();
+
+                this.User.avatar_image = avImg;
+            });
 
             this.Attachments = this.Attachments.OrderByDescending(o => Int64.Parse(o.message.id)).ToList();
             this.LoadStatus.Status = $"Finished! Parsed {this.TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {this.CreationTime.ToShortDateString()}";
