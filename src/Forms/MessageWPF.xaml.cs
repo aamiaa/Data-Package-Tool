@@ -6,16 +6,21 @@ using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using WpfAnimatedGif;
+
 namespace Data_Package_Tool
 {
     /// <summary>
@@ -340,12 +345,49 @@ namespace Data_Package_Tool
                         if (e.ChangedButton == MouseButton.Left) Process.Start(attachment.url);
                     };
 
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.UriSource = new Uri(attachment.url, UriKind.Absolute);
-                    bitmap.UriCachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
-                    bitmap.EndInit();
-                    img.Source = bitmap;
+                    if (Discord.AttachmentsCache.ContainsKey(attachment.id))
+                    {
+                        img.Source = Discord.AttachmentsCache[attachment.id];
+                    }
+                    else
+                    {
+                        ImageBehavior.SetAnimatedSource(img, Discord.LoadingAnim);
+                        ThreadPool.QueueUserWorkItem(async state =>
+                        {
+                            try
+                            {
+                                using (var httpClient = new HttpClient())
+                                using (var response = await httpClient.GetAsync(attachment.url))
+                                {
+                                    if (response.IsSuccessStatusCode)
+                                    {
+                                        using (var stream = new MemoryStream())
+                                        {
+                                            await response.Content.CopyToAsync(stream);
+                                            stream.Seek(0, SeekOrigin.Begin);
+
+                                            BitmapImage bitmap = new BitmapImage();
+                                            bitmap.BeginInit();
+                                            bitmap.DecodePixelHeight = 300;
+                                            bitmap.StreamSource = stream;
+                                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                                            bitmap.EndInit();
+                                            bitmap.Freeze();
+
+                                            await Dispatcher.BeginInvoke(new Action(() =>
+                                            {
+                                                Discord.AttachmentsCache[attachment.id] = bitmap;
+
+                                                ImageBehavior.SetAnimatedSource(img, null);
+                                                img.Source = bitmap;
+                                            }));
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception) { }
+                        });
+                    }
 
                     var inlineContainer = new InlineUIContainer(img)
                     {

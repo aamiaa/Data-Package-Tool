@@ -57,6 +57,19 @@ namespace Data_Package_Tool
                 Discord.DefaultAvatars.Add(img);
             }
 
+            {
+                var stream = new MemoryStream();
+                Properties.Resources.LoadingAnim.Save(stream, System.Drawing.Imaging.ImageFormat.Gif);
+
+                var img = new BitmapImage();
+                img.BeginInit();
+                img.StreamSource = stream;
+                img.CacheOption = BitmapCacheOption.OnLoad;
+                img.EndInit();
+
+                Discord.LoadingAnim = img;
+            }
+
             if(Properties.Settings.Default.DeletedMessageIDs == null)
             {
                 Properties.Settings.Default.DeletedMessageIDs = new System.Collections.Specialized.StringCollection();
@@ -235,6 +248,7 @@ namespace Data_Package_Tool
 
             LastSearchResults = new List<DMessage>();
             SearchResultsOffset = 0;
+            Discord.AttachmentsCache.Clear();
 
             searchBw.RunWorkerAsync();
             searchTimer.Start();

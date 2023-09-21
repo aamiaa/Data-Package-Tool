@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Data_Package_Tool.Classes.Parsing
 {
@@ -6,8 +7,15 @@ namespace Data_Package_Tool.Classes.Parsing
     {
         public static List<string> ImageExtensions = new List<string>{ ".png", ".gif", ".jpg", ".jpeg", ".apng", ".jfif", ".webp" };
 
-        public DMessage message;
+        public string id
+        {
+            get
+            {
+                return Regex.Match(this.url, @"attachments\/\d+\/(\d+)\/").Groups[1].Value;
+            }
+        }
         public string url;
+        public DMessage message;
 
         public bool IsImage()
         {

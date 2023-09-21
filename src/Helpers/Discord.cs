@@ -13,6 +13,10 @@ namespace Data_Package_Tool.Classes
     public static class Discord
     {
         public static List<BitmapImage> DefaultAvatars = new List<BitmapImage>(); // It's necessary to reuse the same images to save ram
+        public static BitmapImage LoadingAnim;
+
+        public static Dictionary<string, BitmapImage> AttachmentsCache = new Dictionary<string, BitmapImage>();
+
         public static string UserToken;
         public static string BotToken;
         public static void LaunchDiscordProtocol(string url)
