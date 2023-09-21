@@ -39,8 +39,9 @@ namespace Data_Package_Tool.Forms
             set { SetValue(UrlProperty, value); }
         }
 
+        // The default value is to prevent random internal WPF errors when scrolling
         public static readonly DependencyProperty UrlProperty =
-            DependencyProperty.Register("Url", typeof(string), typeof(FileAttachmentWPF));
+            DependencyProperty.Register("Url", typeof(string), typeof(FileAttachmentWPF), new PropertyMetadata("https://example.com"));
 
         public FileAttachmentWPF()
         {
