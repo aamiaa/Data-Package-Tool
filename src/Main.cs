@@ -221,6 +221,9 @@ namespace Data_Package_Tool
         {
             if (LastSearchResults == null || LastSearchResults.Count == 0) return;
 
+            // Clear images cache to free up RAM
+            Discord.AttachmentsCache.Clear();
+
             ((MessageListWPF)elementHost1.Child).Clear();
             resultsCountLb.Text = $"{SearchResultsOffset + 1}-{Math.Min(SearchResultsOffset + MaxSearchResults, LastSearchResults.Count)} of {LastSearchResults.Count}";
             ((MessageListWPF)elementHost1.Child).DisplayMessages(DataPackage.User, LastSearchResults, SearchResultsOffset, Math.Min(LastSearchResults.Count-1, SearchResultsOffset + MaxSearchResults));
@@ -248,6 +251,8 @@ namespace Data_Package_Tool
 
             LastSearchResults = new List<DMessage>();
             SearchResultsOffset = 0;
+
+            // Clear images cache to free up RAM
             Discord.AttachmentsCache.Clear();
 
             searchBw.RunWorkerAsync();
