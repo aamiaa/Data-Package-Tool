@@ -39,6 +39,9 @@ namespace Data_Package_Tool
             excludeGuildsCb.Checked = Properties.Settings.Default.SearchExcludeGuilds;
             excludeDmsCb.Checked = Properties.Settings.Default.SearchExcludeDMs;
             excludeGroupDmsCb.Checked = Properties.Settings.Default.SearchExcludeGDMs;
+            hasImageCb.Checked = Properties.Settings.Default.SearchHasImage;
+            hasVideoCb.Checked = Properties.Settings.Default.SearchHasVideo;
+            hasFileCb.Checked = Properties.Settings.Default.SearchHasFile;
             caseSensitiveCb.Checked = Properties.Settings.Default.SearchCaseSensitive;
             beforeDateCb.Checked = Properties.Settings.Default.SearchBeforeEnabled;
             afterDateCb.Checked = Properties.Settings.Default.SearchAfterEnabled;
@@ -97,6 +100,9 @@ namespace Data_Package_Tool
             Properties.Settings.Default.SearchExcludeGuilds = excludeGuildsCb.Checked;
             Properties.Settings.Default.SearchExcludeDMs = excludeDmsCb.Checked;
             Properties.Settings.Default.SearchExcludeGDMs = excludeGroupDmsCb.Checked;
+            Properties.Settings.Default.SearchHasImage = hasImageCb.Checked;
+            Properties.Settings.Default.SearchHasVideo = hasVideoCb.Checked;
+            Properties.Settings.Default.SearchHasFile = hasFileCb.Checked;
             Properties.Settings.Default.SearchBeforeEnabled = beforeDateCb.Checked;
             Properties.Settings.Default.SearchAfterEnabled = afterDateCb.Checked;
             Properties.Settings.Default.SearchCaseSensitive = caseSensitiveCb.Checked;

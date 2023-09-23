@@ -6,6 +6,7 @@ namespace Data_Package_Tool.Classes.Parsing
     public class DAttachment
     {
         public static List<string> ImageExtensions = new List<string>{ ".png", ".gif", ".jpg", ".jpeg", ".apng", ".jfif", ".webp" };
+        public static List<string> VideoExtensions = new List<string> { ".mp4", ".webm", ".avi", ".mov" };
 
         public string id
         {
@@ -20,6 +21,11 @@ namespace Data_Package_Tool.Classes.Parsing
         public bool IsImage()
         {
             return ImageExtensions.Exists(x => url.EndsWith(x));
+        }
+
+        public bool IsVideo()
+        {
+            return VideoExtensions.Exists(x => url.EndsWith(x));
         }
     }
 }

@@ -52,6 +52,10 @@
             this.caseSensitiveCb = new System.Windows.Forms.CheckBox();
             this.sortOrderCmb = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.hasFileCb = new System.Windows.Forms.CheckBox();
+            this.hasImageCb = new System.Windows.Forms.CheckBox();
+            this.hasVideoCb = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // excludeGuildsCb
@@ -89,19 +93,18 @@
             // 
             // excludedIdsLb
             // 
-            this.excludedIdsLb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.excludedIdsLb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.excludedIdsLb.FormattingEnabled = true;
-            this.excludedIdsLb.Location = new System.Drawing.Point(12, 322);
+            this.excludedIdsLb.Location = new System.Drawing.Point(12, 212);
             this.excludedIdsLb.Name = "excludedIdsLb";
-            this.excludedIdsLb.Size = new System.Drawing.Size(249, 95);
+            this.excludedIdsLb.Size = new System.Drawing.Size(182, 95);
             this.excludedIdsLb.TabIndex = 3;
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 306);
+            this.label1.Location = new System.Drawing.Point(12, 196);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(181, 13);
             this.label1.TabIndex = 4;
@@ -110,7 +113,7 @@
             // saveBtn
             // 
             this.saveBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.saveBtn.Location = new System.Drawing.Point(109, 553);
+            this.saveBtn.Location = new System.Drawing.Point(194, 326);
             this.saveBtn.Name = "saveBtn";
             this.saveBtn.Size = new System.Drawing.Size(75, 23);
             this.saveBtn.TabIndex = 5;
@@ -120,8 +123,8 @@
             // 
             // addBtn
             // 
-            this.addBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.addBtn.Location = new System.Drawing.Point(265, 322);
+            this.addBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.addBtn.Location = new System.Drawing.Point(200, 212);
             this.addBtn.Name = "addBtn";
             this.addBtn.Size = new System.Drawing.Size(24, 21);
             this.addBtn.TabIndex = 6;
@@ -131,8 +134,8 @@
             // 
             // removeBtn
             // 
-            this.removeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.removeBtn.Location = new System.Drawing.Point(265, 349);
+            this.removeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.removeBtn.Location = new System.Drawing.Point(200, 239);
             this.removeBtn.Name = "removeBtn";
             this.removeBtn.Size = new System.Drawing.Size(24, 21);
             this.removeBtn.TabIndex = 7;
@@ -193,8 +196,8 @@
             // 
             // removeWhitelistBtn
             // 
-            this.removeWhitelistBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.removeWhitelistBtn.Location = new System.Drawing.Point(265, 479);
+            this.removeWhitelistBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.removeWhitelistBtn.Location = new System.Drawing.Point(429, 239);
             this.removeWhitelistBtn.Name = "removeWhitelistBtn";
             this.removeWhitelistBtn.Size = new System.Drawing.Size(24, 21);
             this.removeWhitelistBtn.TabIndex = 16;
@@ -204,8 +207,8 @@
             // 
             // addWhitelistBtn
             // 
-            this.addWhitelistBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.addWhitelistBtn.Location = new System.Drawing.Point(265, 452);
+            this.addWhitelistBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.addWhitelistBtn.Location = new System.Drawing.Point(429, 212);
             this.addWhitelistBtn.Name = "addWhitelistBtn";
             this.addWhitelistBtn.Size = new System.Drawing.Size(24, 21);
             this.addWhitelistBtn.TabIndex = 15;
@@ -217,7 +220,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 436);
+            this.label4.Location = new System.Drawing.Point(241, 196);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(210, 13);
             this.label4.TabIndex = 14;
@@ -225,12 +228,11 @@
             // 
             // whitelistIdsLb
             // 
-            this.whitelistIdsLb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.whitelistIdsLb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.whitelistIdsLb.FormattingEnabled = true;
-            this.whitelistIdsLb.Location = new System.Drawing.Point(12, 452);
+            this.whitelistIdsLb.Location = new System.Drawing.Point(241, 212);
             this.whitelistIdsLb.Name = "whitelistIdsLb";
-            this.whitelistIdsLb.Size = new System.Drawing.Size(249, 95);
+            this.whitelistIdsLb.Size = new System.Drawing.Size(181, 95);
             this.whitelistIdsLb.TabIndex = 13;
             // 
             // beforeDateDtp
@@ -239,7 +241,7 @@
             this.beforeDateDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
             this.beforeDateDtp.Enabled = false;
             this.beforeDateDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.beforeDateDtp.Location = new System.Drawing.Point(12, 213);
+            this.beforeDateDtp.Location = new System.Drawing.Point(12, 158);
             this.beforeDateDtp.Name = "beforeDateDtp";
             this.beforeDateDtp.Size = new System.Drawing.Size(200, 20);
             this.beforeDateDtp.TabIndex = 17;
@@ -250,7 +252,7 @@
             // 
             this.beforeDateCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.beforeDateCb.AutoSize = true;
-            this.beforeDateCb.Location = new System.Drawing.Point(12, 190);
+            this.beforeDateCb.Location = new System.Drawing.Point(12, 135);
             this.beforeDateCb.Name = "beforeDateCb";
             this.beforeDateCb.Size = new System.Drawing.Size(103, 17);
             this.beforeDateCb.TabIndex = 18;
@@ -262,7 +264,7 @@
             // 
             this.afterDateCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.afterDateCb.AutoSize = true;
-            this.afterDateCb.Location = new System.Drawing.Point(12, 249);
+            this.afterDateCb.Location = new System.Drawing.Point(244, 135);
             this.afterDateCb.Name = "afterDateCb";
             this.afterDateCb.Size = new System.Drawing.Size(94, 17);
             this.afterDateCb.TabIndex = 20;
@@ -276,7 +278,7 @@
             this.afterDateDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
             this.afterDateDtp.Enabled = false;
             this.afterDateDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.afterDateDtp.Location = new System.Drawing.Point(12, 272);
+            this.afterDateDtp.Location = new System.Drawing.Point(244, 158);
             this.afterDateDtp.Name = "afterDateDtp";
             this.afterDateDtp.Size = new System.Drawing.Size(200, 20);
             this.afterDateDtp.TabIndex = 19;
@@ -286,7 +288,7 @@
             // caseSensitiveCb
             // 
             this.caseSensitiveCb.AutoSize = true;
-            this.caseSensitiveCb.Location = new System.Drawing.Point(12, 103);
+            this.caseSensitiveCb.Location = new System.Drawing.Point(12, 102);
             this.caseSensitiveCb.Name = "caseSensitiveCb";
             this.caseSensitiveCb.Size = new System.Drawing.Size(139, 17);
             this.caseSensitiveCb.TabIndex = 21;
@@ -301,27 +303,73 @@
             this.sortOrderCmb.Items.AddRange(new object[] {
             "Newest to oldest",
             "Oldest to newest"});
-            this.sortOrderCmb.Location = new System.Drawing.Point(12, 149);
+            this.sortOrderCmb.Location = new System.Drawing.Point(303, 99);
             this.sortOrderCmb.Name = "sortOrderCmb";
-            this.sortOrderCmb.Size = new System.Drawing.Size(121, 21);
+            this.sortOrderCmb.Size = new System.Drawing.Size(139, 21);
             this.sortOrderCmb.TabIndex = 22;
             this.sortOrderCmb.SelectedIndexChanged += new System.EventHandler(this.dummyValueChanged);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 133);
+            this.label5.Location = new System.Drawing.Point(241, 102);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(56, 13);
             this.label5.TabIndex = 23;
             this.label5.Text = "Sort order:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(297, 10);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(37, 13);
+            this.label6.TabIndex = 27;
+            this.label6.Text = "Filters:";
+            // 
+            // hasFileCb
+            // 
+            this.hasFileCb.AutoSize = true;
+            this.hasFileCb.Location = new System.Drawing.Point(300, 71);
+            this.hasFileCb.Name = "hasFileCb";
+            this.hasFileCb.Size = new System.Drawing.Size(88, 17);
+            this.hasFileCb.TabIndex = 25;
+            this.hasFileCb.Text = "Has other file";
+            this.hasFileCb.UseVisualStyleBackColor = true;
+            this.hasFileCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            // 
+            // hasImageCb
+            // 
+            this.hasImageCb.AutoSize = true;
+            this.hasImageCb.Location = new System.Drawing.Point(300, 26);
+            this.hasImageCb.Name = "hasImageCb";
+            this.hasImageCb.Size = new System.Drawing.Size(76, 17);
+            this.hasImageCb.TabIndex = 24;
+            this.hasImageCb.Text = "Has image";
+            this.hasImageCb.UseVisualStyleBackColor = true;
+            this.hasImageCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            // 
+            // hasVideoCb
+            // 
+            this.hasVideoCb.AutoSize = true;
+            this.hasVideoCb.Location = new System.Drawing.Point(300, 49);
+            this.hasVideoCb.Name = "hasVideoCb";
+            this.hasVideoCb.Size = new System.Drawing.Size(74, 17);
+            this.hasVideoCb.TabIndex = 28;
+            this.hasVideoCb.Text = "Has video";
+            this.hasVideoCb.UseVisualStyleBackColor = true;
+            this.hasVideoCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
             // 
             // SearchOptionsPrompt
             // 
             this.AcceptButton = this.saveBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(293, 580);
+            this.ClientSize = new System.Drawing.Size(463, 353);
+            this.Controls.Add(this.hasVideoCb);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.hasFileCb);
+            this.Controls.Add(this.hasImageCb);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.sortOrderCmb);
             this.Controls.Add(this.caseSensitiveCb);
@@ -388,5 +436,9 @@
         private System.Windows.Forms.CheckBox caseSensitiveCb;
         private System.Windows.Forms.ComboBox sortOrderCmb;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox hasFileCb;
+        private System.Windows.Forms.CheckBox hasImageCb;
+        private System.Windows.Forms.CheckBox hasVideoCb;
     }
 }

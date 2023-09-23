@@ -364,6 +364,21 @@ namespace Data_Package_Tool
         private List<DMessage> FilterMessages(List<DMessage> messages)
         {
             IEnumerable<DMessage> m = messages;
+            if(Properties.Settings.Default.SearchHasFile)
+            {
+                m = m.Where(x => x.attachments.Count > 0 && x.attachments.Find(y => !y.IsImage() && !y.IsVideo()) != null);
+            }
+
+            if (Properties.Settings.Default.SearchHasImage)
+            {
+                m = m.Where(x => x.attachments.Count > 0 && x.attachments.Find(y => y.IsImage()) != null);
+            }
+
+            if (Properties.Settings.Default.SearchHasVideo)
+            {
+                m = m.Where(x => x.attachments.Count > 0 && x.attachments.Find(y => y.IsVideo()) != null);
+            }
+
             if (Properties.Settings.Default.SearchBeforeEnabled)
             {
                 m = m.Where(x => x.timestamp < Properties.Settings.Default.SearchBeforeDate);

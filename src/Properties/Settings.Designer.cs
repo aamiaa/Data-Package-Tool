@@ -187,5 +187,41 @@ namespace Data_Package_Tool.Properties {
                 this["SortMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SearchHasImage {
+            get {
+                return ((bool)(this["SearchHasImage"]));
+            }
+            set {
+                this["SearchHasImage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SearchHasFile {
+            get {
+                return ((bool)(this["SearchHasFile"]));
+            }
+            set {
+                this["SearchHasFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SearchHasVideo {
+            get {
+                return ((bool)(this["SearchHasVideo"]));
+            }
+            set {
+                this["SearchHasVideo"] = value;
+            }
+        }
     }
 }

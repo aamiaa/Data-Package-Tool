@@ -44,5 +44,14 @@
     <Setting Name="SortMode" Type="System.String" Scope="User">
       <Value Profile="(Default)">desc</Value>
     </Setting>
+    <Setting Name="SearchHasImage" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SearchHasFile" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SearchHasVideo" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
