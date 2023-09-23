@@ -10,7 +10,7 @@
     <Border BorderBrush="#FF232428" BorderThickness="1" CornerRadius="8" Background="#FF2B2D31">
         <Grid>
             <Image Source="/Resources/FileIcon.png" HorizontalAlignment="Left" Margin="17,0,0,0" Width="30" Height="40"/>
-            <TextBlock HorizontalAlignment="Left" Margin="55,19,0,0" VerticalAlignment="Top" FontFamily="Source Sans Pro" Foreground="#FFDBDEE1" FontSize="15" Padding="0,0,5,5">
+            <TextBlock HorizontalAlignment="Left" Margin="55,19,0,0" VerticalAlignment="Top" FontFamily="Source Sans Pro" Foreground="#FFDBDEE1" FontSize="15" Padding="0,0,5,5" TextTrimming="CharacterEllipsis">
                 <Hyperlink NavigateUri="{Binding Url}" Foreground="#FF00A8FC" RequestNavigate="Hyperlink_RequestNavigate">
                     <Hyperlink.Style>
                         <Style TargetType="Hyperlink">
