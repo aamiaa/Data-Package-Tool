@@ -619,6 +619,9 @@ namespace Data_Package_Tool
                         Properties.Settings.Default.DeletedMessageIDs.Add(msg.id);
                         Properties.Settings.Default.Save();
                         break;
+                    case HttpStatusCode.InternalServerError:
+                    case HttpStatusCode.BadGateway:
+                    case HttpStatusCode.ServiceUnavailable:
                     case (HttpStatusCode)429:
                         MassDeleteIdx--;
                         Thread.Sleep((int)Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res.body).retry_after * 1000);
