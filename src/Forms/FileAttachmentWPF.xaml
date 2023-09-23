@@ -22,7 +22,7 @@
                             </Style.Triggers>
                         </Style>
                     </Hyperlink.Style>
-                    <Run Text="{Binding FileName}" d:Text="message.txt"></Run>
+                    <Run x:Name="fileNameLb" Text="{Binding FileName}" d:Text="message.txt"></Run>
                 </Hyperlink>
                 <LineBreak/>
                 <Run x:Name="fileSizeLb" FontSize="11" Foreground="#FF80848E" d:Text="69 bytes"/>

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,17 +60,35 @@ namespace Data_Package_Tool.Forms
             ThreadPool.QueueUserWorkItem(state =>
             {
                 string fileSize = "Unknown size";
+                bool isDeleted = false;
+
                 try
                 {
                     var res = DRequest.Request("HEAD", url, null, null, false);
-                    var size = res.response.ContentLength;
-                    fileSize = Util.SizeSuffix(size, 2);
+                    switch(res.response.StatusCode)
+                    {
+                        case HttpStatusCode.OK:
+                            var size = res.response.ContentLength;
+                            fileSize = Util.SizeSuffix(size, 2);
+                            break;
+                        case HttpStatusCode.NotFound:
+                            isDeleted = true;
+                            fileSize = "Attachment deleted";
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 catch (Exception) { }
 
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     fileSizeLb.Text = fileSize;
+
+                    if(isDeleted)
+                    {
+                        fileNameLb.Foreground = new SolidColorBrush(Color.FromArgb(255, 190, 53, 53));
+                    }
                 }));
             });
         }
