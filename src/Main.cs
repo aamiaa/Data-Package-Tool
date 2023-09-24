@@ -369,19 +369,19 @@ namespace Data_Package_Tool
         private List<DMessage> FilterMessages(List<DMessage> messages)
         {
             IEnumerable<DMessage> m = messages;
-            if(Properties.Settings.Default.SearchHasFile)
+            if(Properties.Settings.Default.SearchHasImage ||  Properties.Settings.Default.SearchHasVideo || Properties.Settings.Default.SearchHasFile)
             {
-                m = m.Where(x => x.attachments.Count > 0 && x.attachments.Find(y => !y.IsImage() && !y.IsVideo()) != null);
-            }
+                m = m.Where(x =>
+                {
+                    if(x.attachments.Count == 0) return false;
 
-            if (Properties.Settings.Default.SearchHasImage)
-            {
-                m = m.Where(x => x.attachments.Count > 0 && x.attachments.Find(y => y.IsImage()) != null);
-            }
+                    if (Properties.Settings.Default.SearchHasImage && x.attachments.Find(y => y.IsImage()) != null) return true;
+                    if (Properties.Settings.Default.SearchHasVideo && x.attachments.Find(y => y.IsVideo()) != null) return true;
+                    if (Properties.Settings.Default.SearchHasFile && x.attachments.Find(y => !y.IsImage() && !y.IsVideo()) != null) return true;
 
-            if (Properties.Settings.Default.SearchHasVideo)
-            {
-                m = m.Where(x => x.attachments.Count > 0 && x.attachments.Find(y => y.IsVideo()) != null);
+                    return false;
+                });
+
             }
 
             if (Properties.Settings.Default.SearchBeforeEnabled)
