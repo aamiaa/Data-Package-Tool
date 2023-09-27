@@ -3,10 +3,10 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Data_Package_Tool</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+	<Version>1.0.5</Version>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Forms\Attachment.cs">
