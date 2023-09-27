@@ -297,7 +297,7 @@ namespace Data_Package_Tool
             // 
             imagesCountLb.AutoSize = true;
             imagesCountLb.ForeColor = System.Drawing.SystemColors.Control;
-            imagesCountLb.Location = new System.Drawing.Point(80, 14);
+            imagesCountLb.Location = new System.Drawing.Point(71, 11);
             imagesCountLb.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             imagesCountLb.Name = "imagesCountLb";
             imagesCountLb.Size = new System.Drawing.Size(0, 15);
