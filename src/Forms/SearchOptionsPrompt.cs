@@ -63,15 +63,8 @@ namespace Data_Package_Tool
                 }
             }
 
-            if (Properties.Settings.Default.SearchBeforeDate != null)
-            {
-                beforeDateDtp.Value = Properties.Settings.Default.SearchBeforeDate;
-            }
-
-            if (Properties.Settings.Default.SearchAfterDate != null)
-            {
-                afterDateDtp.Value = Properties.Settings.Default.SearchAfterDate;
-            }
+            beforeDateDtp.Value = Properties.Settings.Default.SearchBeforeDate;
+            afterDateDtp.Value = Properties.Settings.Default.SearchAfterDate;
 
             ChangesMade = false;
         }

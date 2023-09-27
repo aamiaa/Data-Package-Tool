@@ -87,7 +87,7 @@ namespace Data_Package_Tool.Forms
                 }
                 catch (Exception) { }
 
-                Dispatcher.BeginInvoke(new Action(() =>
+                await Dispatcher.BeginInvoke(new Action(() =>
                 {
                     fileSizeLb.Text = fileSize;
 
