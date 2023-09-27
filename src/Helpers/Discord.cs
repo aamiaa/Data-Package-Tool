@@ -26,7 +26,10 @@ namespace Data_Package_Tool.Classes
             string instance = Properties.Settings.Default.UseDiscordInstance;
             if (instance == "default")
             {
-                Process.Start($"discord://-/{url}");
+                Process.Start(new ProcessStartInfo {
+                    FileName = $"discord://-/{url}",
+                    UseShellExecute = true
+                });
                 return;
             }
 
@@ -48,7 +51,11 @@ namespace Data_Package_Tool.Classes
                         throw new Exception($"Invalid settings value: {instance}");
                 }
 
-                Process.Start($"https://{hostname}/{url}");
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = $"https://{hostname}/{url}",
+                    UseShellExecute = true
+                });
                 return;
             }
 

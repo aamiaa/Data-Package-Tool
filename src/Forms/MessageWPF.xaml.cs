@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Cache;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
@@ -246,7 +247,14 @@ namespace Data_Package_Tool
                                 NavigateUri = new Uri(url),
                                 TextDecorations = null
                             };
-                            hyperlink.RequestNavigate += (o, e) => Process.Start(e.Uri.ToString());
+                            hyperlink.RequestNavigate += (o, e) =>
+                            {
+                                Process.Start(new ProcessStartInfo
+                                {
+                                    FileName = e.Uri.ToString(),
+                                    UseShellExecute = true
+                                });
+                            };
                             hyperlink.MouseEnter += (o, e) => hyperlink.TextDecorations = TextDecorations.Underline; // TODO: figure out how to do this properly with Resources and Style
                             hyperlink.MouseLeave += (o, e) => hyperlink.TextDecorations = null;
                             contentLb.Inlines.Add(hyperlink);
@@ -342,7 +350,14 @@ namespace Data_Package_Tool
                     img.Cursor = Cursors.Hand;
                     img.MouseUp += (s, e) =>
                     {
-                        if (e.ChangedButton == MouseButton.Left) Process.Start(attachment.url);
+                        if (e.ChangedButton == MouseButton.Left)
+                        {
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = attachment.url,
+                                UseShellExecute = true
+                            });
+                        }
                     };
 
                     if (Discord.AttachmentsCache.ContainsKey(attachment.id))

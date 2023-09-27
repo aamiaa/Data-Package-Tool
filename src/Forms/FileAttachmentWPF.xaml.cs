@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,7 +53,11 @@ namespace Data_Package_Tool.Forms
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(e.Uri.ToString());
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = e.Uri.ToString(),
+                UseShellExecute = true
+            });
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
