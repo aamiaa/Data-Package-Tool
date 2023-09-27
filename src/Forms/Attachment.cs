@@ -84,7 +84,7 @@ namespace Data_Package_Tool
             }
         }
 
-        private void openDmSELFBOTToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void openDmSELFBOTToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string userId = SelectedAttachment.message.channel.GetOtherDMRecipient(Main.DataPackage.User);
             string channelId = SelectedAttachment.message.channel.id;
@@ -93,7 +93,7 @@ namespace Data_Package_Tool
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            if(Discord.OpenDMFlow(userId, SelectedAttachment.message.channel.id))
+            if(await Discord.OpenDMFlowAsync(userId, SelectedAttachment.message.channel.id))
             {
                 Discord.LaunchDiscordProtocol($"channels/@me/{channelId}");
             }

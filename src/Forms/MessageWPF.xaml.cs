@@ -493,7 +493,7 @@ namespace Data_Package_Tool
             Clipboard.SetText(this.Message.channel.guild.id);
         }
 
-        private void openDMMi_Click(object sender, RoutedEventArgs e)
+        private async void openDMMi_Click(object sender, RoutedEventArgs e)
         {
             if (this.Message.channel.has_duplicates)
             {
@@ -501,13 +501,13 @@ namespace Data_Package_Tool
             }
 
             string userId = this.Message.channel.GetOtherDMRecipient(this.User);
-            if (Discord.OpenDMFlow(userId, this.Message.channel.id))
+            if (await Discord.OpenDMFlowAsync(userId, this.Message.channel.id))
             {
                 goToMessageMi_Click(sender, e);
             }
         }
 
-        private void deleteMessageMi_Click(object sender, RoutedEventArgs e)
+        private async void deleteMessageMi_Click(object sender, RoutedEventArgs e)
         {
             if(Discord.UserToken == null)
             {
@@ -520,9 +520,9 @@ namespace Data_Package_Tool
                 return;
             }
 
-            DHeaders.Init();
+            await DHeaders.Init();
 
-            var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{Message.channel.id}/messages/{Message.id}", new Dictionary<string, string>
+            var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{Message.channel.id}/messages/{Message.id}", new Dictionary<string, string>
             {
                 {"Authorization", Discord.UserToken}
             });

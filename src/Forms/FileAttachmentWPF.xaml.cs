@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,18 +58,18 @@ namespace Data_Package_Tool.Forms
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             string url = this.Url;
-            ThreadPool.QueueUserWorkItem(state =>
+            ThreadPool.QueueUserWorkItem(async state =>
             {
                 string fileSize = "Unknown size";
                 bool isDeleted = false;
 
                 try
                 {
-                    var res = DRequest.Request("HEAD", url, null, null, false);
+                    var res = await DRequest.RequestAsync(HttpMethod.Head, url, null, null, false);
                     switch(res.response.StatusCode)
                     {
                         case HttpStatusCode.OK:
-                            var size = res.response.ContentLength;
+                            long size = (long)res.response.Content.Headers.ContentLength;
                             fileSize = Util.SizeSuffix(size, 2);
                             break;
                         case HttpStatusCode.NotFound:

@@ -12,6 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -568,7 +569,7 @@ namespace Data_Package_Tool
         }
 
         private int MassDeleteIdx = 0;
-        private void massDeleteBtn_Click(object sender, EventArgs e)
+        private async void massDeleteBtn_Click(object sender, EventArgs e)
         {
             if(massDeleteTimer.Enabled == true)
             {
@@ -596,12 +597,12 @@ namespace Data_Package_Tool
                 searchBtn.Enabled = false;
                 massDeleteBtn.Text = "Click to stop";
 
-                DHeaders.Init();
+                await DHeaders.Init();
                 massDeleteTimer.Start();
             }
         }
 
-        private void massDeleteTimer_Tick(object sender, EventArgs e)
+        private async void massDeleteTimer_Tick(object sender, EventArgs e)
         {
             massDeleteTimer.Stop(); // Stop and restart the timer every time to prevent overlaps
 
@@ -624,7 +625,7 @@ namespace Data_Package_Tool
 
             try
             {
-                var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{msg.channel.id}/messages/{msg.id}", new Dictionary<string, string>
+                var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{msg.channel.id}/messages/{msg.id}", new Dictionary<string, string>
                 {
                     {"Authorization", Discord.UserToken}
                 });
