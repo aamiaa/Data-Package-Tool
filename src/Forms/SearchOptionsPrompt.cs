@@ -28,10 +28,11 @@ namespace Data_Package_Tool
                 regexMatchRb.Checked = true;
             }
 
-            if(Properties.Settings.Default.SortMode == "asc")
+            if (Properties.Settings.Default.SortMode == "asc")
             {
                 sortOrderCmb.SelectedIndex = 1;
-            } else if(Properties.Settings.Default.SortMode == "desc")
+            }
+            else if (Properties.Settings.Default.SortMode == "desc")
             {
                 sortOrderCmb.SelectedIndex = 0;
             }
@@ -62,12 +63,12 @@ namespace Data_Package_Tool
                 }
             }
 
-            if(Properties.Settings.Default.SearchBeforeDate != null)
+            if (Properties.Settings.Default.SearchBeforeDate != null)
             {
                 beforeDateDtp.Value = Properties.Settings.Default.SearchBeforeDate;
             }
 
-            if(Properties.Settings.Default.SearchAfterDate != null)
+            if (Properties.Settings.Default.SearchAfterDate != null)
             {
                 afterDateDtp.Value = Properties.Settings.Default.SearchAfterDate;
             }
@@ -77,13 +78,15 @@ namespace Data_Package_Tool
 
         private void saveBtn_Click(object sender, EventArgs e)
         {
-            if(exactMatchRb.Checked)
+            if (exactMatchRb.Checked)
             {
                 Properties.Settings.Default.SearchMode = "exact";
-            } else if(wordsMatchRb.Checked)
+            }
+            else if (wordsMatchRb.Checked)
             {
                 Properties.Settings.Default.SearchMode = "words";
-            } else if(regexMatchRb.Checked)
+            }
+            else if (regexMatchRb.Checked)
             {
                 Properties.Settings.Default.SearchMode = "regex";
             }
@@ -108,7 +111,7 @@ namespace Data_Package_Tool
             Properties.Settings.Default.SearchCaseSensitive = caseSensitiveCb.Checked;
 
             var excludeIds = new StringCollection();
-            foreach(string item in excludedIdsLb.Items)
+            foreach (string item in excludedIdsLb.Items)
             {
                 excludeIds.Add(item);
             }
@@ -193,7 +196,7 @@ namespace Data_Package_Tool
 
         private void SearchOptionsPrompt_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Escape)
+            if (e.KeyCode == Keys.Escape)
             {
                 Close();
             }
@@ -201,10 +204,10 @@ namespace Data_Package_Tool
 
         private void SearchOptionsPrompt_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(ChangesMade)
+            if (ChangesMade)
             {
                 var result = MessageBox.Show("Your changes will be lost. Are you sure you want to close?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                if(result != DialogResult.Yes)
+                if (result != DialogResult.Yes)
                 {
                     e.Cancel = true;
                 }

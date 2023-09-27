@@ -28,386 +28,418 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.excludeGuildsCb = new System.Windows.Forms.CheckBox();
-            this.excludeDmsCb = new System.Windows.Forms.CheckBox();
-            this.excludeGroupDmsCb = new System.Windows.Forms.CheckBox();
-            this.excludedIdsLb = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.saveBtn = new System.Windows.Forms.Button();
-            this.addBtn = new System.Windows.Forms.Button();
-            this.removeBtn = new System.Windows.Forms.Button();
-            this.exactMatchRb = new System.Windows.Forms.RadioButton();
-            this.wordsMatchRb = new System.Windows.Forms.RadioButton();
-            this.regexMatchRb = new System.Windows.Forms.RadioButton();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.removeWhitelistBtn = new System.Windows.Forms.Button();
-            this.addWhitelistBtn = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.whitelistIdsLb = new System.Windows.Forms.ListBox();
-            this.beforeDateDtp = new System.Windows.Forms.DateTimePicker();
-            this.beforeDateCb = new System.Windows.Forms.CheckBox();
-            this.afterDateCb = new System.Windows.Forms.CheckBox();
-            this.afterDateDtp = new System.Windows.Forms.DateTimePicker();
-            this.caseSensitiveCb = new System.Windows.Forms.CheckBox();
-            this.sortOrderCmb = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.hasFileCb = new System.Windows.Forms.CheckBox();
-            this.hasImageCb = new System.Windows.Forms.CheckBox();
-            this.hasVideoCb = new System.Windows.Forms.CheckBox();
-            this.SuspendLayout();
+            excludeGuildsCb = new System.Windows.Forms.CheckBox();
+            excludeDmsCb = new System.Windows.Forms.CheckBox();
+            excludeGroupDmsCb = new System.Windows.Forms.CheckBox();
+            excludedIdsLb = new System.Windows.Forms.ListBox();
+            label1 = new System.Windows.Forms.Label();
+            saveBtn = new System.Windows.Forms.Button();
+            addBtn = new System.Windows.Forms.Button();
+            removeBtn = new System.Windows.Forms.Button();
+            exactMatchRb = new System.Windows.Forms.RadioButton();
+            wordsMatchRb = new System.Windows.Forms.RadioButton();
+            regexMatchRb = new System.Windows.Forms.RadioButton();
+            label2 = new System.Windows.Forms.Label();
+            label3 = new System.Windows.Forms.Label();
+            removeWhitelistBtn = new System.Windows.Forms.Button();
+            addWhitelistBtn = new System.Windows.Forms.Button();
+            label4 = new System.Windows.Forms.Label();
+            whitelistIdsLb = new System.Windows.Forms.ListBox();
+            beforeDateDtp = new System.Windows.Forms.DateTimePicker();
+            beforeDateCb = new System.Windows.Forms.CheckBox();
+            afterDateCb = new System.Windows.Forms.CheckBox();
+            afterDateDtp = new System.Windows.Forms.DateTimePicker();
+            caseSensitiveCb = new System.Windows.Forms.CheckBox();
+            sortOrderCmb = new System.Windows.Forms.ComboBox();
+            label5 = new System.Windows.Forms.Label();
+            label6 = new System.Windows.Forms.Label();
+            hasFileCb = new System.Windows.Forms.CheckBox();
+            hasImageCb = new System.Windows.Forms.CheckBox();
+            hasVideoCb = new System.Windows.Forms.CheckBox();
+            SuspendLayout();
             // 
             // excludeGuildsCb
             // 
-            this.excludeGuildsCb.AutoSize = true;
-            this.excludeGuildsCb.Location = new System.Drawing.Point(137, 26);
-            this.excludeGuildsCb.Name = "excludeGuildsCb";
-            this.excludeGuildsCb.Size = new System.Drawing.Size(135, 17);
-            this.excludeGuildsCb.TabIndex = 0;
-            this.excludeGuildsCb.Text = "Exclude guild channels";
-            this.excludeGuildsCb.UseVisualStyleBackColor = true;
-            this.excludeGuildsCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            excludeGuildsCb.AutoSize = true;
+            excludeGuildsCb.Location = new System.Drawing.Point(137, 28);
+            excludeGuildsCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            excludeGuildsCb.Name = "excludeGuildsCb";
+            excludeGuildsCb.Size = new System.Drawing.Size(147, 19);
+            excludeGuildsCb.TabIndex = 0;
+            excludeGuildsCb.Text = "Exclude guild channels";
+            excludeGuildsCb.UseVisualStyleBackColor = true;
+            excludeGuildsCb.CheckedChanged += dummyValueChanged;
             // 
             // excludeDmsCb
             // 
-            this.excludeDmsCb.AutoSize = true;
-            this.excludeDmsCb.Location = new System.Drawing.Point(137, 49);
-            this.excludeDmsCb.Name = "excludeDmsCb";
-            this.excludeDmsCb.Size = new System.Drawing.Size(127, 17);
-            this.excludeDmsCb.TabIndex = 1;
-            this.excludeDmsCb.Text = "Exclude dm channels";
-            this.excludeDmsCb.UseVisualStyleBackColor = true;
-            this.excludeDmsCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            excludeDmsCb.AutoSize = true;
+            excludeDmsCb.Location = new System.Drawing.Point(137, 51);
+            excludeDmsCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            excludeDmsCb.Name = "excludeDmsCb";
+            excludeDmsCb.Size = new System.Drawing.Size(138, 19);
+            excludeDmsCb.TabIndex = 1;
+            excludeDmsCb.Text = "Exclude dm channels";
+            excludeDmsCb.UseVisualStyleBackColor = true;
+            excludeDmsCb.CheckedChanged += dummyValueChanged;
             // 
             // excludeGroupDmsCb
             // 
-            this.excludeGroupDmsCb.AutoSize = true;
-            this.excludeGroupDmsCb.Location = new System.Drawing.Point(137, 72);
-            this.excludeGroupDmsCb.Name = "excludeGroupDmsCb";
-            this.excludeGroupDmsCb.Size = new System.Drawing.Size(157, 17);
-            this.excludeGroupDmsCb.TabIndex = 2;
-            this.excludeGroupDmsCb.Text = "Exclude group dm channels";
-            this.excludeGroupDmsCb.UseVisualStyleBackColor = true;
-            this.excludeGroupDmsCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            excludeGroupDmsCb.AutoSize = true;
+            excludeGroupDmsCb.Location = new System.Drawing.Point(137, 74);
+            excludeGroupDmsCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            excludeGroupDmsCb.Name = "excludeGroupDmsCb";
+            excludeGroupDmsCb.Size = new System.Drawing.Size(173, 19);
+            excludeGroupDmsCb.TabIndex = 2;
+            excludeGroupDmsCb.Text = "Exclude group dm channels";
+            excludeGroupDmsCb.UseVisualStyleBackColor = true;
+            excludeGroupDmsCb.CheckedChanged += dummyValueChanged;
             // 
             // excludedIdsLb
             // 
-            this.excludedIdsLb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.excludedIdsLb.FormattingEnabled = true;
-            this.excludedIdsLb.Location = new System.Drawing.Point(12, 212);
-            this.excludedIdsLb.Name = "excludedIdsLb";
-            this.excludedIdsLb.Size = new System.Drawing.Size(182, 95);
-            this.excludedIdsLb.TabIndex = 3;
+            excludedIdsLb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            excludedIdsLb.FormattingEnabled = true;
+            excludedIdsLb.ItemHeight = 15;
+            excludedIdsLb.Location = new System.Drawing.Point(12, 210);
+            excludedIdsLb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            excludedIdsLb.Name = "excludedIdsLb";
+            excludedIdsLb.Size = new System.Drawing.Size(182, 94);
+            excludedIdsLb.TabIndex = 3;
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 196);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(181, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Exclude specific channels/guilds ids:";
+            label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(12, 194);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(199, 15);
+            label1.TabIndex = 4;
+            label1.Text = "Exclude specific channels/guilds ids:";
             // 
             // saveBtn
             // 
-            this.saveBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.saveBtn.Location = new System.Drawing.Point(194, 326);
-            this.saveBtn.Name = "saveBtn";
-            this.saveBtn.Size = new System.Drawing.Size(75, 23);
-            this.saveBtn.TabIndex = 5;
-            this.saveBtn.Text = "Save";
-            this.saveBtn.UseVisualStyleBackColor = true;
-            this.saveBtn.Click += new System.EventHandler(this.saveBtn_Click);
+            saveBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            saveBtn.Location = new System.Drawing.Point(194, 324);
+            saveBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            saveBtn.Name = "saveBtn";
+            saveBtn.Size = new System.Drawing.Size(75, 23);
+            saveBtn.TabIndex = 5;
+            saveBtn.Text = "Save";
+            saveBtn.UseVisualStyleBackColor = true;
+            saveBtn.Click += saveBtn_Click;
             // 
             // addBtn
             // 
-            this.addBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.addBtn.Location = new System.Drawing.Point(200, 212);
-            this.addBtn.Name = "addBtn";
-            this.addBtn.Size = new System.Drawing.Size(24, 21);
-            this.addBtn.TabIndex = 6;
-            this.addBtn.Text = "+";
-            this.addBtn.UseVisualStyleBackColor = true;
-            this.addBtn.Click += new System.EventHandler(this.addBtn_Click);
+            addBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            addBtn.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            addBtn.Location = new System.Drawing.Point(200, 210);
+            addBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            addBtn.Name = "addBtn";
+            addBtn.Size = new System.Drawing.Size(24, 21);
+            addBtn.TabIndex = 6;
+            addBtn.Text = "+";
+            addBtn.UseVisualStyleBackColor = true;
+            addBtn.Click += addBtn_Click;
             // 
             // removeBtn
             // 
-            this.removeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.removeBtn.Location = new System.Drawing.Point(200, 239);
-            this.removeBtn.Name = "removeBtn";
-            this.removeBtn.Size = new System.Drawing.Size(24, 21);
-            this.removeBtn.TabIndex = 7;
-            this.removeBtn.Text = "-";
-            this.removeBtn.UseVisualStyleBackColor = true;
-            this.removeBtn.Click += new System.EventHandler(this.removeBtn_Click);
+            removeBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            removeBtn.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            removeBtn.Location = new System.Drawing.Point(200, 237);
+            removeBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            removeBtn.Name = "removeBtn";
+            removeBtn.Size = new System.Drawing.Size(24, 21);
+            removeBtn.TabIndex = 7;
+            removeBtn.Text = "-";
+            removeBtn.UseVisualStyleBackColor = true;
+            removeBtn.Click += removeBtn_Click;
             // 
             // exactMatchRb
             // 
-            this.exactMatchRb.AutoSize = true;
-            this.exactMatchRb.Location = new System.Drawing.Point(12, 25);
-            this.exactMatchRb.Name = "exactMatchRb";
-            this.exactMatchRb.Size = new System.Drawing.Size(84, 17);
-            this.exactMatchRb.TabIndex = 8;
-            this.exactMatchRb.Text = "Exact match";
-            this.exactMatchRb.UseVisualStyleBackColor = true;
-            this.exactMatchRb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            exactMatchRb.AutoSize = true;
+            exactMatchRb.Location = new System.Drawing.Point(12, 27);
+            exactMatchRb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            exactMatchRb.Name = "exactMatchRb";
+            exactMatchRb.Size = new System.Drawing.Size(90, 19);
+            exactMatchRb.TabIndex = 8;
+            exactMatchRb.Text = "Exact match";
+            exactMatchRb.UseVisualStyleBackColor = true;
+            exactMatchRb.CheckedChanged += dummyValueChanged;
             // 
             // wordsMatchRb
             // 
-            this.wordsMatchRb.AutoSize = true;
-            this.wordsMatchRb.Location = new System.Drawing.Point(12, 48);
-            this.wordsMatchRb.Name = "wordsMatchRb";
-            this.wordsMatchRb.Size = new System.Drawing.Size(88, 17);
-            this.wordsMatchRb.TabIndex = 9;
-            this.wordsMatchRb.Text = "Words match";
-            this.wordsMatchRb.UseVisualStyleBackColor = true;
-            this.wordsMatchRb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            wordsMatchRb.AutoSize = true;
+            wordsMatchRb.Location = new System.Drawing.Point(12, 50);
+            wordsMatchRb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            wordsMatchRb.Name = "wordsMatchRb";
+            wordsMatchRb.Size = new System.Drawing.Size(96, 19);
+            wordsMatchRb.TabIndex = 9;
+            wordsMatchRb.Text = "Words match";
+            wordsMatchRb.UseVisualStyleBackColor = true;
+            wordsMatchRb.CheckedChanged += dummyValueChanged;
             // 
             // regexMatchRb
             // 
-            this.regexMatchRb.AutoSize = true;
-            this.regexMatchRb.Location = new System.Drawing.Point(12, 71);
-            this.regexMatchRb.Name = "regexMatchRb";
-            this.regexMatchRb.Size = new System.Drawing.Size(88, 17);
-            this.regexMatchRb.TabIndex = 10;
-            this.regexMatchRb.Text = "Regex match";
-            this.regexMatchRb.UseVisualStyleBackColor = true;
-            this.regexMatchRb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            regexMatchRb.AutoSize = true;
+            regexMatchRb.Location = new System.Drawing.Point(12, 73);
+            regexMatchRb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            regexMatchRb.Name = "regexMatchRb";
+            regexMatchRb.Size = new System.Drawing.Size(94, 19);
+            regexMatchRb.TabIndex = 10;
+            regexMatchRb.Text = "Regex match";
+            regexMatchRb.UseVisualStyleBackColor = true;
+            regexMatchRb.CheckedChanged += dummyValueChanged;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(67, 13);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "Search type:";
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(10, 10);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(71, 15);
+            label2.TabIndex = 11;
+            label2.Text = "Search type:";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(134, 10);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 13);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Exclusions:";
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(134, 10);
+            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(65, 15);
+            label3.TabIndex = 12;
+            label3.Text = "Exclusions:";
             // 
             // removeWhitelistBtn
             // 
-            this.removeWhitelistBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.removeWhitelistBtn.Location = new System.Drawing.Point(429, 239);
-            this.removeWhitelistBtn.Name = "removeWhitelistBtn";
-            this.removeWhitelistBtn.Size = new System.Drawing.Size(24, 21);
-            this.removeWhitelistBtn.TabIndex = 16;
-            this.removeWhitelistBtn.Text = "-";
-            this.removeWhitelistBtn.UseVisualStyleBackColor = true;
-            this.removeWhitelistBtn.Click += new System.EventHandler(this.removeWhitelistBtn_Click);
+            removeWhitelistBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            removeWhitelistBtn.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            removeWhitelistBtn.Location = new System.Drawing.Point(429, 237);
+            removeWhitelistBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            removeWhitelistBtn.Name = "removeWhitelistBtn";
+            removeWhitelistBtn.Size = new System.Drawing.Size(24, 21);
+            removeWhitelistBtn.TabIndex = 16;
+            removeWhitelistBtn.Text = "-";
+            removeWhitelistBtn.UseVisualStyleBackColor = true;
+            removeWhitelistBtn.Click += removeWhitelistBtn_Click;
             // 
             // addWhitelistBtn
             // 
-            this.addWhitelistBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.addWhitelistBtn.Location = new System.Drawing.Point(429, 212);
-            this.addWhitelistBtn.Name = "addWhitelistBtn";
-            this.addWhitelistBtn.Size = new System.Drawing.Size(24, 21);
-            this.addWhitelistBtn.TabIndex = 15;
-            this.addWhitelistBtn.Text = "+";
-            this.addWhitelistBtn.UseVisualStyleBackColor = true;
-            this.addWhitelistBtn.Click += new System.EventHandler(this.addWhitelistBtn_Click);
+            addWhitelistBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            addWhitelistBtn.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            addWhitelistBtn.Location = new System.Drawing.Point(429, 210);
+            addWhitelistBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            addWhitelistBtn.Name = "addWhitelistBtn";
+            addWhitelistBtn.Size = new System.Drawing.Size(24, 21);
+            addWhitelistBtn.TabIndex = 15;
+            addWhitelistBtn.Text = "+";
+            addWhitelistBtn.UseVisualStyleBackColor = true;
+            addWhitelistBtn.Click += addWhitelistBtn_Click;
             // 
             // label4
             // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(241, 196);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(210, 13);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "Search only in specific channels/guilds ids:";
+            label4.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(241, 194);
+            label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(232, 15);
+            label4.TabIndex = 14;
+            label4.Text = "Search only in specific channels/guilds ids:";
             // 
             // whitelistIdsLb
             // 
-            this.whitelistIdsLb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.whitelistIdsLb.FormattingEnabled = true;
-            this.whitelistIdsLb.Location = new System.Drawing.Point(241, 212);
-            this.whitelistIdsLb.Name = "whitelistIdsLb";
-            this.whitelistIdsLb.Size = new System.Drawing.Size(181, 95);
-            this.whitelistIdsLb.TabIndex = 13;
+            whitelistIdsLb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            whitelistIdsLb.FormattingEnabled = true;
+            whitelistIdsLb.ItemHeight = 15;
+            whitelistIdsLb.Location = new System.Drawing.Point(241, 210);
+            whitelistIdsLb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            whitelistIdsLb.Name = "whitelistIdsLb";
+            whitelistIdsLb.Size = new System.Drawing.Size(181, 94);
+            whitelistIdsLb.TabIndex = 13;
             // 
             // beforeDateDtp
             // 
-            this.beforeDateDtp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.beforeDateDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
-            this.beforeDateDtp.Enabled = false;
-            this.beforeDateDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.beforeDateDtp.Location = new System.Drawing.Point(12, 158);
-            this.beforeDateDtp.Name = "beforeDateDtp";
-            this.beforeDateDtp.Size = new System.Drawing.Size(200, 20);
-            this.beforeDateDtp.TabIndex = 17;
-            this.beforeDateDtp.Value = new System.DateTime(2023, 1, 1, 0, 0, 0, 0);
-            this.beforeDateDtp.ValueChanged += new System.EventHandler(this.dummyValueChanged);
+            beforeDateDtp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            beforeDateDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
+            beforeDateDtp.Enabled = false;
+            beforeDateDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            beforeDateDtp.Location = new System.Drawing.Point(12, 156);
+            beforeDateDtp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            beforeDateDtp.Name = "beforeDateDtp";
+            beforeDateDtp.Size = new System.Drawing.Size(200, 23);
+            beforeDateDtp.TabIndex = 17;
+            beforeDateDtp.Value = new System.DateTime(2023, 1, 1, 0, 0, 0, 0);
+            beforeDateDtp.ValueChanged += dummyValueChanged;
             // 
             // beforeDateCb
             // 
-            this.beforeDateCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.beforeDateCb.AutoSize = true;
-            this.beforeDateCb.Location = new System.Drawing.Point(12, 135);
-            this.beforeDateCb.Name = "beforeDateCb";
-            this.beforeDateCb.Size = new System.Drawing.Size(103, 17);
-            this.beforeDateCb.TabIndex = 18;
-            this.beforeDateCb.Text = "Before this date:";
-            this.beforeDateCb.UseVisualStyleBackColor = true;
-            this.beforeDateCb.CheckedChanged += new System.EventHandler(this.beforeDateCb_CheckedChanged);
+            beforeDateCb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            beforeDateCb.AutoSize = true;
+            beforeDateCb.Location = new System.Drawing.Point(12, 133);
+            beforeDateCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            beforeDateCb.Name = "beforeDateCb";
+            beforeDateCb.Size = new System.Drawing.Size(111, 19);
+            beforeDateCb.TabIndex = 18;
+            beforeDateCb.Text = "Before this date:";
+            beforeDateCb.UseVisualStyleBackColor = true;
+            beforeDateCb.CheckedChanged += beforeDateCb_CheckedChanged;
             // 
             // afterDateCb
             // 
-            this.afterDateCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.afterDateCb.AutoSize = true;
-            this.afterDateCb.Location = new System.Drawing.Point(244, 135);
-            this.afterDateCb.Name = "afterDateCb";
-            this.afterDateCb.Size = new System.Drawing.Size(94, 17);
-            this.afterDateCb.TabIndex = 20;
-            this.afterDateCb.Text = "After this date:";
-            this.afterDateCb.UseVisualStyleBackColor = true;
-            this.afterDateCb.CheckedChanged += new System.EventHandler(this.afterDateCb_CheckedChanged);
+            afterDateCb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            afterDateCb.AutoSize = true;
+            afterDateCb.Location = new System.Drawing.Point(244, 133);
+            afterDateCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            afterDateCb.Name = "afterDateCb";
+            afterDateCb.Size = new System.Drawing.Size(103, 19);
+            afterDateCb.TabIndex = 20;
+            afterDateCb.Text = "After this date:";
+            afterDateCb.UseVisualStyleBackColor = true;
+            afterDateCb.CheckedChanged += afterDateCb_CheckedChanged;
             // 
             // afterDateDtp
             // 
-            this.afterDateDtp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.afterDateDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
-            this.afterDateDtp.Enabled = false;
-            this.afterDateDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.afterDateDtp.Location = new System.Drawing.Point(244, 158);
-            this.afterDateDtp.Name = "afterDateDtp";
-            this.afterDateDtp.Size = new System.Drawing.Size(200, 20);
-            this.afterDateDtp.TabIndex = 19;
-            this.afterDateDtp.Value = new System.DateTime(2023, 1, 1, 0, 0, 0, 0);
-            this.afterDateDtp.ValueChanged += new System.EventHandler(this.dummyValueChanged);
+            afterDateDtp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            afterDateDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
+            afterDateDtp.Enabled = false;
+            afterDateDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            afterDateDtp.Location = new System.Drawing.Point(244, 156);
+            afterDateDtp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            afterDateDtp.Name = "afterDateDtp";
+            afterDateDtp.Size = new System.Drawing.Size(200, 23);
+            afterDateDtp.TabIndex = 19;
+            afterDateDtp.Value = new System.DateTime(2023, 1, 1, 0, 0, 0, 0);
+            afterDateDtp.ValueChanged += dummyValueChanged;
             // 
             // caseSensitiveCb
             // 
-            this.caseSensitiveCb.AutoSize = true;
-            this.caseSensitiveCb.Location = new System.Drawing.Point(12, 102);
-            this.caseSensitiveCb.Name = "caseSensitiveCb";
-            this.caseSensitiveCb.Size = new System.Drawing.Size(139, 17);
-            this.caseSensitiveCb.TabIndex = 21;
-            this.caseSensitiveCb.Text = "CaSe sEnSiTiVe search";
-            this.caseSensitiveCb.UseVisualStyleBackColor = true;
-            this.caseSensitiveCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            caseSensitiveCb.AutoSize = true;
+            caseSensitiveCb.Location = new System.Drawing.Point(12, 102);
+            caseSensitiveCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            caseSensitiveCb.Name = "caseSensitiveCb";
+            caseSensitiveCb.Size = new System.Drawing.Size(140, 19);
+            caseSensitiveCb.TabIndex = 21;
+            caseSensitiveCb.Text = "CaSe sEnSiTiVe search";
+            caseSensitiveCb.UseVisualStyleBackColor = true;
+            caseSensitiveCb.CheckedChanged += dummyValueChanged;
             // 
             // sortOrderCmb
             // 
-            this.sortOrderCmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.sortOrderCmb.FormattingEnabled = true;
-            this.sortOrderCmb.Items.AddRange(new object[] {
-            "Newest to oldest",
-            "Oldest to newest"});
-            this.sortOrderCmb.Location = new System.Drawing.Point(303, 99);
-            this.sortOrderCmb.Name = "sortOrderCmb";
-            this.sortOrderCmb.Size = new System.Drawing.Size(139, 21);
-            this.sortOrderCmb.TabIndex = 22;
-            this.sortOrderCmb.SelectedIndexChanged += new System.EventHandler(this.dummyValueChanged);
+            sortOrderCmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            sortOrderCmb.FormattingEnabled = true;
+            sortOrderCmb.Items.AddRange(new object[] { "Newest to oldest", "Oldest to newest" });
+            sortOrderCmb.Location = new System.Drawing.Point(304, 100);
+            sortOrderCmb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            sortOrderCmb.Name = "sortOrderCmb";
+            sortOrderCmb.Size = new System.Drawing.Size(139, 23);
+            sortOrderCmb.TabIndex = 22;
+            sortOrderCmb.SelectedIndexChanged += dummyValueChanged;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(241, 102);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(56, 13);
-            this.label5.TabIndex = 23;
-            this.label5.Text = "Sort order:";
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(241, 103);
+            label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(62, 15);
+            label5.TabIndex = 23;
+            label5.Text = "Sort order:";
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(297, 10);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(37, 13);
-            this.label6.TabIndex = 27;
-            this.label6.Text = "Filters:";
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(314, 10);
+            label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(41, 15);
+            label6.TabIndex = 27;
+            label6.Text = "Filters:";
             // 
             // hasFileCb
             // 
-            this.hasFileCb.AutoSize = true;
-            this.hasFileCb.Location = new System.Drawing.Point(300, 71);
-            this.hasFileCb.Name = "hasFileCb";
-            this.hasFileCb.Size = new System.Drawing.Size(88, 17);
-            this.hasFileCb.TabIndex = 25;
-            this.hasFileCb.Text = "Has other file";
-            this.hasFileCb.UseVisualStyleBackColor = true;
-            this.hasFileCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            hasFileCb.AutoSize = true;
+            hasFileCb.Location = new System.Drawing.Point(317, 73);
+            hasFileCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            hasFileCb.Name = "hasFileCb";
+            hasFileCb.Size = new System.Drawing.Size(96, 19);
+            hasFileCb.TabIndex = 25;
+            hasFileCb.Text = "Has other file";
+            hasFileCb.UseVisualStyleBackColor = true;
+            hasFileCb.CheckedChanged += dummyValueChanged;
             // 
             // hasImageCb
             // 
-            this.hasImageCb.AutoSize = true;
-            this.hasImageCb.Location = new System.Drawing.Point(300, 26);
-            this.hasImageCb.Name = "hasImageCb";
-            this.hasImageCb.Size = new System.Drawing.Size(76, 17);
-            this.hasImageCb.TabIndex = 24;
-            this.hasImageCb.Text = "Has image";
-            this.hasImageCb.UseVisualStyleBackColor = true;
-            this.hasImageCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            hasImageCb.AutoSize = true;
+            hasImageCb.Location = new System.Drawing.Point(317, 28);
+            hasImageCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            hasImageCb.Name = "hasImageCb";
+            hasImageCb.Size = new System.Drawing.Size(82, 19);
+            hasImageCb.TabIndex = 24;
+            hasImageCb.Text = "Has image";
+            hasImageCb.UseVisualStyleBackColor = true;
+            hasImageCb.CheckedChanged += dummyValueChanged;
             // 
             // hasVideoCb
             // 
-            this.hasVideoCb.AutoSize = true;
-            this.hasVideoCb.Location = new System.Drawing.Point(300, 49);
-            this.hasVideoCb.Name = "hasVideoCb";
-            this.hasVideoCb.Size = new System.Drawing.Size(74, 17);
-            this.hasVideoCb.TabIndex = 28;
-            this.hasVideoCb.Text = "Has video";
-            this.hasVideoCb.UseVisualStyleBackColor = true;
-            this.hasVideoCb.CheckedChanged += new System.EventHandler(this.dummyValueChanged);
+            hasVideoCb.AutoSize = true;
+            hasVideoCb.Location = new System.Drawing.Point(317, 51);
+            hasVideoCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            hasVideoCb.Name = "hasVideoCb";
+            hasVideoCb.Size = new System.Drawing.Size(78, 19);
+            hasVideoCb.TabIndex = 28;
+            hasVideoCb.Text = "Has video";
+            hasVideoCb.UseVisualStyleBackColor = true;
+            hasVideoCb.CheckedChanged += dummyValueChanged;
             // 
             // SearchOptionsPrompt
             // 
-            this.AcceptButton = this.saveBtn;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(463, 353);
-            this.Controls.Add(this.hasVideoCb);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.hasFileCb);
-            this.Controls.Add(this.hasImageCb);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.sortOrderCmb);
-            this.Controls.Add(this.caseSensitiveCb);
-            this.Controls.Add(this.afterDateCb);
-            this.Controls.Add(this.afterDateDtp);
-            this.Controls.Add(this.beforeDateCb);
-            this.Controls.Add(this.beforeDateDtp);
-            this.Controls.Add(this.removeWhitelistBtn);
-            this.Controls.Add(this.addWhitelistBtn);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.whitelistIdsLb);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.regexMatchRb);
-            this.Controls.Add(this.wordsMatchRb);
-            this.Controls.Add(this.exactMatchRb);
-            this.Controls.Add(this.removeBtn);
-            this.Controls.Add(this.addBtn);
-            this.Controls.Add(this.saveBtn);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.excludedIdsLb);
-            this.Controls.Add(this.excludeGroupDmsCb);
-            this.Controls.Add(this.excludeDmsCb);
-            this.Controls.Add(this.excludeGuildsCb);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.KeyPreview = true;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "SearchOptionsPrompt";
-            this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Search Options";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SearchOptionsPrompt_FormClosing);
-            this.Load += new System.EventHandler(this.FiltersPrompt_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SearchOptionsPrompt_KeyDown);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AcceptButton = saveBtn;
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(477, 356);
+            Controls.Add(hasVideoCb);
+            Controls.Add(label6);
+            Controls.Add(hasFileCb);
+            Controls.Add(hasImageCb);
+            Controls.Add(label5);
+            Controls.Add(sortOrderCmb);
+            Controls.Add(caseSensitiveCb);
+            Controls.Add(afterDateCb);
+            Controls.Add(afterDateDtp);
+            Controls.Add(beforeDateCb);
+            Controls.Add(beforeDateDtp);
+            Controls.Add(removeWhitelistBtn);
+            Controls.Add(addWhitelistBtn);
+            Controls.Add(label4);
+            Controls.Add(whitelistIdsLb);
+            Controls.Add(label3);
+            Controls.Add(label2);
+            Controls.Add(regexMatchRb);
+            Controls.Add(wordsMatchRb);
+            Controls.Add(exactMatchRb);
+            Controls.Add(removeBtn);
+            Controls.Add(addBtn);
+            Controls.Add(saveBtn);
+            Controls.Add(label1);
+            Controls.Add(excludedIdsLb);
+            Controls.Add(excludeGroupDmsCb);
+            Controls.Add(excludeDmsCb);
+            Controls.Add(excludeGuildsCb);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            KeyPreview = true;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "SearchOptionsPrompt";
+            ShowIcon = false;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Search Options";
+            FormClosing += SearchOptionsPrompt_FormClosing;
+            Load += FiltersPrompt_Load;
+            KeyDown += SearchOptionsPrompt_KeyDown;
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
