@@ -17,9 +17,11 @@ Note: This is my first C# app, sorry for bad code or development mistakes
 \* Requires your account token. Note that this falls under selfbotting, which is against Discord's [Community Guidelines](https://discord.com/guidelines#:~:text=Do%20not%20use%20self%2Dbots%20or%20user%2Dbots) and might get your account banned. 
 
 ## Screenshots
-![image](https://i.imgur.com/TfaBPzR.png)
+![image](https://i.imgur.com/kPnrtgs.png)
 
-![image](https://i.imgur.com/i9PyI63.png)
+![image](https://i.imgur.com/glSJuQa.png)
+
+![image](https://i.imgur.com/odXKiNr.png)
 
 
 ## Benchmark
