@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -104,7 +105,7 @@ namespace Data_Package_Tool.Forms
             InitializeComponent();
         }
 
-        private void fetchBtn_Click(object sender, RoutedEventArgs e)
+        private async void fetchBtn_Click(object sender, RoutedEventArgs e)
         {
             if(Discord.BotToken == null)
             {
@@ -122,7 +123,7 @@ namespace Data_Package_Tool.Forms
                 return;
             }
 
-            var res = DRequest.Request("GET", $"https://discord.com/api/v9/users/{this.UserId}", new Dictionary<string, string>
+            var res = await DRequest.RequestAsync(HttpMethod.Get, $"https://discord.com/api/v9/users/{this.UserId}", new Dictionary<string, string>
             {
                 {"Authorization", $"Bot {Discord.BotToken}"}
             }, null, false);
@@ -150,14 +151,14 @@ namespace Data_Package_Tool.Forms
             }
         }
 
-        private void openDmBtn_Click(object sender, RoutedEventArgs e)
+        private async void openDmBtn_Click(object sender, RoutedEventArgs e)
         {
             if (Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            if (Discord.OpenDMFlow(this.UserId, this.ChannelId))
+            if (await Discord.OpenDMFlowAsync(this.UserId, this.ChannelId))
             {
                 Discord.LaunchDiscordProtocol($"channels/@me/{this.ChannelId}");
             }

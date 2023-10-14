@@ -30,79 +30,82 @@ namespace Data_Package_Tool
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MassDeletePrompt));
-            this.delayTb = new System.Windows.Forms.TrackBar();
-            this.delayLb = new System.Windows.Forms.Label();
-            this.startBtn = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.delayTb)).BeginInit();
-            this.SuspendLayout();
+            delayTb = new System.Windows.Forms.TrackBar();
+            delayLb = new System.Windows.Forms.Label();
+            startBtn = new System.Windows.Forms.Button();
+            label2 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)delayTb).BeginInit();
+            SuspendLayout();
             // 
             // delayTb
             // 
-            this.delayTb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.delayTb.Location = new System.Drawing.Point(12, 131);
-            this.delayTb.Maximum = 100;
-            this.delayTb.Minimum = 1;
-            this.delayTb.Name = "delayTb";
-            this.delayTb.Size = new System.Drawing.Size(104, 45);
-            this.delayTb.TabIndex = 2;
-            this.delayTb.Value = 15;
-            this.delayTb.Scroll += new System.EventHandler(this.delayTb_Scroll);
+            delayTb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            delayTb.Location = new System.Drawing.Point(12, 131);
+            delayTb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            delayTb.Maximum = 100;
+            delayTb.Minimum = 1;
+            delayTb.Name = "delayTb";
+            delayTb.Size = new System.Drawing.Size(121, 45);
+            delayTb.TabIndex = 2;
+            delayTb.Value = 15;
+            delayTb.Scroll += delayTb_Scroll;
             // 
             // delayLb
             // 
-            this.delayLb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.delayLb.AutoSize = true;
-            this.delayLb.Location = new System.Drawing.Point(12, 115);
-            this.delayLb.Name = "delayLb";
-            this.delayLb.Size = new System.Drawing.Size(109, 13);
-            this.delayLb.TabIndex = 3;
-            this.delayLb.Text = "Delete delay: 1500ms";
+            delayLb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            delayLb.AutoSize = true;
+            delayLb.Location = new System.Drawing.Point(12, 115);
+            delayLb.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            delayLb.Name = "delayLb";
+            delayLb.Size = new System.Drawing.Size(117, 15);
+            delayLb.TabIndex = 3;
+            delayLb.Text = "Delete delay: 1500ms";
             // 
             // startBtn
             // 
-            this.startBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.startBtn.Location = new System.Drawing.Point(178, 196);
-            this.startBtn.Name = "startBtn";
-            this.startBtn.Size = new System.Drawing.Size(75, 23);
-            this.startBtn.TabIndex = 4;
-            this.startBtn.Text = "Start";
-            this.startBtn.UseVisualStyleBackColor = true;
-            this.startBtn.Click += new System.EventHandler(this.startBtn_Click);
+            startBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            startBtn.Location = new System.Drawing.Point(178, 196);
+            startBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            startBtn.Name = "startBtn";
+            startBtn.Size = new System.Drawing.Size(75, 23);
+            startBtn.TabIndex = 4;
+            startBtn.Text = "Start";
+            startBtn.UseVisualStyleBackColor = true;
+            startBtn.Click += startBtn_Click;
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.label2.Location = new System.Drawing.Point(12, 25);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(392, 66);
-            this.label2.TabIndex = 5;
-            this.label2.Text = resources.GetString("label2.Text");
+            label2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            label2.Location = new System.Drawing.Point(14, 29);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(386, 76);
+            label2.TabIndex = 5;
+            label2.Text = resources.GetString("label2.Text");
             // 
             // MassDeletePrompt
             // 
-            this.AcceptButton = this.startBtn;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(416, 231);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.startBtn);
-            this.Controls.Add(this.delayLb);
-            this.Controls.Add(this.delayTb);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "MassDeletePrompt";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Mass Delete Prompt";
-            ((System.ComponentModel.ISupportInitialize)(this.delayTb)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AcceptButton = startBtn;
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(414, 229);
+            Controls.Add(label2);
+            Controls.Add(startBtn);
+            Controls.Add(delayLb);
+            Controls.Add(delayTb);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "MassDeletePrompt";
+            ShowIcon = false;
+            ShowInTaskbar = false;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Mass Delete Prompt";
+            ((System.ComponentModel.ISupportInitialize)delayTb).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

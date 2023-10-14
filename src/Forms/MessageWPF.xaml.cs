@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Cache;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
@@ -246,7 +247,14 @@ namespace Data_Package_Tool
                                 NavigateUri = new Uri(url),
                                 TextDecorations = null
                             };
-                            hyperlink.RequestNavigate += (o, e) => Process.Start(e.Uri.ToString());
+                            hyperlink.RequestNavigate += (o, e) =>
+                            {
+                                Process.Start(new ProcessStartInfo
+                                {
+                                    FileName = e.Uri.ToString(),
+                                    UseShellExecute = true
+                                });
+                            };
                             hyperlink.MouseEnter += (o, e) => hyperlink.TextDecorations = TextDecorations.Underline; // TODO: figure out how to do this properly with Resources and Style
                             hyperlink.MouseLeave += (o, e) => hyperlink.TextDecorations = null;
                             contentLb.Inlines.Add(hyperlink);
@@ -342,7 +350,14 @@ namespace Data_Package_Tool
                     img.Cursor = Cursors.Hand;
                     img.MouseUp += (s, e) =>
                     {
-                        if (e.ChangedButton == MouseButton.Left) Process.Start(attachment.url);
+                        if (e.ChangedButton == MouseButton.Left)
+                        {
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = attachment.url,
+                                UseShellExecute = true
+                            });
+                        }
                     };
 
                     if (Discord.AttachmentsCache.ContainsKey(attachment.id))
@@ -493,7 +508,7 @@ namespace Data_Package_Tool
             Clipboard.SetText(this.Message.channel.guild.id);
         }
 
-        private void openDMMi_Click(object sender, RoutedEventArgs e)
+        private async void openDMMi_Click(object sender, RoutedEventArgs e)
         {
             if (this.Message.channel.has_duplicates)
             {
@@ -501,13 +516,13 @@ namespace Data_Package_Tool
             }
 
             string userId = this.Message.channel.GetOtherDMRecipient(this.User);
-            if (Discord.OpenDMFlow(userId, this.Message.channel.id))
+            if (await Discord.OpenDMFlowAsync(userId, this.Message.channel.id))
             {
                 goToMessageMi_Click(sender, e);
             }
         }
 
-        private void deleteMessageMi_Click(object sender, RoutedEventArgs e)
+        private async void deleteMessageMi_Click(object sender, RoutedEventArgs e)
         {
             if(Discord.UserToken == null)
             {
@@ -520,9 +535,9 @@ namespace Data_Package_Tool
                 return;
             }
 
-            DHeaders.Init();
+            await DHeaders.Init();
 
-            var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{Message.channel.id}/messages/{Message.id}", new Dictionary<string, string>
+            var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{Message.channel.id}/messages/{Message.id}", new Dictionary<string, string>
             {
                 {"Authorization", Discord.UserToken}
             });

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,24 +53,28 @@ namespace Data_Package_Tool.Forms
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(e.Uri.ToString());
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = e.Uri.ToString(),
+                UseShellExecute = true
+            });
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             string url = this.Url;
-            ThreadPool.QueueUserWorkItem(state =>
+            ThreadPool.QueueUserWorkItem(async state =>
             {
                 string fileSize = "Unknown size";
                 bool isDeleted = false;
 
                 try
                 {
-                    var res = DRequest.Request("HEAD", url, null, null, false);
+                    var res = await DRequest.RequestAsync(HttpMethod.Head, url, null, null, false);
                     switch(res.response.StatusCode)
                     {
                         case HttpStatusCode.OK:
-                            var size = res.response.ContentLength;
+                            long size = (long)res.response.Content.Headers.ContentLength;
                             fileSize = Util.SizeSuffix(size, 2);
                             break;
                         case HttpStatusCode.NotFound:
@@ -81,7 +87,7 @@ namespace Data_Package_Tool.Forms
                 }
                 catch (Exception) { }
 
-                Dispatcher.BeginInvoke(new Action(() =>
+                await Dispatcher.BeginInvoke(new Action(() =>
                 {
                     fileSizeLb.Text = fileSize;
 

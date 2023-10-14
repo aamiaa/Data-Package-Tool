@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace Data_Package_Tool.Classes
@@ -24,7 +26,10 @@ namespace Data_Package_Tool.Classes
             string instance = Properties.Settings.Default.UseDiscordInstance;
             if (instance == "default")
             {
-                Process.Start($"discord://-/{url}");
+                Process.Start(new ProcessStartInfo {
+                    FileName = $"discord://-/{url}",
+                    UseShellExecute = true
+                });
                 return;
             }
 
@@ -46,7 +51,11 @@ namespace Data_Package_Tool.Classes
                         throw new Exception($"Invalid settings value: {instance}");
                 }
 
-                Process.Start($"https://{hostname}/{url}");
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = $"https://{hostname}/{url}",
+                    UseShellExecute = true
+                });
                 return;
             }
 
@@ -123,7 +132,7 @@ namespace Data_Package_Tool.Classes
             }
         }
 
-        public static bool OpenDMFlow(string userId, string expectedChannelId = null)
+        public static async Task<bool> OpenDMFlowAsync(string userId, string expectedChannelId = null)
         {
             if(UserToken == null)
             {
@@ -136,17 +145,16 @@ namespace Data_Package_Tool.Classes
                 return false;
             }
 
-            DHeaders.Init();
+            await DHeaders.Init();
 
             var body = new Dictionary<string, string[]>
             {
                 { "recipients", new string[] { userId } }
             };
 
-            var response = DRequest.Request("POST", "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
+            var response = await DRequest.RequestAsync(HttpMethod.Post, "https://discord.com/api/v9/users/@me/channels", new Dictionary<string, string>
             {
                 {"Authorization", UserToken},
-                {"Content-Type", "application/json"},
                 {"X-Context-Properties", Convert.ToBase64String(Encoding.UTF8.GetBytes("{}"))}
             }, Newtonsoft.Json.JsonConvert.SerializeObject(body), true);
 
@@ -165,10 +173,9 @@ namespace Data_Package_Tool.Classes
                         string msg = Interaction.InputBox("Enter message to send");
                         if (msg == "") return false;
 
-                        var msgResponse = DRequest.Request("POST", $"https://discord.com/api/v9/channels/{expectedChannelId}/messages", new Dictionary<string, string>
+                        var msgResponse = await DRequest.RequestAsync(HttpMethod.Post, $"https://discord.com/api/v9/channels/{expectedChannelId}/messages", new Dictionary<string, string>
                         {
-                            {"Authorization", UserToken},
-                            {"Content-Type", "application/json"}
+                            {"Authorization", UserToken}
                         }, Newtonsoft.Json.JsonConvert.SerializeObject(new Dictionary<string, dynamic>
                         {
                             {"content", msg},

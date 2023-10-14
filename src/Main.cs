@@ -12,6 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,22 +29,14 @@ namespace Data_Package_Tool
 
         public Main()
         {
-            // Load dependency dlls from resources https://stackoverflow.com/a/6362414
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
-            {
-                string dllName = args.Name.Contains(',') ? args.Name.Substring(0, args.Name.IndexOf(',')) : args.Name.Replace(".dll", "");
-                dllName = dllName.Replace(".", "_");
-                if(dllName.EndsWith("_resources")) return null;
-
-                System.Resources.ResourceManager rm = new System.Resources.ResourceManager(GetType().Namespace + ".Properties.Resources", System.Reflection.Assembly.GetExecutingAssembly());
-                byte[] bytes = (byte[])rm.GetObject(dllName);
-                return System.Reflection.Assembly.Load(bytes);
-            };
-
             InitializeComponent();
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            for(int i=0;i<=5;i++)
+            // Initialize ElementHost.Child, since .NET Core's WinForms Designer:tm: doesn't support it
+            elementHost1.Child = new MessageListWPF();
+            elementHost2.Child = new DmsListWPF();
+
+            for (int i = 0; i <= 5; i++)
             {
                 var stream = new MemoryStream();
                 ((Bitmap)Properties.Resources.ResourceManager.GetObject($"DefaultAvatar{i}")).Save(stream, System.Drawing.Imaging.ImageFormat.Png);
@@ -70,13 +63,13 @@ namespace Data_Package_Tool
                 Discord.LoadingAnim = img;
             }
 
-            if(Properties.Settings.Default.DeletedMessageIDs == null)
+            if (Properties.Settings.Default.DeletedMessageIDs == null)
             {
                 Properties.Settings.Default.DeletedMessageIDs = new System.Collections.Specialized.StringCollection();
                 Properties.Settings.Default.Save();
             }
 
-            switch(Properties.Settings.Default.UseDiscordInstance)
+            switch (Properties.Settings.Default.UseDiscordInstance)
             {
                 case "default":
                     defaultRb.Checked = true;
@@ -111,7 +104,7 @@ namespace Data_Package_Tool
 
             tabControl1.TabPages[4].Text = $"Direct Messages - {dmChannels.Count}";
 
-            foreach(var dmChannel in dmChannels)
+            foreach (var dmChannel in dmChannels)
             {
                 string recipientId = dmChannel.GetOtherDMRecipient(DataPackage.User);
                 if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
@@ -156,7 +149,8 @@ namespace Data_Package_Tool
                     try
                     {
                         DataPackage.Load(openFileDialog1.FileName);
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         BeginInvoke((MethodInvoker)delegate
                         {
@@ -169,7 +163,7 @@ namespace Data_Package_Tool
                 });
                 task.ContinueWith(t =>
                 {
-                    foreach(var messageId in Properties.Settings.Default.DeletedMessageIDs)
+                    foreach (var messageId in Properties.Settings.Default.DeletedMessageIDs)
                     {
                         if (DataPackage.MessagesMap.ContainsKey(messageId)) DataPackage.MessagesMap[messageId].deleted = true;
                     }
@@ -204,7 +198,7 @@ namespace Data_Package_Tool
         }
         private void loadTimer_Tick(object sender, EventArgs e)
         {
-            if(DataPackage.LoadStatus.Finished && DataPackage.GuildsLoadStatus.Finished)
+            if (DataPackage.LoadStatus.Finished && DataPackage.GuildsLoadStatus.Finished)
             {
                 loadTimer.Stop();
             }
@@ -226,7 +220,7 @@ namespace Data_Package_Tool
 
             ((MessageListWPF)elementHost1.Child).Clear();
             resultsCountLb.Text = $"{SearchResultsOffset + 1}-{Math.Min(SearchResultsOffset + MaxSearchResults, LastSearchResults.Count)} of {LastSearchResults.Count}";
-            ((MessageListWPF)elementHost1.Child).DisplayMessages(DataPackage.User, LastSearchResults, SearchResultsOffset, Math.Min(LastSearchResults.Count-1, SearchResultsOffset + MaxSearchResults));
+            ((MessageListWPF)elementHost1.Child).DisplayMessages(DataPackage.User, LastSearchResults, SearchResultsOffset, Math.Min(LastSearchResults.Count - 1, SearchResultsOffset + MaxSearchResults));
         }
         private void searchBtn_Click(object sender, EventArgs e)
         {
@@ -235,7 +229,8 @@ namespace Data_Package_Tool
                 try
                 {
                     new Regex(searchTb.Text);
-                } catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Util.MsgBoxErr($"Invalid regex: {ex.Message}");
                     return;
@@ -270,7 +265,8 @@ namespace Data_Package_Tool
             if (Properties.Settings.Default.SearchMode == "words")
             {
                 compiledRegex = new Regex($"^{String.Join("", searchText.Split(' ').Select(x => $"(?=.*?\\b{Regex.Escape(x)}\\b)").ToArray())}", regexOptions); // https://stackoverflow.com/a/70484431
-            } else if(Properties.Settings.Default.SearchMode == "regex")
+            }
+            else if (Properties.Settings.Default.SearchMode == "regex")
             {
                 compiledRegex = new Regex(searchText, regexOptions);
             }
@@ -289,14 +285,14 @@ namespace Data_Package_Tool
                     if (Properties.Settings.Default.SearchExcludeIDs.Contains(channel.id)) continue;
                     if (channel.guild != null && channel.guild.id != null && Properties.Settings.Default.SearchExcludeIDs.Contains(channel.guild.id)) continue;
                 }
-                if(Properties.Settings.Default.SearchWhitelistIDs != null && Properties.Settings.Default.SearchWhitelistIDs.Count > 0)
+                if (Properties.Settings.Default.SearchWhitelistIDs != null && Properties.Settings.Default.SearchWhitelistIDs.Count > 0)
                 {
                     if (!Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.id) && !(channel.guild != null && channel.guild.id != null && Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.guild.id))) continue;
                 }
 
                 // Search modes
                 // Optimization - single condition which picks the function, rather than running the condition on every iteration
-                if(searchText == "")
+                if (searchText == "")
                 {
                     count += SearchNoText(channel);
                 }
@@ -314,10 +310,11 @@ namespace Data_Package_Tool
                 }
             }
 
-            if(Properties.Settings.Default.SortMode == "asc")
+            if (Properties.Settings.Default.SortMode == "asc")
             {
                 LastSearchResults = LastSearchResults.OrderBy(o => Int64.Parse(o.id)).ToList();
-            } else
+            }
+            else
             {
                 LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.id)).ToList();
             }
@@ -354,7 +351,8 @@ namespace Data_Package_Tool
                 {
                     resultsCountLb.Text = $"{SearchResultsOffset + 1}-{LastSearchResults.Count} of {LastSearchResults.Count}";
                 }
-            } else
+            }
+            else
             {
                 resultsCountLb.Text = "No results";
             }
@@ -369,11 +367,11 @@ namespace Data_Package_Tool
         private List<DMessage> FilterMessages(List<DMessage> messages)
         {
             IEnumerable<DMessage> m = messages;
-            if(Properties.Settings.Default.SearchHasImage ||  Properties.Settings.Default.SearchHasVideo || Properties.Settings.Default.SearchHasFile)
+            if (Properties.Settings.Default.SearchHasImage || Properties.Settings.Default.SearchHasVideo || Properties.Settings.Default.SearchHasFile)
             {
                 m = m.Where(x =>
                 {
-                    if(x.attachments.Count == 0) return false;
+                    if (x.attachments.Count == 0) return false;
 
                     if (Properties.Settings.Default.SearchHasImage && x.attachments.Find(y => y.IsImage()) != null) return true;
                     if (Properties.Settings.Default.SearchHasVideo && x.attachments.Find(y => y.IsVideo()) != null) return true;
@@ -389,7 +387,7 @@ namespace Data_Package_Tool
                 m = m.Where(x => x.timestamp < Properties.Settings.Default.SearchBeforeDate);
             }
 
-            if(Properties.Settings.Default.SearchAfterEnabled)
+            if (Properties.Settings.Default.SearchAfterEnabled)
             {
                 m = m.Where(x => x.timestamp > Properties.Settings.Default.SearchAfterDate);
             }
@@ -455,7 +453,7 @@ namespace Data_Package_Tool
         private void messagesNextBtn_Click(object sender, EventArgs e)
         {
             if (LastSearchResults.Count <= MaxSearchResults) return;
-            if(SearchResultsOffset + MaxSearchResults > LastSearchResults.Count) return;
+            if (SearchResultsOffset + MaxSearchResults > LastSearchResults.Count) return;
 
             SearchResultsOffset += MaxSearchResults;
             LoadSearchResults();
@@ -467,7 +465,7 @@ namespace Data_Package_Tool
         private int imageSquareSize = 200;
         private void LoadImages()
         {
-            if(DataPackage.Attachments.Count == 0)
+            if (DataPackage.Attachments.Count == 0)
             {
                 imagesCountLb.Text = $"No images found";
                 return;
@@ -510,7 +508,7 @@ namespace Data_Package_Tool
         }
         private void imagesNextBtn_Click(object sender, EventArgs e)
         {
-            if(imagesPanel.Controls.Count > 0)
+            if (imagesPanel.Controls.Count > 0)
             {
                 imagesOffset += imagesPerPage;
             }
@@ -539,19 +537,23 @@ namespace Data_Package_Tool
 
         private void discordInstanceSettingsChange(object sender, EventArgs e)
         {
-            if(defaultRb.Checked)
+            if (defaultRb.Checked)
             {
                 Properties.Settings.Default.UseDiscordInstance = "default";
-            } else if(stableRb.Checked)
+            }
+            else if (stableRb.Checked)
             {
                 Properties.Settings.Default.UseDiscordInstance = "stable";
-            } else if(ptbRb.Checked)
+            }
+            else if (ptbRb.Checked)
             {
                 Properties.Settings.Default.UseDiscordInstance = "ptb";
-            } else if(canaryRb.Checked)
+            }
+            else if (canaryRb.Checked)
             {
                 Properties.Settings.Default.UseDiscordInstance = "canary";
-            } else if(webStableRb.Checked)
+            }
+            else if (webStableRb.Checked)
             {
                 Properties.Settings.Default.UseDiscordInstance = "web_stable";
             }
@@ -568,9 +570,9 @@ namespace Data_Package_Tool
         }
 
         private int MassDeleteIdx = 0;
-        private void massDeleteBtn_Click(object sender, EventArgs e)
+        private async void massDeleteBtn_Click(object sender, EventArgs e)
         {
-            if(massDeleteTimer.Enabled == true)
+            if (massDeleteTimer.Enabled == true)
             {
                 massDeleteTimer.Stop();
                 massDeleteBtn.Text = "Mass Delete";
@@ -579,7 +581,7 @@ namespace Data_Package_Tool
                 return;
             }
 
-            if(LastSearchResults == null || LastSearchResults.Count == 0)
+            if (LastSearchResults == null || LastSearchResults.Count == 0)
             {
                 Util.MsgBoxErr("You need to search for something first!");
                 return;
@@ -587,7 +589,7 @@ namespace Data_Package_Tool
 
             var prompt = new MassDeletePrompt();
             prompt.ShowDialog();
-            if(prompt.DialogSuccess)
+            if (prompt.DialogSuccess)
             {
                 MassDeleteIdx = 0;
                 massDeleteTimer.Interval = prompt.GetDelay();
@@ -596,17 +598,17 @@ namespace Data_Package_Tool
                 searchBtn.Enabled = false;
                 massDeleteBtn.Text = "Click to stop";
 
-                DHeaders.Init();
+                await DHeaders.Init();
                 massDeleteTimer.Start();
             }
         }
 
-        private void massDeleteTimer_Tick(object sender, EventArgs e)
+        private async void massDeleteTimer_Tick(object sender, EventArgs e)
         {
             massDeleteTimer.Stop(); // Stop and restart the timer every time to prevent overlaps
 
             DMessage msg;
-            while(true)
+            while (true)
             {
                 if (MassDeleteIdx >= LastSearchResults.Count)
                 {
@@ -624,12 +626,12 @@ namespace Data_Package_Tool
 
             try
             {
-                var res = DRequest.Request("DELETE", $"https://discord.com/api/v9/channels/{msg.channel.id}/messages/{msg.id}", new Dictionary<string, string>
+                var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{msg.channel.id}/messages/{msg.id}", new Dictionary<string, string>
                 {
                     {"Authorization", Discord.UserToken}
                 });
-                
-                switch(res.response.StatusCode)
+
+                switch (res.response.StatusCode)
                 {
                     case HttpStatusCode.NotFound:
                     case HttpStatusCode.NoContent:
@@ -652,7 +654,8 @@ namespace Data_Package_Tool
                         Util.MsgBoxErr($"Request error: {res.response.StatusCode} {res.body}");
                         return;
                 }
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Util.MsgBoxErr($"Request error: {ex}");
             }
@@ -662,7 +665,7 @@ namespace Data_Package_Tool
 
         private void copyIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(serversLv.SelectedItems.Count == 0) return;
+            if (serversLv.SelectedItems.Count == 0) return;
 
             string guildId = serversLv.SelectedItems[0].SubItems[1].Text;
             Clipboard.SetText(guildId);

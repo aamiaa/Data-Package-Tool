@@ -3,6 +3,7 @@ using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Helpers;
 using System;
 using System.Diagnostics;
+using System.Security.Policy;
 using System.Windows.Forms;
 
 namespace Data_Package_Tool
@@ -42,7 +43,11 @@ namespace Data_Package_Tool
 
         private void imagePb_Click(object sender, EventArgs e)
         {
-            Process.Start(SelectedAttachment.url);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = SelectedAttachment.url,
+                UseShellExecute = true
+            });
         }
 
         private void jumpToMessageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -84,7 +89,7 @@ namespace Data_Package_Tool
             }
         }
 
-        private void openDmSELFBOTToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void openDmSELFBOTToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string userId = SelectedAttachment.message.channel.GetOtherDMRecipient(Main.DataPackage.User);
             string channelId = SelectedAttachment.message.channel.id;
@@ -93,7 +98,7 @@ namespace Data_Package_Tool
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            if(Discord.OpenDMFlow(userId, SelectedAttachment.message.channel.id))
+            if(await Discord.OpenDMFlowAsync(userId, SelectedAttachment.message.channel.id))
             {
                 Discord.LaunchDiscordProtocol($"channels/@me/{channelId}");
             }
