@@ -631,12 +631,13 @@ namespace Data_Package_Tool
                     {"Authorization", Discord.UserToken}
                 });
 
+                bool didError = false;
+
                 switch (res.response.StatusCode)
                 {
                     case HttpStatusCode.NotFound:
                     case HttpStatusCode.NoContent:
                         msg.deleted = true;
-                        //((MessageListWPF)elementHost1.Child).RemoveMessage(msg.id);
 
                         Properties.Settings.Default.DeletedMessageIDs.Add(msg.id);
                         Properties.Settings.Default.Save();
@@ -650,9 +651,22 @@ namespace Data_Package_Tool
                         break;
                     case HttpStatusCode.Forbidden:
                         break;
+                    case HttpStatusCode.BadRequest:
+                        var errorCode = (int)Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res.body).code;
+                        if(errorCode != 50083) // Thread archived
+                        {
+                            didError = true;
+                        }
+                        break;
                     default:
-                        Util.MsgBoxErr($"Request error: {res.response.StatusCode} {res.body}");
-                        return;
+                        didError = true;
+                        break;
+                }
+
+                if(didError)
+                {
+                    Util.MsgBoxErr($"Request error: {res.response.StatusCode} {res.body}");
+                    return;
                 }
             }
             catch (Exception ex)
