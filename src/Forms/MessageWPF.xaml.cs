@@ -413,7 +413,7 @@ namespace Data_Package_Tool
                 {
                     var file = new FileAttachmentWPF
                     {
-                        FileName = attachment.url.Split('/').Last(),
+                        FileName = attachment.filename,
                         Url = attachment.url
                     };
 

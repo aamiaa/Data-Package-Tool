@@ -46,11 +46,7 @@ namespace Data_Package_Tool.Classes.Parsing
                         foreach (var url in attachmentsField.Split(' '))
                         {
 
-                            var attachment = new DAttachment
-                            {
-                                message = msg,
-                                url = url
-                            };
+                            var attachment = new DAttachment(url, msg);
                             msg.attachments.Add(attachment);
 
                             if (attachment.IsImage())
