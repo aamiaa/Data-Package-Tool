@@ -108,6 +108,7 @@ namespace Data_Package_Tool
             if (channel.guild != null)
             {
                 copyGuildIdMi.IsEnabled = true;
+                viewInGuildsTab.IsEnabled = true;
 
                 metadata += ", Guild: ";
                 if (channel.guild.name != null)
@@ -567,6 +568,12 @@ namespace Data_Package_Tool
         private static void OnUserChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ((MessageWPF)d).LoadUserData((DUser)e.NewValue);
+        }
+
+        private void viewInGuildsTab_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: some non-ugly way of doing this
+            ((Main)Main.ActiveForm).JumpToGuild(this.Message.channel.guild.id);
         }
     }
 }

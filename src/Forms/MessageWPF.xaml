@@ -16,6 +16,7 @@
             <MenuItem x:Name="copyUserIdMi" Header="Copy user id" IsEnabled="False" Click="copyUserIdMi_Click"/>
             <MenuItem x:Name="copyChannelIdMi" Header="Copy channel id" Click="copyChannelIdMi_Click"/>
             <MenuItem x:Name="copyGuildIdMi" Header="Copy guild id" IsEnabled="False" Click="copyGuildIdMi_Click"/>
+            <MenuItem x:Name="viewInGuildsTab" Header="View server in Servers tab" IsEnabled="False" Click="viewInGuildsTab_Click"/>
             <Separator/>
             <MenuItem x:Name="deleteMessageMi" Header="Delete message (SELFBOT)" Click="deleteMessageMi_Click"/>
         </ContextMenu>

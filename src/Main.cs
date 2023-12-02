@@ -137,6 +137,25 @@ namespace Data_Package_Tool
             }
         }
 
+        public void JumpToGuild(string guildId)
+        {
+            for(int i=0;i<serversLv.Items.Count;i++)
+            {
+                var item = serversLv.Items[i];
+                if (item.SubItems[1].Text == guildId)
+                {
+                    tabControl1.SelectTab(3);
+
+                    serversLv.SelectedIndices.Clear();
+                    item.Selected = true;
+                    serversLv.EnsureVisible(i);
+                    return;
+                }
+            }
+
+            Util.MsgBoxErr("Server could not be found in your joined servers list (bug?)");
+        }
+
         private void loadFileBtn_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
