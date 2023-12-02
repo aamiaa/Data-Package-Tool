@@ -111,7 +111,7 @@ namespace Data_Package_Tool.Classes
 
             var res = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "https://canary.discord.com/app"));
             var content = await res.Content.ReadAsStringAsync();
-            foreach (Match match in Regex.Matches(content, "<script src=\"(\\/assets\\/[0-9a-f]+\\.js)", RegexOptions.None))
+            foreach (Match match in Regex.Matches(content, "<script src=\"(\\/assets\\/.+?\\.js)", RegexOptions.None))
             {
                 var scriptPath = match.Groups[1].Value;
                 var scriptRes = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"https://canary.discord.com{scriptPath}"));
