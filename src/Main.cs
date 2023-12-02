@@ -6,6 +6,7 @@ using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
@@ -61,6 +62,12 @@ namespace Data_Package_Tool
                 img.EndInit();
 
                 Discord.LoadingAnim = img;
+            }
+
+            // Persist settings across program versions
+            if(!ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).HasFile)
+            {
+                Properties.Settings.Default.Upgrade();
             }
 
             if (Properties.Settings.Default.DeletedMessageIDs == null)
