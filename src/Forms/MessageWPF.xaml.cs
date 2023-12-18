@@ -87,6 +87,11 @@ namespace Data_Package_Tool
                 {
                     metadata += $"DMs with {this.Recipient.GetTag()}";
                 }
+
+                else if (this.Recipient.IsDeletedUser())
+                {
+                    metadata += $"DMs with Unknown Deleted User (channel {channel.id})";
+                }
                 else
                 {
                     metadata += $"DMs with {this.Recipient.id}";
