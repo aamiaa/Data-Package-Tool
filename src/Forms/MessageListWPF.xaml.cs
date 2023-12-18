@@ -1,4 +1,5 @@
 ﻿using Data_Package_Tool.Classes.Parsing;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -11,13 +12,7 @@ namespace Data_Package_Tool
     /// </summary>
     public partial class MessageListWPF : UserControl
     {
-        public class MessageAndUser
-        {
-            public DUser User { get; set; }
-            public DMessage Message { get; set; }
-        }
-
-        public ObservableCollection<MessageAndUser> Messages { get; set; } = new ObservableCollection<MessageAndUser>();
+        public ObservableCollection<DMessage> Messages { get; set; } = new ObservableCollection<DMessage>();
         public MessageListWPF()
         {
             InitializeComponent();
@@ -29,12 +24,11 @@ namespace Data_Package_Tool
             Messages.Clear();
         }
 
-        public void DisplayMessages(DUser user, List<DMessage> messages, int startIdx, int endIdx)
+        public void DisplayMessages(List<DMessage> messages, int startIdx, int endIdx)
         {
             for(int i=startIdx;i<=endIdx;i++)
             {
-                var message = messages[i];
-                Messages.Add(new MessageAndUser { User = user, Message = message });
+                Messages.Add(messages[i]);
             }
         }
     }

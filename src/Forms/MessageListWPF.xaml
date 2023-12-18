@@ -30,7 +30,7 @@
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <local:MessageWPF Message="{Binding Message}" User="{Binding User}"/>
+                    <local:MessageWPF Message="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

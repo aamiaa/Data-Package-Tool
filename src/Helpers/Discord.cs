@@ -1,4 +1,5 @@
-﻿using Data_Package_Tool.Helpers;
+﻿using Data_Package_Tool.Classes.Parsing;
+using Data_Package_Tool.Helpers;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 
 namespace Data_Package_Tool.Classes
@@ -132,6 +134,41 @@ namespace Data_Package_Tool.Classes
             }
         }
 
+        public static async Task<bool> DeleteMessageFlowAsync(DMessage message)
+        {
+            if (UserToken == null)
+            {
+                Util.MsgBoxErr(Consts.MissingTokenError);
+                return false;
+            }
+            if (!ValidateToken(UserToken, Main.DataPackage.User.id))
+            {
+                Util.MsgBoxErr(Consts.InvalidTokenError);
+                return false;
+            }
+
+            await DHeaders.Init();
+
+            var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{message.channel.id}/messages/{message.id}", new Dictionary<string, string>
+            {
+                {"Authorization", UserToken}
+            });
+
+            switch (res.response.StatusCode)
+            {
+                case HttpStatusCode.NotFound:
+                case HttpStatusCode.NoContent:
+                    message.deleted = true;
+
+                    Properties.Settings.Default.DeletedMessageIDs.Add(message.id);
+                    Properties.Settings.Default.Save();
+                    return true;
+                default:
+                    Util.MsgBoxErr($"Request error: {res.response.StatusCode} {res.body}");
+                    return false;
+            }
+        }
+
         public static async Task<bool> OpenDMFlowAsync(string userId, string expectedChannelId = null)
         {
             if(UserToken == null)
@@ -139,7 +176,7 @@ namespace Data_Package_Tool.Classes
                 Util.MsgBoxErr(Consts.MissingTokenError);
                 return false;
             }
-            if (!Discord.ValidateToken(UserToken, Main.DataPackage.User.id))
+            if (!ValidateToken(UserToken, Main.DataPackage.User.id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return false;
