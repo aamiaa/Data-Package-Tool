@@ -75,6 +75,12 @@ namespace Data_Package_Tool
                 Properties.Settings.Default.DeletedMessageIDs = new System.Collections.Specialized.StringCollection();
                 Properties.Settings.Default.Save();
             }
+            
+            if(Properties.Settings.Default.ResolvedDeletedUsers == null)
+            {
+                Properties.Settings.Default.ResolvedDeletedUsers = new System.Collections.Specialized.StringCollection();
+                Properties.Settings.Default.Save();
+            }
 
             switch (Properties.Settings.Default.UseDiscordInstance)
             {

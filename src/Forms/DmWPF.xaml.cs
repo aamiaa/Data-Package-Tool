@@ -231,6 +231,10 @@ namespace Data_Package_Tool.Forms
                         }
                     }
 
+                    // Save the user id in settings for reuse
+                    Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] {this.ChannelId, recipient.id});
+                    Properties.Settings.Default.Save();
+
                     DataContext.UnknownId = false;
                 }
             }

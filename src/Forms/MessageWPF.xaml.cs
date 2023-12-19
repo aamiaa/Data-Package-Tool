@@ -148,6 +148,15 @@ namespace Data_Package_Tool
                         id = recipientId
                     };
                 }
+
+                if(this.Recipient.IsDeletedUser())
+                {
+                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(message.channel.id);
+                    if(idx != -1)
+                    {
+                        this.Recipient.id = Properties.Settings.Default.ResolvedDeletedUsers[idx + 1];
+                    }
+                }
             }
 
             // Set username

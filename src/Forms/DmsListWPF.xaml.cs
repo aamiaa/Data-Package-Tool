@@ -146,6 +146,17 @@ namespace Data_Package_Tool.Forms
 
                 bool isDeletedUser = recipientId == Consts.DeletedUserId;
 
+                // Get saved id, if exists
+                if (isDeletedUser)
+                {
+                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(channel.id);
+                    if(idx != -1)
+                    {
+                        recipientId = Properties.Settings.Default.ResolvedDeletedUsers[idx + 1];
+                        isDeletedUser = false;
+                    }
+                }
+
                 DirectMessages.Add(new DmsListEntry
                 { 
                     UserId = isDeletedUser ? "???" : recipientId,
