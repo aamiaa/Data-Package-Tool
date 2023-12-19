@@ -591,13 +591,16 @@ namespace Data_Package_Tool
                 {"Authorization", Discord.UserToken}
             });
 
-            if (res.response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (res.response.StatusCode == HttpStatusCode.OK)
             {
                 DUser recipient = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res.body).recipients[0].ToObject<DUser>();
                 this.Recipient = recipient;
                 UpdateMetadata();
 
-                // TODO: also save in settings and change data in the appropriate dmlist entry (make a single function to do that?)
+                Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] { this.Message.channel.id, recipient.id });
+                Properties.Settings.Default.Save();
+
+                // TODO: also change data in the appropriate dmlist entry
             }
             else
             {
