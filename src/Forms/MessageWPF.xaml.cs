@@ -15,6 +15,7 @@ using System.Net.Http;
 using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Channels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -62,6 +63,7 @@ namespace Data_Package_Tool
             copyUserIdMi.IsEnabled = false;
             copyGuildIdMi.IsEnabled = false;
             deleteMessageMi.IsEnabled = true;
+            fetchInfoMi.Visibility = Visibility.Collapsed;
         }
 
         private void UpdateMetadata()
@@ -81,6 +83,8 @@ namespace Data_Package_Tool
             }
             else if (channel.IsDM())
             {
+                viewUserMi.IsEnabled = true;
+                openDMMi.IsEnabled = true;
                 copyUserIdMi.IsEnabled = true;
 
                 if (this.Recipient.username != null)
@@ -90,6 +94,7 @@ namespace Data_Package_Tool
 
                 else if (this.Recipient.IsDeletedUser())
                 {
+                    fetchInfoMi.Visibility = Visibility.Visible;
                     metadata += $"DMs with Unknown Deleted User (channel {channel.id})";
                 }
                 else
@@ -132,9 +137,6 @@ namespace Data_Package_Tool
 
             if (message.channel.IsDM())
             {
-                viewUserMi.IsEnabled = true;
-                openDMMi.IsEnabled = true;
-
                 string recipientId = message.channel.GetOtherDMRecipient(Main.DataPackage.User);
                 DRelationship relationship = Array.Find(Main.DataPackage.User.relationships, x => x.id == recipientId);
                 if (relationship != null)
@@ -480,6 +482,11 @@ namespace Data_Package_Tool
 
         private void viewUserMi_Click(object sender, RoutedEventArgs e)
         {
+            if(this.Recipient.IsDeletedUser())
+            {
+                Util.MsgBoxErr(Consts.UnknownDeletedUserId);
+                return;
+            }
             if (this.Message.channel.has_duplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
@@ -512,6 +519,12 @@ namespace Data_Package_Tool
 
         private void copyUserIdMi_Click(object sender, RoutedEventArgs e)
         {
+            if (this.Recipient.IsDeletedUser())
+            {
+                Util.MsgBoxErr(Consts.UnknownDeletedUserId);
+                return;
+            }
+
             Clipboard.SetText(this.Recipient.id);
         }
 
@@ -522,6 +535,11 @@ namespace Data_Package_Tool
 
         private async void openDMMi_Click(object sender, RoutedEventArgs e)
         {
+            if (this.Recipient.IsDeletedUser())
+            {
+                Util.MsgBoxErr(Consts.UnknownDeletedUserId);
+                return;
+            }
             if (this.Message.channel.has_duplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
@@ -552,6 +570,40 @@ namespace Data_Package_Tool
         {
             // TODO: some non-ugly way of doing this
             ((Main)Main.ActiveForm).JumpToGuild(this.Message.channel.guild.id);
+        }
+
+        private async void fetchInfoMi_Click(object sender, RoutedEventArgs e)
+        {
+            if (Discord.UserToken == null)
+            {
+                Util.MsgBoxErr(Consts.MissingTokenError);
+                return;
+            }
+            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.id))
+            {
+                Util.MsgBoxErr(Consts.InvalidTokenError);
+                return;
+            }
+            await DHeaders.Init();
+
+            var res = await DRequest.RequestAsync(HttpMethod.Get, $"https://discord.com/api/v9/channels/{this.Message.channel.id}", new Dictionary<string, string>
+            {
+                {"Authorization", Discord.UserToken}
+            });
+
+            if (res.response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                DUser recipient = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res.body).recipients[0].ToObject<DUser>();
+                this.Recipient = recipient;
+                UpdateMetadata();
+
+                // TODO: also save in settings and change data in the appropriate dmlist entry (make a single function to do that?)
+            }
+            else
+            {
+                Util.MsgBoxErr($"Status code {res.response.StatusCode} - {res.body}");
+                return;
+            }
         }
     }
 }
