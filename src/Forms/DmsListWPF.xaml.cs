@@ -220,11 +220,23 @@ namespace Data_Package_Tool.Forms
         {
             if (currentColumn != 3)
             {
-                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages.OrderByDescending(x => x.Note));
+                // Grab the ones which contain notes -> sort them -> append the ones which don't contain notes
+                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages
+                    .Where(x => x.Note != "")
+                    .OrderBy(x => x.Note)
+                    .Concat(DirectMessages
+                        .Where(x => x.Note == "")
+                        .OrderByDescending(x => Int64.Parse(x.ChannelId)) // Reset the order of the rest to default
+                    )
+                );
             }
             else
             {
-                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages.Reverse());
+                DirectMessages = new ObservableCollection<DmsListEntry>(DirectMessages
+                    .Where(x => x.Note != "")
+                    .Reverse()
+                    .Concat(DirectMessages.Where(x => x.Note == ""))
+                );
             }
 
             currentColumn = 3;
