@@ -114,6 +114,8 @@ namespace Data_Package_Tool
             foreach (var dmChannel in dmChannels)
             {
                 string recipientId = dmChannel.GetOtherDMRecipient(DataPackage.User);
+                if (recipientId == Consts.DeletedUserId) continue; // Don't mark the fake deleted user id as duplicate
+
                 if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
                 {
                     duplicateChannelsMap[recipientId].has_duplicates = true;

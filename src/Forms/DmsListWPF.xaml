@@ -64,7 +64,8 @@
                                  Avatar="{Binding Avatar}"
                                  MessagesCount="{Binding MessagesCount}"
                                  Note="{Binding Note}"
-                                 NeedsFetching="{Binding NeedsFetching}"/>
+                                 NeedsFetching="{Binding NeedsFetching}"
+                                 UnknownId="{Binding UnknownId}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
