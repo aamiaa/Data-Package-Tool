@@ -125,7 +125,7 @@ namespace Data_Package_Tool.Forms
             }
             if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.id))
             {
-                Util.MsgBoxErr(Consts.InvalidBotTokenError);
+                Util.MsgBoxErr(Consts.InvalidTokenError);
                 return null;
             }
 
