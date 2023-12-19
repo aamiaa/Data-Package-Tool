@@ -8,5 +8,8 @@
         public static readonly string MissingBotTokenError = "You must enter a bot token in the Settings tab to use this function.";
         public static readonly string InvalidBotTokenError = "Entered token is invalid!";
         public static readonly string WrongTokenType = "Entered bot token belongs to your own account!";
+        public static readonly string UnknownDeletedUserId = "The user id of this deleted user is unknown. Use Fetch Info first.";
+
+        public static readonly string DeletedUserId = "456226577798135808";
     }
 }

@@ -100,39 +100,104 @@ namespace Data_Package_Tool.Forms
         public static readonly DependencyProperty NeedsFetchingProperty =
             DependencyProperty.Register("NeedsFetching", typeof(bool), typeof(DmWPF));
 
+        public bool UnknownId
+        {
+            get { return (bool)GetValue(UnknownIdProperty); }
+            set { SetValue(UnknownIdProperty, value); }
+        }
+
+        public static readonly DependencyProperty UnknownIdProperty =
+            DependencyProperty.Register("UnknownId", typeof(bool), typeof(DmWPF));
+
+
+
         public DmWPF()
         {
             InitializeComponent();
         }
 
-        private async void fetchBtn_Click(object sender, RoutedEventArgs e)
+        private async Task<DUser> FetchUserFromChannel(string channelId)
         {
-            if(Discord.BotToken == null)
+            if (Discord.UserToken == null)
             {
-                Util.MsgBoxErr(Consts.MissingBotTokenError);
-                return;
+                Util.MsgBoxErr(Consts.MissingTokenError);
+                return null;
             }
-            if(!Discord.ValidateToken(Discord.BotToken))
+            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.id))
             {
-                Util.MsgBoxErr(Consts.InvalidBotTokenError);
-                return;
-            }
-            if(Discord.ValidateToken(Discord.BotToken, Main.DataPackage.User.id))
-            {
-                Util.MsgBoxErr(Consts.WrongTokenType);
-                return;
+                Util.MsgBoxErr(Consts.InvalidTokenError);
+                return null;
             }
 
-            var res = await DRequest.RequestAsync(HttpMethod.Get, $"https://discord.com/api/v9/users/{this.UserId}", new Dictionary<string, string>
+            await DHeaders.Init();
+
+            var res = await DRequest.RequestAsync(HttpMethod.Get, $"https://discord.com/api/v9/channels/{channelId}", new Dictionary<string, string>
+            {
+                {"Authorization", Discord.UserToken}
+            });
+
+            if (res.response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                DUser recipient = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res.body).recipients[0].ToObject<DUser>();
+                return recipient;
+            }
+            else
+            {
+                Util.MsgBoxErr($"Status code {res.response.StatusCode} - {res.body}");
+                return null;
+            }
+        }
+
+        private async Task<DUser> FetchUserFromLookup(string userId)
+        {
+            if (Discord.BotToken == null)
+            {
+                Util.MsgBoxErr(Consts.MissingBotTokenError);
+                return null;
+            }
+            if (!Discord.ValidateToken(Discord.BotToken))
+            {
+                Util.MsgBoxErr(Consts.InvalidBotTokenError);
+                return null;
+            }
+            if (Discord.ValidateToken(Discord.BotToken, Main.DataPackage.User.id))
+            {
+                Util.MsgBoxErr(Consts.WrongTokenType);
+                return null;
+            }
+
+            var res = await DRequest.RequestAsync(HttpMethod.Get, $"https://discord.com/api/v9/users/{userId}", new Dictionary<string, string>
             {
                 {"Authorization", $"Bot {Discord.BotToken}"}
             }, null, false);
 
-            if(res.response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (res.response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                DmsListEntry DataContext = this.DataContext as DmsListEntry;
                 DUser recipient = Newtonsoft.Json.JsonConvert.DeserializeObject<DUser>(res.body);
+                return recipient;
+            } else
+            {
+                Util.MsgBoxErr($"Status code {res.response.StatusCode} - {res.body}");
+                return null;
+            }
+        }
 
+        private async void fetchBtn_Click(object sender, RoutedEventArgs e)
+        {
+            DmsListEntry DataContext = this.DataContext as DmsListEntry;
+            DUser recipient;
+               
+            if(this.UnknownId)
+            {
+                recipient = await FetchUserFromChannel(this.ChannelId);
+            } else
+            {
+                recipient = await FetchUserFromLookup(this.UserId);
+            }
+
+            if (recipient != null)
+            {
+                DataContext.UserId = recipient.id;
                 DataContext.Username = recipient.GetTag();
                 if (recipient.avatar != null)
                 {
@@ -145,14 +210,44 @@ namespace Data_Package_Tool.Forms
                     DataContext.Avatar = avatar;
                 }
                 DataContext.NeedsFetching = false;
-            } else
-            {
-                Util.MsgBoxErr($"Status code {res.response.StatusCode} - {res.body}");
+
+                // Now that we know the id, do what we couldn't do before
+                if(this.UnknownId)
+                {
+                    // Check if there's a note
+                    DataContext.Note = Main.DataPackage.User.notes.ContainsKey(recipient.id) ? Main.DataPackage.User.notes[recipient.id] : "";
+
+                    // Perform the duplicate channels check
+                    var dmChannels = Main.DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
+                    foreach (var dmChannel in dmChannels)
+                    {
+                        if (dmChannel.id == this.ChannelId) continue; // Don't count self as a duplicate
+
+                        string recipientId = dmChannel.GetOtherDMRecipient(Main.DataPackage.User);
+                        if(recipientId == this.UserId)
+                        {
+                            dmChannel.has_duplicates = true;
+                            Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates = true;
+                        }
+                    }
+
+                    // Save the user id in settings for reuse
+                    Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] {this.ChannelId, recipient.id});
+                    Properties.Settings.Default.Save();
+
+                    DataContext.UnknownId = false;
+                }
             }
         }
 
         private async void openDmBtn_Click(object sender, RoutedEventArgs e)
         {
+            if(this.UnknownId)
+            {
+                Util.MsgBoxErr(Consts.UnknownDeletedUserId);
+                return;
+            }
+
             if (Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
@@ -166,6 +261,12 @@ namespace Data_Package_Tool.Forms
 
         private void copyUserIdMi_Click(object sender, RoutedEventArgs e)
         {
+            if (this.UnknownId)
+            {
+                Util.MsgBoxErr(Consts.UnknownDeletedUserId);
+                return;
+            }
+
             Clipboard.SetText(this.UserId);
         }
 

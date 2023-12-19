@@ -75,6 +75,12 @@ namespace Data_Package_Tool
                 Properties.Settings.Default.DeletedMessageIDs = new System.Collections.Specialized.StringCollection();
                 Properties.Settings.Default.Save();
             }
+            
+            if(Properties.Settings.Default.ResolvedDeletedUsers == null)
+            {
+                Properties.Settings.Default.ResolvedDeletedUsers = new System.Collections.Specialized.StringCollection();
+                Properties.Settings.Default.Save();
+            }
 
             switch (Properties.Settings.Default.UseDiscordInstance)
             {
@@ -114,6 +120,8 @@ namespace Data_Package_Tool
             foreach (var dmChannel in dmChannels)
             {
                 string recipientId = dmChannel.GetOtherDMRecipient(DataPackage.User);
+                if (recipientId == Consts.DeletedUserId) continue; // Don't mark the fake deleted user id as duplicate
+
                 if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
                 {
                     duplicateChannelsMap[recipientId].has_duplicates = true;

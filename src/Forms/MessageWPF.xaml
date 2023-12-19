@@ -19,6 +19,7 @@
             <MenuItem x:Name="viewInGuildsTab" Header="View server in Servers tab" IsEnabled="False" Click="viewInGuildsTab_Click"/>
             <Separator/>
             <MenuItem x:Name="deleteMessageMi" Header="Delete message (SELFBOT)" Click="deleteMessageMi_Click"/>
+            <MenuItem x:Name="fetchInfoMi" Header="Fetch info (SELFBOT)" Visibility="Collapsed" Click="fetchInfoMi_Click"/>
         </ContextMenu>
     </UserControl.ContextMenu>
     <Grid x:Name="rootGrid" Background="#00000000" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave">

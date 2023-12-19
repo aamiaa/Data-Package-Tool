@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data_Package_Tool.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Media.Imaging;
@@ -36,6 +37,11 @@ namespace Data_Package_Tool.Classes.Parsing
         public bool IsPomelo()
         {
             return this.discriminator == "0" || this.discriminator == "0000";
+        }
+
+        public bool IsDeletedUser()
+        {
+            return this.id == Consts.DeletedUserId;
         }
 
         public string GetTag()

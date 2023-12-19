@@ -34,18 +34,30 @@ namespace Data_Package_Tool.Forms
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
-            public string UserId { get; set; }
+            private string UserIdValue;
+            public string UserId
+            {
+                get
+                {
+                    return this.UserIdValue;
+                }
+                set
+                {
+                    this.UserIdValue = value;
+                    NotifyPropertyChanged();
+                }
+            }
             public string ChannelId { get; set; }
-            private string UsernameVal;
+            private string UsernameValue;
             public string Username
             {
                 get
                 {
-                    return this.UsernameVal;
+                    return this.UsernameValue;
                 }
                 set
                 {
-                    this.UsernameVal = value;
+                    this.UsernameValue = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -64,7 +76,19 @@ namespace Data_Package_Tool.Forms
             }
             public string Date { get; set; }
             public int MessagesCount { get; set; }
-            public string Note { get; set; }
+            private string NoteValue;
+            public string Note
+            {
+                get
+                {
+                    return this.NoteValue;
+                }
+                set
+                {
+                    this.NoteValue = value;
+                    NotifyPropertyChanged();
+                }
+            }
             private bool NeedsFetchingValue;
             public bool NeedsFetching
             {
@@ -75,6 +99,19 @@ namespace Data_Package_Tool.Forms
                 set
                 {
                     this.NeedsFetchingValue = value;
+                    NotifyPropertyChanged();
+                }
+            }
+            private bool UnknownIdValue;
+            public bool UnknownId
+            {
+                get
+                {
+                    return this.UnknownIdValue;
+                }
+                set
+                {
+                    this.UnknownIdValue = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -107,16 +144,30 @@ namespace Data_Package_Tool.Forms
                     avatar = new DUser() { id = recipientId, discriminator = "0" }.GetDefaultAvatarBitmapImage();
                 }
 
+                bool isDeletedUser = recipientId == Consts.DeletedUserId;
+
+                // Get saved id, if exists
+                if (isDeletedUser)
+                {
+                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(channel.id);
+                    if(idx != -1)
+                    {
+                        recipientId = Properties.Settings.Default.ResolvedDeletedUsers[idx + 1];
+                        isDeletedUser = false;
+                    }
+                }
+
                 DirectMessages.Add(new DmsListEntry
                 { 
-                    UserId = recipientId,
+                    UserId = isDeletedUser ? "???" : recipientId,
                     ChannelId = channel.id,
-                    Username = relationship != null ? relationship.user.GetTag() : "(Unknown User)",
+                    Username = isDeletedUser ? "(Deleted User)" : relationship != null ? relationship.user.GetTag() : "(Unknown User)",
                     Avatar = avatar,
                     Date = Discord.SnowflakeToTimestap(channel.id).ToShortDateString(),
                     MessagesCount = channel.messages.Count,
                     Note = user.notes.ContainsKey(recipientId) ? user.notes[recipientId] : "",
-                    NeedsFetching = relationship == null
+                    NeedsFetching = relationship == null,
+                    UnknownId = isDeletedUser
                 });
             }
         }

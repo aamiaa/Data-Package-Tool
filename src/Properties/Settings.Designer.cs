@@ -223,5 +223,16 @@ namespace Data_Package_Tool.Properties {
                 this["SearchHasVideo"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection ResolvedDeletedUsers {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["ResolvedDeletedUsers"]));
+            }
+            set {
+                this["ResolvedDeletedUsers"] = value;
+            }
+        }
     }
 }
