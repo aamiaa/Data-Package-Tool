@@ -208,6 +208,9 @@ namespace Data_Package_Tool.Forms
                     avatar.EndInit();
 
                     DataContext.Avatar = avatar;
+                } else
+                {
+                    DataContext.Avatar = new DUser() { id = recipient.id, discriminator = "0" }.GetDefaultAvatarBitmapImage();
                 }
                 DataContext.NeedsFetching = false;
 
