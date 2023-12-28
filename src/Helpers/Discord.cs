@@ -1,6 +1,8 @@
 ﻿using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Helpers;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +11,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 
 namespace Data_Package_Tool.Classes
@@ -164,7 +165,28 @@ namespace Data_Package_Tool.Classes
                     Properties.Settings.Default.Save();
                     return true;
                 default:
-                    Util.MsgBoxErr($"Request error: {res.response.StatusCode} {res.body}");
+                    try
+                    {
+                        dynamic errorData = JObject.Parse(res.body);
+
+                        string errorMsg = errorData.message;
+                        int errorCode = errorData.code;
+                        switch(errorCode)
+                        {
+                            case 50001:
+                                Util.MsgBoxErr("You don't have access to the channel of this message!");
+                                break;
+                            case 50083:
+                                Util.MsgBoxErr("This message is in an archived thread!");
+                                break;
+                            default:
+                                Util.MsgBoxErr($"Discord error ({errorCode}): {errorMsg}");
+                                break;
+                        }
+                    } catch(JsonReaderException) // Non-json response = unknown error
+                    {
+                        Util.MsgBoxErr($"Request error: {res.response.StatusCode}");
+                    }
                     return false;
             }
         }
@@ -193,11 +215,11 @@ namespace Data_Package_Tool.Classes
             {
                 {"Authorization", UserToken},
                 {"X-Context-Properties", Convert.ToBase64String(Encoding.UTF8.GetBytes("{}"))}
-            }, Newtonsoft.Json.JsonConvert.SerializeObject(body), true);
+            }, JsonConvert.SerializeObject(body), true);
 
             if (response.response.StatusCode == HttpStatusCode.OK)
             {
-                string channelId = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.body).id;
+                string channelId = JsonConvert.DeserializeObject<dynamic>(response.body).id;
                 if(expectedChannelId != null && expectedChannelId != channelId)
                 {
 #if DEBUG
@@ -213,7 +235,7 @@ namespace Data_Package_Tool.Classes
                         var msgResponse = await DRequest.RequestAsync(HttpMethod.Post, $"https://discord.com/api/v9/channels/{expectedChannelId}/messages", new Dictionary<string, string>
                         {
                             {"Authorization", UserToken}
-                        }, Newtonsoft.Json.JsonConvert.SerializeObject(new Dictionary<string, dynamic>
+                        }, JsonConvert.SerializeObject(new Dictionary<string, dynamic>
                         {
                             {"content", msg},
                             {"flags", 0},

@@ -3,6 +3,8 @@ using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Forms;
 using Data_Package_Tool.Helpers;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -665,47 +667,66 @@ namespace Data_Package_Tool
                     {"Authorization", Discord.UserToken}
                 });
 
-                bool didError = false;
-
                 switch (res.response.StatusCode)
                 {
-                    case HttpStatusCode.NotFound:
+                    case HttpStatusCode.NotFound: // Already deleted = mark as deleted
                     case HttpStatusCode.NoContent:
                         msg.deleted = true;
 
                         Properties.Settings.Default.DeletedMessageIDs.Add(msg.id);
                         Properties.Settings.Default.Save();
                         break;
-                    case HttpStatusCode.InternalServerError:
+                    case HttpStatusCode.InternalServerError: // Retry on random backend errors
                     case HttpStatusCode.BadGateway:
                     case HttpStatusCode.ServiceUnavailable:
+                    case HttpStatusCode.GatewayTimeout:
+                        MassDeleteIdx--;
+                        break;
                     case (HttpStatusCode)429:
                         MassDeleteIdx--;
-                        Thread.Sleep((int)Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res.body).retry_after * 1000);
+
+                        try
+                        {
+                            dynamic errorData = JObject.Parse(res.body);
+
+                            int retryAfter = errorData.retry_after;
+                            Thread.Sleep(retryAfter * 1000);
+                        } catch(Exception) // Non-json response (cf error?)
+                        {
+                            Util.MsgBoxErr($"Unknown ratelimit error.");
+                            return;
+                        }
                         break;
                     case HttpStatusCode.Forbidden:
                         break;
-                    case HttpStatusCode.BadRequest:
-                        var errorCode = (int)Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res.body).code;
-                        if(errorCode != 50083) // Thread archived
+                    default:
+                        try
                         {
-                            didError = true;
+                            dynamic errorData = JObject.Parse(res.body);
+
+                            string errorMsg = errorData.message;
+                            int errorCode = errorData.code;
+                            switch(errorCode)
+                            {
+                                case 50001: // No access to channel
+                                case 50083: // Thread archived
+                                    break;
+                                default:
+                                    Util.MsgBoxErr($"Discord error ({errorCode}): {errorMsg}");
+                                    return;
+                            }
+
+                        } catch(Exception)
+                        {
+                            Util.MsgBoxErr($"Request error: {res.response.StatusCode} {res.body}");
+                            return;
                         }
                         break;
-                    default:
-                        didError = true;
-                        break;
-                }
-
-                if(didError)
-                {
-                    Util.MsgBoxErr($"Request error: {res.response.StatusCode} {res.body}");
-                    return;
                 }
             }
             catch (Exception ex)
             {
-                Util.MsgBoxErr($"Request error: {ex}");
+                Util.MsgBoxErr($"Request error: {ex.Message}");
             }
 
             massDeleteTimer.Start();
