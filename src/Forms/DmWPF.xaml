@@ -23,6 +23,7 @@
     <UserControl.ContextMenu>
         <ContextMenu>
             <MenuItem x:Name="copyUserIdMi" Header="Copy user id" Click="copyUserIdMi_Click"/>
+            <MenuItem x:Name="copyChannelIdMi" Header="Copy channel id" Click="copyChannelIdMi_Click"/>
             <MenuItem x:Name="copyNoteMi" Header="Copy note" Click="copyNoteMi_Click"/>
             <MenuItem x:Name="viewUserMi" Header="View user" Click="viewUserMi_Click"/>
         </ContextMenu>

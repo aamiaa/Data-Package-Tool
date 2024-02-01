@@ -273,6 +273,11 @@ namespace Data_Package_Tool.Forms
             Clipboard.SetText(this.UserId);
         }
 
+        private void copyChannelIdMi_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(this.ChannelId);
+        }
+
         private void copyNoteMi_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(this.Note);
