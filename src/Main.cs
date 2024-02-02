@@ -212,6 +212,11 @@ namespace Data_Package_Tool
                     searchBtn.Enabled = true;
                     messagesPrevBtn.Enabled = true;
                     messagesNextBtn.Enabled = true;
+
+                    if(DataPackage.UsesUnsignedCDNLinks)
+                    {
+                        Util.MsgBoxWarn("This data package was created before Discord's attachment url signing.\nImages may be broken, and other attachments may be inaccessible!");
+                    }
                 }, TaskScheduler.FromCurrentSynchronizationContext());
 
                 var guildsTask = new Task(() =>

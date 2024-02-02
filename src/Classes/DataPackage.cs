@@ -37,6 +37,11 @@ namespace Data_Package_Tool.Classes
         public DateTime CreationTime;
         public int TotalMessages = 0;
 
+        public bool UsesUnsignedCDNLinks
+        {
+            get => Attachments.Count > 0 && !Attachments[0].url.Contains("?ex=");
+        }
+
         public LoadStatus LoadStatus = new LoadStatus
         {
                Progress = 0,
