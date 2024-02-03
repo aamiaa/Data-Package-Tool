@@ -1,18 +1,33 @@
-﻿namespace Data_Package_Tool.Classes.Parsing
+﻿using Newtonsoft.Json;
+using System;
+using System.Globalization;
+
+namespace Data_Package_Tool.Classes.Parsing
 {
     public class DAnalyticsEvent
     {
-        public string event_type;
+        [JsonProperty("event_type")]
+        public string EventType { get; set; }
 
-        public string guild; // the guild id on invite events
-        public string invite;
+        [JsonProperty("guild")]
+        public string GuildId { get; set; } // the guild id on invite events
+        [JsonProperty("invite")]
+        public string InviteCode { get; set; }
 
-        public string guild_id;
-        public string join_type;
-        public string join_method;
-        public string application_id;
-        public string location;
-        public string invite_code;
-        public string timestamp;
+        [JsonProperty("guild_id")]
+        private string GuildId2 { set => GuildId = value; }
+        [JsonProperty("join_type")]
+        public string JoinType { get; set; }
+        [JsonProperty("join_method")]
+        public string JoinMethod { get; set; }
+        [JsonProperty("application_id")]
+        public string ApplicationId { get; set; }
+        [JsonProperty("location")]
+        public string Location { get; set; }
+        [JsonProperty("invite_code")]
+        private string InviteCode2 { set => InviteCode = value; }
+        public DateTime Timestamp { get; set; }
+        [JsonProperty("timestamp")]
+        private string Timestamp2 { set => Timestamp = DateTime.Parse(value.Replace("\"", ""), null, DateTimeStyles.RoundtripKind); }
     }
 }

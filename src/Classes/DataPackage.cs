@@ -190,31 +190,31 @@ namespace Data_Package_Tool.Classes
                 }
             }
 
-            this.AcceptedInvites = this.AcceptedInvites.OrderBy(o => DateTime.Parse(o.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind).Ticks).ToList();
+            this.AcceptedInvites = this.AcceptedInvites.OrderBy(o => o.Timestamp.Ticks).ToList();
 
             foreach (var eventData in this.AcceptedInvites)
             {
-                var guild = this.JoinedGuilds.Find(x => x.Id == eventData.guild);
+                var guild = this.JoinedGuilds.Find(x => x.Id == eventData.GuildId);
                 if (guild == null)
                 {
                     this.JoinedGuilds.Add(new DAnalyticsGuild
                     {
-                        Id = eventData.guild,
+                        Id = eventData.GuildId,
                         JoinType = "invite",
-                        Invites = new List<string> { eventData.invite },
-                        Timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)
+                        Invites = new List<string> { eventData.InviteCode },
+                        Timestamp = eventData.Timestamp
                     });
                 }
                 else
                 {
-                    if (!guild.Invites.Contains(eventData.invite))
+                    if (!guild.Invites.Contains(eventData.InviteCode))
                     {
-                        guild.Invites.Add(eventData.invite);
+                        guild.Invites.Add(eventData.InviteCode);
                     }
 
                     // Handle the case where the original join didn't create a guild_join event, but did create accepted_instant_invite, and then a rejoin created a newer guild_join
                     // (i.e. use older date from accepted_instant_invite if there is one)
-                    var joinDate = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind);
+                    var joinDate = eventData.Timestamp;
                     if (joinDate.Ticks < guild.Timestamp.Ticks)
                     {
                         guild.Timestamp = joinDate;
@@ -237,21 +237,21 @@ namespace Data_Package_Tool.Classes
 
             var eventData = Newtonsoft.Json.JsonConvert.DeserializeObject<DAnalyticsEvent>(line);
 
-            switch (eventData.event_type)
+            switch (eventData.EventType)
             {
                 case "guild_joined":
                 case "guild_joined_pending":
-                    var idx = this.JoinedGuilds.FindIndex(x => x.Id == eventData.guild_id);
+                    var idx = this.JoinedGuilds.FindIndex(x => x.Id == eventData.GuildId);
                     if (idx > -1)
                     {
                         var guild = this.JoinedGuilds[idx];
-                        if (eventData.invite_code != null && !guild.Invites.Contains(eventData.invite_code))
+                        if (eventData.InviteCode != null && !guild.Invites.Contains(eventData.InviteCode))
                         {
-                            guild.Invites.Add(eventData.invite_code);
+                            guild.Invites.Add(eventData.InviteCode);
                         }
 
                         // Get the earliest join date
-                        var timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind);
+                        var timestamp = eventData.Timestamp;
                         if (timestamp < guild.Timestamp)
                         {
                             guild.Timestamp = timestamp;
@@ -261,28 +261,27 @@ namespace Data_Package_Tool.Classes
                     {
                         this.JoinedGuilds.Add(new DAnalyticsGuild
                         {
-                            Id = eventData.guild_id,
-                            JoinType = eventData.join_type,
-                            JoinMethod = eventData.join_method,
-                            ApplicationId = eventData.application_id,
-                            Location = eventData.location,
-                            Invites = (eventData.invite_code != null ? new List<string> { eventData.invite_code } : new List<string>()),
-                            Timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
+                            Id = eventData.GuildId,
+                            JoinType = eventData.JoinType,
+                            JoinMethod = eventData.JoinMethod,
+                            ApplicationId = eventData.ApplicationId,
+                            Location = eventData.Location,
+                            Invites = (eventData.InviteCode != null ? new List<string> { eventData.InviteCode } : new List<string>()),
+                            Timestamp = eventData.Timestamp
                         });
                     }
                     break;
                 case "create_guild":
-                    Debug.WriteLine(eventData.timestamp.Replace("\"", ""));
                     this.JoinedGuilds.Add(new DAnalyticsGuild
                     {
-                        Id = eventData.guild_id,
+                        Id = eventData.GuildId,
                         JoinType = "created by you",
                         Invites = new List<string>(),
-                        Timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
+                        Timestamp = eventData.Timestamp
                     });
                     break;
                 case "accepted_instant_invite":
-                    if (eventData.guild != null) this.AcceptedInvites.Add(eventData);
+                    if (eventData.GuildId != null) this.AcceptedInvites.Add(eventData);
                     break;
             }
         }
