@@ -143,12 +143,12 @@ namespace Data_Package_Tool
             foreach (var guild in DataPackage.JoinedGuilds)
             {
                 string guildName = "";
-                if (DataPackage.Guilds[guild.id] != null)
+                if (DataPackage.Guilds[guild.Id] != null)
                 {
-                    guildName = DataPackage.Guilds[guild.id];
+                    guildName = DataPackage.Guilds[guild.Id];
                 }
 
-                string[] values = { guild.timestamp.ToShortDateString(), guild.id, guildName, guild.join_type, guild.location, String.Join(", ", guild.invites.ToArray()) };
+                string[] values = { guild.Timestamp.ToShortDateString(), guild.Id, guildName, guild.JoinType, guild.Location, String.Join(", ", guild.Invites) };
                 var lvItem = new ListViewItem(values);
                 serversLv.Items.Add(lvItem);
             }

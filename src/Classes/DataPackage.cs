@@ -194,35 +194,35 @@ namespace Data_Package_Tool.Classes
 
             foreach (var eventData in this.AcceptedInvites)
             {
-                var guild = this.JoinedGuilds.Find(x => x.id == eventData.guild);
+                var guild = this.JoinedGuilds.Find(x => x.Id == eventData.guild);
                 if (guild == null)
                 {
                     this.JoinedGuilds.Add(new DAnalyticsGuild
                     {
-                        id = eventData.guild,
-                        join_type = "invite",
-                        invites = new List<string> { eventData.invite },
-                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)
+                        Id = eventData.guild,
+                        JoinType = "invite",
+                        Invites = new List<string> { eventData.invite },
+                        Timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)
                     });
                 }
                 else
                 {
-                    if (!guild.invites.Contains(eventData.invite))
+                    if (!guild.Invites.Contains(eventData.invite))
                     {
-                        guild.invites.Add(eventData.invite);
+                        guild.Invites.Add(eventData.invite);
                     }
 
                     // Handle the case where the original join didn't create a guild_join event, but did create accepted_instant_invite, and then a rejoin created a newer guild_join
                     // (i.e. use older date from accepted_instant_invite if there is one)
                     var joinDate = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind);
-                    if (joinDate.Ticks < guild.timestamp.Ticks)
+                    if (joinDate.Ticks < guild.Timestamp.Ticks)
                     {
-                        guild.timestamp = joinDate;
+                        guild.Timestamp = joinDate;
                     }
                 }
             }
 
-            this.JoinedGuilds = this.JoinedGuilds.OrderByDescending(o => o.timestamp.Ticks).ToList();
+            this.JoinedGuilds = this.JoinedGuilds.OrderByDescending(o => o.Timestamp.Ticks).ToList();
 
             this.GuildsLoadStatus.Finished = true;
         }
@@ -241,33 +241,33 @@ namespace Data_Package_Tool.Classes
             {
                 case "guild_joined":
                 case "guild_joined_pending":
-                    var idx = this.JoinedGuilds.FindIndex(x => x.id == eventData.guild_id);
+                    var idx = this.JoinedGuilds.FindIndex(x => x.Id == eventData.guild_id);
                     if (idx > -1)
                     {
                         var guild = this.JoinedGuilds[idx];
-                        if (eventData.invite_code != null && !guild.invites.Contains(eventData.invite_code))
+                        if (eventData.invite_code != null && !guild.Invites.Contains(eventData.invite_code))
                         {
-                            guild.invites.Add(eventData.invite_code);
+                            guild.Invites.Add(eventData.invite_code);
                         }
 
                         // Get the earliest join date
                         var timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind);
-                        if (timestamp < guild.timestamp)
+                        if (timestamp < guild.Timestamp)
                         {
-                            guild.timestamp = timestamp;
+                            guild.Timestamp = timestamp;
                         }
                     }
                     else
                     {
                         this.JoinedGuilds.Add(new DAnalyticsGuild
                         {
-                            id = eventData.guild_id,
-                            join_type = eventData.join_type,
-                            join_method = eventData.join_method,
-                            application_id = eventData.application_id,
-                            location = eventData.location,
-                            invites = (eventData.invite_code != null ? new List<string> { eventData.invite_code } : new List<string>()),
-                            timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
+                            Id = eventData.guild_id,
+                            JoinType = eventData.join_type,
+                            JoinMethod = eventData.join_method,
+                            ApplicationId = eventData.application_id,
+                            Location = eventData.location,
+                            Invites = (eventData.invite_code != null ? new List<string> { eventData.invite_code } : new List<string>()),
+                            Timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
                         });
                     }
                     break;
@@ -275,10 +275,10 @@ namespace Data_Package_Tool.Classes
                     Debug.WriteLine(eventData.timestamp.Replace("\"", ""));
                     this.JoinedGuilds.Add(new DAnalyticsGuild
                     {
-                        id = eventData.guild_id,
-                        join_type = "created by you",
-                        invites = new List<string>(),
-                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
+                        Id = eventData.guild_id,
+                        JoinType = "created by you",
+                        Invites = new List<string>(),
+                        Timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
                     });
                     break;
                 case "accepted_instant_invite":
