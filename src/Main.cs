@@ -324,11 +324,11 @@ namespace Data_Package_Tool
                 if (Properties.Settings.Default.SearchExcludeIDs != null)
                 {
                     if (Properties.Settings.Default.SearchExcludeIDs.Contains(channel.Id)) continue;
-                    if (channel.Guild != null && channel.Guild.id != null && Properties.Settings.Default.SearchExcludeIDs.Contains(channel.Guild.id)) continue;
+                    if (channel.Guild != null && channel.Guild.Id != null && Properties.Settings.Default.SearchExcludeIDs.Contains(channel.Guild.Id)) continue;
                 }
                 if (Properties.Settings.Default.SearchWhitelistIDs != null && Properties.Settings.Default.SearchWhitelistIDs.Count > 0)
                 {
-                    if (!Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.Id) && !(channel.Guild != null && channel.Guild.id != null && Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.Guild.id))) continue;
+                    if (!Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.Id) && !(channel.Guild != null && channel.Guild.Id != null && Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.Guild.Id))) continue;
                 }
 
                 // Search modes

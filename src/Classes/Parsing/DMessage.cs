@@ -17,7 +17,7 @@ namespace Data_Package_Tool.Classes.Parsing
             string guild;
             if (this.Channel.Guild != null)
             {
-                guild = this.Channel.Guild.id;
+                guild = this.Channel.Guild.Id;
             }
             else if (this.Channel.IsDM() || this.Channel.IsGroupDM())
             {

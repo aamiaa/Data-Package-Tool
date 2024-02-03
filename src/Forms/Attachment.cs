@@ -70,7 +70,7 @@ namespace Data_Package_Tool
 
         private void copyGuildIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(SelectedAttachment.Message.Channel.Guild.id);
+            Clipboard.SetText(SelectedAttachment.Message.Channel.Guild.Id);
         }
 
         private void copyUserIdToolStripMenuItem_Click(object sender, EventArgs e)

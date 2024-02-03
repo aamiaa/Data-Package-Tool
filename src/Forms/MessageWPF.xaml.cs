@@ -113,13 +113,13 @@ namespace Data_Package_Tool
                 viewInGuildsTab.IsEnabled = true;
 
                 metadata += ", Guild: ";
-                if (channel.Guild.name != null)
+                if (channel.Guild.Name != null)
                 {
-                    metadata += channel.Guild.name;
+                    metadata += channel.Guild.Name;
                 }
                 else
                 {
-                    metadata += $"unknown ({channel.Guild.id})";
+                    metadata += $"unknown ({channel.Guild.Id})";
                 }
             }
 
@@ -530,7 +530,7 @@ namespace Data_Package_Tool
 
         private void copyGuildIdMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(this.Message.Channel.Guild.id);
+            Clipboard.SetText(this.Message.Channel.Guild.Id);
         }
 
         private async void openDMMi_Click(object sender, RoutedEventArgs e)
@@ -569,7 +569,7 @@ namespace Data_Package_Tool
         private void viewInGuildsTab_Click(object sender, RoutedEventArgs e)
         {
             // TODO: some non-ugly way of doing this
-            ((Main)Main.ActiveForm).JumpToGuild(this.Message.Channel.Guild.id);
+            ((Main)Main.ActiveForm).JumpToGuild(this.Message.Channel.Guild.Id);
         }
 
         private async void fetchInfoMi_Click(object sender, RoutedEventArgs e)
