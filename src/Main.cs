@@ -114,7 +114,7 @@ namespace Data_Package_Tool
 
         private void LoadDMChannels()
         {
-            var dmChannels = DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
+            var dmChannels = DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.Id)).ToList();
             var duplicateChannelsMap = new Dictionary<string, DChannel>();
 
             tabControl1.TabPages[4].Text = $"Direct Messages - {dmChannels.Count}";
@@ -126,8 +126,8 @@ namespace Data_Package_Tool
 
                 if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
                 {
-                    duplicateChannelsMap[recipientId].has_duplicates = true;
-                    dmChannel.has_duplicates = true;
+                    duplicateChannelsMap[recipientId].HasDuplicates = true;
+                    dmChannel.HasDuplicates = true;
                 }
                 duplicateChannelsMap[recipientId] = dmChannel;
             }
@@ -143,12 +143,12 @@ namespace Data_Package_Tool
             foreach (var guild in DataPackage.JoinedGuilds)
             {
                 string guildName = "";
-                if (DataPackage.Guilds[guild.id] != null)
+                if (DataPackage.GuildNamesMap.ContainsKey(guild.Id))
                 {
-                    guildName = DataPackage.Guilds[guild.id];
+                    guildName = DataPackage.GuildNamesMap[guild.Id];
                 }
 
-                string[] values = { guild.timestamp.ToShortDateString(), guild.id, guildName, guild.join_type, guild.location, String.Join(", ", guild.invites.ToArray()) };
+                string[] values = { guild.Timestamp.ToShortDateString(), guild.Id, guildName, guild.JoinType, guild.Location, String.Join(", ", guild.Invites) };
                 var lvItem = new ListViewItem(values);
                 serversLv.Items.Add(lvItem);
             }
@@ -201,7 +201,7 @@ namespace Data_Package_Tool
                 {
                     foreach (var messageId in Properties.Settings.Default.DeletedMessageIDs)
                     {
-                        if (DataPackage.MessagesMap.ContainsKey(messageId)) DataPackage.MessagesMap[messageId].deleted = true;
+                        if (DataPackage.MessagesMap.ContainsKey(messageId)) DataPackage.MessagesMap[messageId].IsDeleted = true;
                     }
 
                     LoadDMChannels();
@@ -323,12 +323,12 @@ namespace Data_Package_Tool
                 if (!channel.IsDM() && !channel.IsGroupDM() && Properties.Settings.Default.SearchExcludeGuilds) continue;
                 if (Properties.Settings.Default.SearchExcludeIDs != null)
                 {
-                    if (Properties.Settings.Default.SearchExcludeIDs.Contains(channel.id)) continue;
-                    if (channel.guild != null && channel.guild.id != null && Properties.Settings.Default.SearchExcludeIDs.Contains(channel.guild.id)) continue;
+                    if (Properties.Settings.Default.SearchExcludeIDs.Contains(channel.Id)) continue;
+                    if (channel.Guild != null && channel.Guild.Id != null && Properties.Settings.Default.SearchExcludeIDs.Contains(channel.Guild.Id)) continue;
                 }
                 if (Properties.Settings.Default.SearchWhitelistIDs != null && Properties.Settings.Default.SearchWhitelistIDs.Count > 0)
                 {
-                    if (!Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.id) && !(channel.guild != null && channel.guild.id != null && Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.guild.id))) continue;
+                    if (!Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.Id) && !(channel.Guild != null && channel.Guild.Id != null && Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.Guild.Id))) continue;
                 }
 
                 // Search modes
@@ -353,11 +353,11 @@ namespace Data_Package_Tool
 
             if (Properties.Settings.Default.SortMode == "asc")
             {
-                LastSearchResults = LastSearchResults.OrderBy(o => Int64.Parse(o.id)).ToList();
+                LastSearchResults = LastSearchResults.OrderBy(o => Int64.Parse(o.Id)).ToList();
             }
             else
             {
-                LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.id)).ToList();
+                LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.Id)).ToList();
             }
         }
 
@@ -412,11 +412,11 @@ namespace Data_Package_Tool
             {
                 m = m.Where(x =>
                 {
-                    if (x.attachments.Count == 0) return false;
+                    if (x.Attachments.Count == 0) return false;
 
-                    if (Properties.Settings.Default.SearchHasImage && x.attachments.Find(y => y.IsImage()) != null) return true;
-                    if (Properties.Settings.Default.SearchHasVideo && x.attachments.Find(y => y.IsVideo()) != null) return true;
-                    if (Properties.Settings.Default.SearchHasFile && x.attachments.Find(y => !y.IsImage() && !y.IsVideo()) != null) return true;
+                    if (Properties.Settings.Default.SearchHasImage && x.Attachments.Find(y => y.IsImage) != null) return true;
+                    if (Properties.Settings.Default.SearchHasVideo && x.Attachments.Find(y => y.IsVideo) != null) return true;
+                    if (Properties.Settings.Default.SearchHasFile && x.Attachments.Find(y => !y.IsImage && !y.IsVideo) != null) return true;
 
                     return false;
                 });
@@ -425,12 +425,12 @@ namespace Data_Package_Tool
 
             if (Properties.Settings.Default.SearchBeforeEnabled)
             {
-                m = m.Where(x => x.timestamp < Properties.Settings.Default.SearchBeforeDate);
+                m = m.Where(x => x.Timestamp < Properties.Settings.Default.SearchBeforeDate);
             }
 
             if (Properties.Settings.Default.SearchAfterEnabled)
             {
-                m = m.Where(x => x.timestamp > Properties.Settings.Default.SearchAfterDate);
+                m = m.Where(x => x.Timestamp > Properties.Settings.Default.SearchAfterDate);
             }
 
             return m is List<DMessage> l ? l : m.ToList();
@@ -440,7 +440,7 @@ namespace Data_Package_Tool
         {
             int count = 0;
 
-            foreach (var msg in FilterMessages(channel.messages))
+            foreach (var msg in FilterMessages(channel.Messages))
             {
                 LastSearchResults.Add(msg);
                 count++;
@@ -453,10 +453,10 @@ namespace Data_Package_Tool
         {
             int count = 0;
 
-            foreach (var msg in FilterMessages(channel.messages))
+            foreach (var msg in FilterMessages(channel.Messages))
             {
 
-                if (msg.content.IndexOf(searchText, stringComp) >= 0)
+                if (msg.Content.IndexOf(searchText, stringComp) >= 0)
                 {
                     LastSearchResults.Add(msg);
                     count++;
@@ -470,10 +470,10 @@ namespace Data_Package_Tool
         {
             int count = 0;
 
-            foreach (var msg in FilterMessages(channel.messages))
+            foreach (var msg in FilterMessages(channel.Messages))
             {
 
-                if (compiledRegex.IsMatch(msg.content))
+                if (compiledRegex.IsMatch(msg.Content))
                 {
                     LastSearchResults.Add(msg);
                     count++;
@@ -506,7 +506,7 @@ namespace Data_Package_Tool
         private int imageSquareSize = 200;
         private void LoadImages()
         {
-            if (DataPackage.Attachments.Count == 0)
+            if (DataPackage.ImageAttachments.Count == 0)
             {
                 imagesCountLb.Text = $"No images found";
                 return;
@@ -516,10 +516,10 @@ namespace Data_Package_Tool
             imagesPrevBtn.Enabled = false;
 
             if (imagesOffset < 0) imagesOffset = 0;
-            if (imagesOffset >= DataPackage.Attachments.Count || imagesOffset + imagesPerPage >= DataPackage.Attachments.Count) imagesOffset = DataPackage.Attachments.Count - imagesPerPage;
+            if (imagesOffset >= DataPackage.ImageAttachments.Count || imagesOffset + imagesPerPage >= DataPackage.ImageAttachments.Count) imagesOffset = DataPackage.ImageAttachments.Count - imagesPerPage;
 
             imagesPanel.Controls.Clear();
-            imagesCountLb.Text = $"{imagesOffset + 1}-{imagesOffset + imagesPerPage} of {DataPackage.Attachments.Count}";
+            imagesCountLb.Text = $"{imagesOffset + 1}-{imagesOffset + imagesPerPage} of {DataPackage.ImageAttachments.Count}";
 
             for (int i = 0; i < imagesPerPage; i++)
             {
@@ -530,7 +530,7 @@ namespace Data_Package_Tool
                     loc = new Point(imagesPanel.Controls.Count % imagesPerRow == 0 ? 3 : last.Location.X + last.Size.Width + 6, imagesPanel.Controls.Count % imagesPerRow == 0 ? last.Location.Y + imageSquareSize + 44 : last.Location.Y);
                 }
 
-                var attachment = DataPackage.Attachments[imagesOffset + i];
+                var attachment = DataPackage.ImageAttachments[imagesOffset + i];
 
                 var pb = new Attachment(attachment)
                 {
@@ -662,12 +662,12 @@ namespace Data_Package_Tool
                 }
 
                 msg = LastSearchResults[MassDeleteIdx++];
-                if (!msg.deleted) break;
+                if (!msg.IsDeleted) break;
             }
 
             try
             {
-                var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{msg.channel.id}/messages/{msg.id}", new Dictionary<string, string>
+                var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{msg.Channel.Id}/messages/{msg.Id}", new Dictionary<string, string>
                 {
                     {"Authorization", Discord.UserToken}
                 });
@@ -676,9 +676,9 @@ namespace Data_Package_Tool
                 {
                     case HttpStatusCode.NotFound: // Already deleted = mark as deleted
                     case HttpStatusCode.NoContent:
-                        msg.deleted = true;
+                        msg.IsDeleted = true;
 
-                        Properties.Settings.Default.DeletedMessageIDs.Add(msg.id);
+                        Properties.Settings.Default.DeletedMessageIDs.Add(msg.Id);
                         Properties.Settings.Default.Save();
                         break;
                     case HttpStatusCode.InternalServerError: // Retry on random backend errors

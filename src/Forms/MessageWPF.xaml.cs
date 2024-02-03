@@ -68,17 +68,17 @@ namespace Data_Package_Tool
 
         private void UpdateMetadata()
         {
-            var channel = this.Message.channel;
+            var channel = this.Message.Channel;
             string metadata = "Channel: ";
-            if (channel.name != null)
+            if (channel.Name != null)
             {
                 if (channel.IsDM() || channel.IsGroupDM() || channel.IsVoice())
                 {
-                    metadata += channel.name;
+                    metadata += channel.Name;
                 }
                 else
                 {
-                    metadata += $"#{channel.name}";
+                    metadata += $"#{channel.Name}";
                 }
             }
             else if (channel.IsDM())
@@ -87,45 +87,45 @@ namespace Data_Package_Tool
                 openDMMi.IsEnabled = true;
                 copyUserIdMi.IsEnabled = true;
 
-                if (this.Recipient.username != null)
+                if (this.Recipient.Username != null)
                 {
-                    metadata += $"DMs with {this.Recipient.GetTag()}";
+                    metadata += $"DMs with {this.Recipient.Tag}";
                 }
 
-                else if (this.Recipient.IsDeletedUser())
+                else if (this.Recipient.IsDeletedUser)
                 {
                     fetchInfoMi.Visibility = Visibility.Visible;
-                    metadata += $"DMs with Unknown Deleted User (channel {channel.id})";
+                    metadata += $"DMs with Unknown Deleted User (channel {channel.Id})";
                 }
                 else
                 {
-                    metadata += $"DMs with {this.Recipient.id}";
+                    metadata += $"DMs with {this.Recipient.Id}";
                 }
             }
             else
             {
-                metadata += $"unknown ({channel.id}, {(channel.IsGroupDM() ? "Group DM" : channel.IsDM() ? "DM" : "Text Channel")})";
+                metadata += $"unknown ({channel.Id}, {(channel.IsGroupDM() ? "Group DM" : channel.IsDM() ? "DM" : "Text Channel")})";
             }
 
-            if (channel.guild != null)
+            if (channel.Guild != null)
             {
                 copyGuildIdMi.IsEnabled = true;
                 viewInGuildsTab.IsEnabled = true;
 
                 metadata += ", Guild: ";
-                if (channel.guild.name != null)
+                if (channel.Guild.Name != null)
                 {
-                    metadata += channel.guild.name;
+                    metadata += channel.Guild.Name;
                 }
                 else
                 {
-                    metadata += $"unknown ({channel.guild.id})";
+                    metadata += $"unknown ({channel.Guild.Id})";
                 }
             }
 
-            if (this.Message.attachments.Count > 0)
+            if (this.Message.Attachments.Count > 0)
             {
-                metadata += $", {this.Message.attachments.Count} attachments";
+                metadata += $", {this.Message.Attachments.Count} attachments";
             }
 
             metadataLb.Content = metadata;
@@ -135,47 +135,47 @@ namespace Data_Package_Tool
         {
             ResetProperties();
 
-            if (message.channel.IsDM())
+            if (message.Channel.IsDM())
             {
-                string recipientId = message.channel.GetOtherDMRecipient(Main.DataPackage.User);
-                DRelationship relationship = Array.Find(Main.DataPackage.User.relationships, x => x.id == recipientId);
+                string recipientId = message.Channel.GetOtherDMRecipient(Main.DataPackage.User);
+                DRelationship relationship = Main.DataPackage.User.Relationships.Find(x => x.Id == recipientId);
                 if (relationship != null)
                 {
-                    this.Recipient = relationship.user;
+                    this.Recipient = relationship.User;
                 }
                 else
                 {
                     this.Recipient = new DUser
                     {
-                        id = recipientId
+                        Id = recipientId
                     };
                 }
 
-                if(this.Recipient.IsDeletedUser())
+                if(this.Recipient.IsDeletedUser)
                 {
-                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(message.channel.id);
+                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(message.Channel.Id);
                     if(idx != -1)
                     {
-                        this.Recipient.id = Properties.Settings.Default.ResolvedDeletedUsers[idx + 1];
+                        this.Recipient.Id = Properties.Settings.Default.ResolvedDeletedUsers[idx + 1];
                     }
                 }
             }
 
             // Set username
-            usernameLb.Content = Main.DataPackage.User.global_name ?? Main.DataPackage.User.GetTag();
+            usernameLb.Content = Main.DataPackage.User.DisplayName ?? Main.DataPackage.User.Tag;
 
             // Set avatar
-            avatarImg.ImageSource = Main.DataPackage.User.avatar_image;
+            avatarImg.ImageSource = Main.DataPackage.User.AvatarImage;
 
             // Set metadata
             UpdateMetadata();
 
             // Set content and timestamp
-            ParseAndSet(message.content);
-            dateLb.Content = message.timestamp.ToShortDateString() + " " + message.timestamp.ToShortTimeString();
+            ParseAndSet(message.Content);
+            dateLb.Content = message.Timestamp.ToShortDateString() + " " + message.Timestamp.ToShortTimeString();
 
             // Add red tint if the message was deleted with mass deleter
-            if (message.deleted)
+            if (message.IsDeleted)
             {
                 MarkDeleted();
             }
@@ -346,7 +346,7 @@ namespace Data_Package_Tool
 
             // Attachments
             bool firstAttachment = true;
-            foreach(var attachment in Message.attachments)
+            foreach(var attachment in Message.Attachments)
             {
                 if(content != "" || !firstAttachment)
                 {
@@ -354,7 +354,7 @@ namespace Data_Package_Tool
                 }
                 firstAttachment = false;
 
-                if(attachment.IsImage())
+                if(attachment.IsImage)
                 {
                     var img = new Image();
                     img.MaxWidth = 400;
@@ -368,15 +368,15 @@ namespace Data_Package_Tool
                         {
                             Process.Start(new ProcessStartInfo
                             {
-                                FileName = attachment.url,
+                                FileName = attachment.Url,
                                 UseShellExecute = true
                             });
                         }
                     };
 
-                    if (Discord.AttachmentsCache.ContainsKey(attachment.id))
+                    if (Discord.AttachmentsCache.ContainsKey(attachment.Id))
                     {
-                        img.Source = Discord.AttachmentsCache[attachment.id];
+                        img.Source = Discord.AttachmentsCache[attachment.Id];
                     }
                     else
                     {
@@ -386,7 +386,7 @@ namespace Data_Package_Tool
                             try
                             {
                                 using (var httpClient = new HttpClient())
-                                using (var response = await httpClient.GetAsync(attachment.url))
+                                using (var response = await httpClient.GetAsync(attachment.Url))
                                 {
                                     if (response.IsSuccessStatusCode)
                                     {
@@ -405,7 +405,7 @@ namespace Data_Package_Tool
 
                                             await Dispatcher.BeginInvoke(new Action(() =>
                                             {
-                                                Discord.AttachmentsCache[attachment.id] = bitmap;
+                                                Discord.AttachmentsCache[attachment.Id] = bitmap;
 
                                                 ImageBehavior.SetAnimatedSource(img, null);
                                                 img.Source = bitmap;
@@ -427,8 +427,8 @@ namespace Data_Package_Tool
                 {
                     var file = new FileAttachmentWPF
                     {
-                        FileName = attachment.filename,
-                        Url = attachment.url
+                        FileName = attachment.FileName,
+                        Url = attachment.Url
                     };
 
                     var inlineContainer = new InlineUIContainer(file)
@@ -442,7 +442,7 @@ namespace Data_Package_Tool
 
         private void goToMessageMi_Click(object sender, RoutedEventArgs e)
         {
-            if(this.Message.channel.has_duplicates)
+            if(this.Message.Channel.HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
@@ -460,7 +460,7 @@ namespace Data_Package_Tool
 
         private void Grid_MouseEnter(object sender, MouseEventArgs e)
         {
-            if(this.Message.deleted)
+            if(this.Message.IsDeleted)
             {
                 rootGrid.Background = new SolidColorBrush(Color.FromArgb(255, 73, 51, 55));
             } else
@@ -471,7 +471,7 @@ namespace Data_Package_Tool
 
         private void Grid_MouseLeave(object sender, MouseEventArgs e)
         {
-            if(this.Message.deleted)
+            if(this.Message.IsDeleted)
             {
                 rootGrid.Background = new SolidColorBrush(Color.FromArgb(255, 78, 54, 59));
             } else
@@ -482,19 +482,19 @@ namespace Data_Package_Tool
 
         private void viewUserMi_Click(object sender, RoutedEventArgs e)
         {
-            if(this.Recipient.IsDeletedUser())
+            if(this.Recipient.IsDeletedUser)
             {
                 Util.MsgBoxErr(Consts.UnknownDeletedUserId);
                 return;
             }
-            if (this.Message.channel.has_duplicates)
+            if (this.Message.Channel.HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
             try
             {
-                Discord.LaunchDiscordProtocol($"users/{this.Recipient.id}");
+                Discord.LaunchDiscordProtocol($"users/{this.Recipient.Id}");
             }
             catch (Exception ex)
             {
@@ -504,12 +504,12 @@ namespace Data_Package_Tool
 
         private void copyMessageMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(this.Message.content);
+            Clipboard.SetText(this.Message.Content);
         }
 
         private void copyChannelIdMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(this.Message.channel.id);
+            Clipboard.SetText(this.Message.Channel.Id);
         }
 
         private void copyMetadataMi_Click(object sender, RoutedEventArgs e)
@@ -519,34 +519,34 @@ namespace Data_Package_Tool
 
         private void copyUserIdMi_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Recipient.IsDeletedUser())
+            if (this.Recipient.IsDeletedUser)
             {
                 Util.MsgBoxErr(Consts.UnknownDeletedUserId);
                 return;
             }
 
-            Clipboard.SetText(this.Recipient.id);
+            Clipboard.SetText(this.Recipient.Id);
         }
 
         private void copyGuildIdMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(this.Message.channel.guild.id);
+            Clipboard.SetText(this.Message.Channel.Guild.Id);
         }
 
         private async void openDMMi_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Recipient.IsDeletedUser())
+            if (this.Recipient.IsDeletedUser)
             {
                 Util.MsgBoxErr(Consts.UnknownDeletedUserId);
                 return;
             }
-            if (this.Message.channel.has_duplicates)
+            if (this.Message.Channel.HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            string userId = this.Recipient.id;
-            if (await Discord.OpenDMFlowAsync(userId, this.Message.channel.id))
+            string userId = this.Recipient.Id;
+            if (await Discord.OpenDMFlowAsync(userId, this.Message.Channel.Id))
             {
                 goToMessageMi_Click(sender, e);
             }
@@ -569,7 +569,7 @@ namespace Data_Package_Tool
         private void viewInGuildsTab_Click(object sender, RoutedEventArgs e)
         {
             // TODO: some non-ugly way of doing this
-            ((Main)Main.ActiveForm).JumpToGuild(this.Message.channel.guild.id);
+            ((Main)Main.ActiveForm).JumpToGuild(this.Message.Channel.Guild.Id);
         }
 
         private async void fetchInfoMi_Click(object sender, RoutedEventArgs e)
@@ -579,14 +579,14 @@ namespace Data_Package_Tool
                 Util.MsgBoxErr(Consts.MissingTokenError);
                 return;
             }
-            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.id))
+            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.Id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return;
             }
             await DHeaders.Init();
 
-            var res = await DRequest.RequestAsync(HttpMethod.Get, $"https://discord.com/api/v9/channels/{this.Message.channel.id}", new Dictionary<string, string>
+            var res = await DRequest.RequestAsync(HttpMethod.Get, $"https://discord.com/api/v9/channels/{this.Message.Channel.Id}", new Dictionary<string, string>
             {
                 {"Authorization", Discord.UserToken}
             });
@@ -597,7 +597,7 @@ namespace Data_Package_Tool
                 this.Recipient = recipient;
                 UpdateMetadata();
 
-                Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] { this.Message.channel.id, recipient.id });
+                Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] { this.Message.Channel.Id, recipient.Id });
                 Properties.Settings.Default.Save();
 
                 // TODO: also change data in the appropriate dmlist entry

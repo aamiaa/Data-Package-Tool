@@ -1,8 +1,12 @@
-﻿namespace Data_Package_Tool.Classes.Parsing
+﻿using Newtonsoft.Json;
+
+namespace Data_Package_Tool.Classes.Parsing
 {
     public class DPartialGuild
     {
-        public string id;
-        public string name;
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
     }
 }

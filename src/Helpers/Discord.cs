@@ -142,7 +142,7 @@ namespace Data_Package_Tool.Classes
                 Util.MsgBoxErr(Consts.MissingTokenError);
                 return false;
             }
-            if (!ValidateToken(UserToken, Main.DataPackage.User.id))
+            if (!ValidateToken(UserToken, Main.DataPackage.User.Id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return false;
@@ -150,7 +150,7 @@ namespace Data_Package_Tool.Classes
 
             await DHeaders.Init();
 
-            var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{message.channel.id}/messages/{message.id}", new Dictionary<string, string>
+            var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{message.Channel.Id}/messages/{message.Id}", new Dictionary<string, string>
             {
                 {"Authorization", UserToken}
             });
@@ -159,9 +159,9 @@ namespace Data_Package_Tool.Classes
             {
                 case HttpStatusCode.NotFound:
                 case HttpStatusCode.NoContent:
-                    message.deleted = true;
+                    message.IsDeleted = true;
 
-                    Properties.Settings.Default.DeletedMessageIDs.Add(message.id);
+                    Properties.Settings.Default.DeletedMessageIDs.Add(message.Id);
                     Properties.Settings.Default.Save();
                     return true;
                 default:
@@ -198,7 +198,7 @@ namespace Data_Package_Tool.Classes
                 Util.MsgBoxErr(Consts.MissingTokenError);
                 return false;
             }
-            if (!ValidateToken(UserToken, Main.DataPackage.User.id))
+            if (!ValidateToken(UserToken, Main.DataPackage.User.Id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return false;

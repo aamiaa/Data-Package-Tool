@@ -129,19 +129,19 @@ namespace Data_Package_Tool.Forms
             foreach (var channel in channels)
             {
                 var recipientId = channel.GetOtherDMRecipient(user);
-                var relationship = user.relationships.ToList().Find(x => x.id == recipientId);
+                var relationship = user.Relationships.Find(x => x.Id == recipientId);
 
                 BitmapImage avatar;
-                if(relationship != null && relationship.user.avatar != null)
+                if(relationship != null && relationship.User.AvatarHash != null)
                 {
                     avatar = new BitmapImage();
                     avatar.BeginInit();
-                    avatar.UriSource = new Uri(relationship.user.GetAvatarURL());
+                    avatar.UriSource = new Uri(relationship.User.AvatarURL);
                     avatar.CacheOption = BitmapCacheOption.OnLoad;
                     avatar.EndInit();
                 } else
                 {;
-                    avatar = new DUser() { id = recipientId, discriminator = "0" }.GetDefaultAvatarBitmapImage();
+                    avatar = new DUser() { Id = recipientId, Discriminator = "0" }.GetDefaultAvatarBitmapImage();
                 }
 
                 bool isDeletedUser = recipientId == Consts.DeletedUserId;
@@ -149,7 +149,7 @@ namespace Data_Package_Tool.Forms
                 // Get saved id, if exists
                 if (isDeletedUser)
                 {
-                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(channel.id);
+                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(channel.Id);
                     if(idx != -1)
                     {
                         recipientId = Properties.Settings.Default.ResolvedDeletedUsers[idx + 1];
@@ -160,12 +160,12 @@ namespace Data_Package_Tool.Forms
                 DirectMessages.Add(new DmsListEntry
                 { 
                     UserId = isDeletedUser ? "???" : recipientId,
-                    ChannelId = channel.id,
-                    Username = isDeletedUser ? "(Deleted User)" : relationship != null ? relationship.user.GetTag() : "(Unknown User)",
+                    ChannelId = channel.Id,
+                    Username = isDeletedUser ? "(Deleted User)" : relationship != null ? relationship.User.Tag : "(Unknown User)",
                     Avatar = avatar,
-                    Date = Discord.SnowflakeToTimestap(channel.id).ToShortDateString(),
-                    MessagesCount = channel.messages.Count,
-                    Note = user.notes.ContainsKey(recipientId) ? user.notes[recipientId] : "",
+                    Date = Discord.SnowflakeToTimestap(channel.Id).ToShortDateString(),
+                    MessagesCount = channel.Messages.Count,
+                    Note = user.Notes.ContainsKey(recipientId) ? user.Notes[recipientId] : "",
                     NeedsFetching = relationship == null,
                     UnknownId = isDeletedUser
                 });

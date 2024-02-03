@@ -16,14 +16,14 @@ namespace Data_Package_Tool
             InitializeComponent();
             SelectedAttachment = attachment;
 
-            if(SelectedAttachment.message.channel.IsDM())
+            if(SelectedAttachment.Message.Channel.IsDM())
             {
                 copyUserIdToolStripMenuItem.Enabled = true;
                 viewUserToolStripMenuItem.Enabled = true;
                 openDmSELFBOTToolStripMenuItem.Enabled = true;
             }
 
-            if(SelectedAttachment.message.channel.guild != null)
+            if(SelectedAttachment.Message.Channel.Guild != null)
             {
                 copyGuildIdToolStripMenuItem.Enabled = true;
             }
@@ -33,7 +33,7 @@ namespace Data_Package_Tool
         {
             try
             {
-                imagePb.Load(this.SelectedAttachment.url);
+                imagePb.Load(this.SelectedAttachment.Url);
             }
             catch (Exception)
             {
@@ -45,7 +45,7 @@ namespace Data_Package_Tool
         {
             Process.Start(new ProcessStartInfo
             {
-                FileName = SelectedAttachment.url,
+                FileName = SelectedAttachment.Url,
                 UseShellExecute = true
             });
         }
@@ -54,7 +54,7 @@ namespace Data_Package_Tool
         {
             try
             {
-                var link = SelectedAttachment.message.GetMessageLink();
+                var link = SelectedAttachment.Message.GetMessageLink();
                 Discord.LaunchDiscordProtocol($"channels/{link}");
             }
             catch (Exception ex)
@@ -65,24 +65,24 @@ namespace Data_Package_Tool
 
         private void copyChannelIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(SelectedAttachment.message.channel.id);
+            Clipboard.SetText(SelectedAttachment.Message.Channel.Id);
         }
 
         private void copyGuildIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(SelectedAttachment.message.channel.guild.id);
+            Clipboard.SetText(SelectedAttachment.Message.Channel.Guild.Id);
         }
 
         private void copyUserIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(SelectedAttachment.message.channel.GetOtherDMRecipient(Main.DataPackage.User));
+            Clipboard.SetText(SelectedAttachment.Message.Channel.GetOtherDMRecipient(Main.DataPackage.User));
         }
 
         private void viewUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                Discord.LaunchDiscordProtocol($"users/{SelectedAttachment.message.channel.GetOtherDMRecipient(Main.DataPackage.User)}");
+                Discord.LaunchDiscordProtocol($"users/{SelectedAttachment.Message.Channel.GetOtherDMRecipient(Main.DataPackage.User)}");
             } catch(Exception ex)
             {
                 Util.MsgBoxErr(ex.Message);
@@ -91,14 +91,14 @@ namespace Data_Package_Tool
 
         private async void openDmSELFBOTToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string userId = SelectedAttachment.message.channel.GetOtherDMRecipient(Main.DataPackage.User);
-            string channelId = SelectedAttachment.message.channel.id;
-            if (Main.DataPackage.ChannelsMap[channelId].has_duplicates)
+            string userId = SelectedAttachment.Message.Channel.GetOtherDMRecipient(Main.DataPackage.User);
+            string channelId = SelectedAttachment.Message.Channel.Id;
+            if (Main.DataPackage.ChannelsMap[channelId].HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            if(await Discord.OpenDMFlowAsync(userId, SelectedAttachment.message.channel.id))
+            if(await Discord.OpenDMFlowAsync(userId, SelectedAttachment.Message.Channel.Id))
             {
                 Discord.LaunchDiscordProtocol($"channels/@me/{channelId}");
             }

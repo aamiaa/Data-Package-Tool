@@ -1,14 +1,11 @@
 ﻿using Data_Package_Tool.Classes.Parsing;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -23,26 +20,26 @@ namespace Data_Package_Tool.Classes
     }
     public class DataPackage
     {
-        public DUser User;
-        public MemoryStream Avatar = new MemoryStream();
-        public List<DAttachment> Attachments = new List<DAttachment>();
-        public dynamic Guilds;
-        public List<DChannel> Channels = new List<DChannel>();
-        public Dictionary<string, DChannel> ChannelsMap = new Dictionary<string, DChannel>();
-        public Dictionary<string, DMessage> MessagesMap = new Dictionary<string, DMessage>();
+        public DUser User { get; private set; }
+        public readonly MemoryStream Avatar = new();
+        public readonly List<DChannel> Channels = new();
+        public readonly Dictionary<string, DChannel> ChannelsMap = new();
+        public readonly Dictionary<string, DMessage> MessagesMap = new();
 
-        public List<DAnalyticsGuild> JoinedGuilds = new List<DAnalyticsGuild>();
-        public List<DAnalyticsEvent> AcceptedInvites = new List<DAnalyticsEvent>();
+        public List<DAttachment> ImageAttachments { get; private set; } = new List<DAttachment>();
+        public List<DAnalyticsGuild> JoinedGuilds { get; private set; } = new List<DAnalyticsGuild>();
+        public List<DAnalyticsEvent> AcceptedInvites { get; private set; } = new List<DAnalyticsEvent>();
+        public Dictionary<string, string> GuildNamesMap { get; private set; } = new Dictionary<string, string>();
 
-        public DateTime CreationTime;
-        public int TotalMessages = 0;
+        public DateTime CreationTime { get; private set; }
+        public int TotalMessages { get; private set; } = 0;
 
         public bool UsesUnsignedCDNLinks
         {
-            get => Attachments.Count > 0 && !Attachments[0].url.Contains("?ex=");
+            get => ImageAttachments.Count > 0 && !ImageAttachments[0].Url.Contains("?ex=");
         }
 
-        public LoadStatus LoadStatus = new LoadStatus
+        public LoadStatus LoadStatus = new()
         {
                Progress = 0,
                Max = 0,
@@ -50,7 +47,7 @@ namespace Data_Package_Tool.Classes
                Finished = false
         };
 
-        public LoadStatus GuildsLoadStatus = new LoadStatus
+        public LoadStatus GuildsLoadStatus = new()
         {
             Progress = 0,
             Max = 100,
@@ -84,10 +81,10 @@ namespace Data_Package_Tool.Classes
                 using (var r = new StreamReader(zip.GetEntry("servers/index.json").Open()))
                 {
                     var json = r.ReadToEnd();
-                    this.Guilds = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json);
+                    this.GuildNamesMap = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
                 }
 
-                if (User.avatar_hash == null)
+                if (User.AvatarHash == null)
                 {
                     this.User.GetDefaultAvatarBitmap().Save(this.Avatar, System.Drawing.Imaging.ImageFormat.Png);
                 }
@@ -115,14 +112,22 @@ namespace Data_Package_Tool.Classes
                             var channel = Newtonsoft.Json.JsonConvert.DeserializeObject<DChannel>(json);
                             channel.LoadMessages(csv);
 
-                            foreach(var msg in channel.messages)
+                            foreach(var msg in channel.Messages)
                             {
-                                this.MessagesMap.Add(msg.id, msg);
+                                this.MessagesMap.Add(msg.Id, msg);
+                                
+                                foreach(var attachment in msg.Attachments)
+                                {
+                                    if(attachment.IsImage)
+                                    {
+                                        this.ImageAttachments.Add(attachment);
+                                    }
+                                }
                             }
 
-                            this.TotalMessages += channel.messages.Count;
+                            this.TotalMessages += channel.Messages.Count;
                             this.Channels.Add(channel);
-                            this.ChannelsMap[channel.id] = channel;
+                            this.ChannelsMap[channel.Id] = channel;
                         }
                     }
                     else if (avatarRegex.IsMatch(entry.FullName))
@@ -146,10 +151,10 @@ namespace Data_Package_Tool.Classes
                 avImg.EndInit();
                 avImg.Freeze();
 
-                this.User.avatar_image = avImg;
+                this.User.AvatarImage = avImg;
             });
 
-            this.Attachments = this.Attachments.OrderByDescending(o => Int64.Parse(o.message.id)).ToList();
+            this.ImageAttachments = this.ImageAttachments.OrderByDescending(o => Int64.Parse(o.Message.Id)).ToList();
             this.LoadStatus.Status = $"Finished! Parsed {this.TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {this.CreationTime.ToShortDateString()}";
 
             this.LoadStatus.Finished = true;
@@ -182,39 +187,39 @@ namespace Data_Package_Tool.Classes
                 }
             }
 
-            this.AcceptedInvites = this.AcceptedInvites.OrderBy(o => DateTime.Parse(o.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind).Ticks).ToList();
+            this.AcceptedInvites = this.AcceptedInvites.OrderBy(o => o.Timestamp.Ticks).ToList();
 
             foreach (var eventData in this.AcceptedInvites)
             {
-                var guild = this.JoinedGuilds.Find(x => x.id == eventData.guild);
+                var guild = this.JoinedGuilds.Find(x => x.Id == eventData.GuildId);
                 if (guild == null)
                 {
                     this.JoinedGuilds.Add(new DAnalyticsGuild
                     {
-                        id = eventData.guild,
-                        join_type = "invite",
-                        invites = new List<string> { eventData.invite },
-                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind)
+                        Id = eventData.GuildId,
+                        JoinType = "invite",
+                        Invites = new List<string> { eventData.InviteCode },
+                        Timestamp = eventData.Timestamp
                     });
                 }
                 else
                 {
-                    if (!guild.invites.Contains(eventData.invite))
+                    if (!guild.Invites.Contains(eventData.InviteCode))
                     {
-                        guild.invites.Add(eventData.invite);
+                        guild.Invites.Add(eventData.InviteCode);
                     }
 
                     // Handle the case where the original join didn't create a guild_join event, but did create accepted_instant_invite, and then a rejoin created a newer guild_join
                     // (i.e. use older date from accepted_instant_invite if there is one)
-                    var joinDate = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, DateTimeStyles.RoundtripKind);
-                    if (joinDate.Ticks < guild.timestamp.Ticks)
+                    var joinDate = eventData.Timestamp;
+                    if (joinDate.Ticks < guild.Timestamp.Ticks)
                     {
-                        guild.timestamp = joinDate;
+                        guild.Timestamp = joinDate;
                     }
                 }
             }
 
-            this.JoinedGuilds = this.JoinedGuilds.OrderByDescending(o => o.timestamp.Ticks).ToList();
+            this.JoinedGuilds = this.JoinedGuilds.OrderByDescending(o => o.Timestamp.Ticks).ToList();
 
             this.GuildsLoadStatus.Finished = true;
         }
@@ -229,52 +234,51 @@ namespace Data_Package_Tool.Classes
 
             var eventData = Newtonsoft.Json.JsonConvert.DeserializeObject<DAnalyticsEvent>(line);
 
-            switch (eventData.event_type)
+            switch (eventData.EventType)
             {
                 case "guild_joined":
                 case "guild_joined_pending":
-                    var idx = this.JoinedGuilds.FindIndex(x => x.id == eventData.guild_id);
+                    var idx = this.JoinedGuilds.FindIndex(x => x.Id == eventData.GuildId);
                     if (idx > -1)
                     {
                         var guild = this.JoinedGuilds[idx];
-                        if (eventData.invite_code != null && !guild.invites.Contains(eventData.invite_code))
+                        if (eventData.InviteCode != null && !guild.Invites.Contains(eventData.InviteCode))
                         {
-                            guild.invites.Add(eventData.invite_code);
+                            guild.Invites.Add(eventData.InviteCode);
                         }
 
                         // Get the earliest join date
-                        var timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind);
-                        if (timestamp < guild.timestamp)
+                        var timestamp = eventData.Timestamp;
+                        if (timestamp < guild.Timestamp)
                         {
-                            guild.timestamp = timestamp;
+                            guild.Timestamp = timestamp;
                         }
                     }
                     else
                     {
                         this.JoinedGuilds.Add(new DAnalyticsGuild
                         {
-                            id = eventData.guild_id,
-                            join_type = eventData.join_type,
-                            join_method = eventData.join_method,
-                            application_id = eventData.application_id,
-                            location = eventData.location,
-                            invites = (eventData.invite_code != null ? new List<string> { eventData.invite_code } : new List<string>()),
-                            timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
+                            Id = eventData.GuildId,
+                            JoinType = eventData.JoinType,
+                            JoinMethod = eventData.JoinMethod,
+                            ApplicationId = eventData.ApplicationId,
+                            Location = eventData.Location,
+                            Invites = (eventData.InviteCode != null ? new List<string> { eventData.InviteCode } : new List<string>()),
+                            Timestamp = eventData.Timestamp
                         });
                     }
                     break;
                 case "create_guild":
-                    Debug.WriteLine(eventData.timestamp.Replace("\"", ""));
                     this.JoinedGuilds.Add(new DAnalyticsGuild
                     {
-                        id = eventData.guild_id,
-                        join_type = "created by you",
-                        invites = new List<string>(),
-                        timestamp = DateTime.Parse(eventData.timestamp.Replace("\"", ""), null, System.Globalization.DateTimeStyles.RoundtripKind)
+                        Id = eventData.GuildId,
+                        JoinType = "created by you",
+                        Invites = new List<string>(),
+                        Timestamp = eventData.Timestamp
                     });
                     break;
                 case "accepted_instant_invite":
-                    if (eventData.guild != null) this.AcceptedInvites.Add(eventData);
+                    if (eventData.GuildId != null) this.AcceptedInvites.Add(eventData);
                     break;
             }
         }

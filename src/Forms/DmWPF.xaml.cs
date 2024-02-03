@@ -123,7 +123,7 @@ namespace Data_Package_Tool.Forms
                 Util.MsgBoxErr(Consts.MissingTokenError);
                 return null;
             }
-            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.id))
+            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.Id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return null;
@@ -160,7 +160,7 @@ namespace Data_Package_Tool.Forms
                 Util.MsgBoxErr(Consts.InvalidBotTokenError);
                 return null;
             }
-            if (Discord.ValidateToken(Discord.BotToken, Main.DataPackage.User.id))
+            if (Discord.ValidateToken(Discord.BotToken, Main.DataPackage.User.Id))
             {
                 Util.MsgBoxErr(Consts.WrongTokenType);
                 return null;
@@ -197,20 +197,20 @@ namespace Data_Package_Tool.Forms
 
             if (recipient != null)
             {
-                DataContext.UserId = recipient.id;
-                DataContext.Username = recipient.GetTag();
-                if (recipient.avatar != null)
+                DataContext.UserId = recipient.Id;
+                DataContext.Username = recipient.Tag;
+                if (recipient.AvatarHash != null)
                 {
                     var avatar = new BitmapImage();
                     avatar.BeginInit();
-                    avatar.UriSource = new Uri(recipient.GetAvatarURL());
+                    avatar.UriSource = new Uri(recipient.AvatarURL);
                     avatar.CacheOption = BitmapCacheOption.OnLoad;
                     avatar.EndInit();
 
                     DataContext.Avatar = avatar;
                 } else
                 {
-                    DataContext.Avatar = new DUser() { id = recipient.id, discriminator = "0" }.GetDefaultAvatarBitmapImage();
+                    DataContext.Avatar = new DUser() { Id = recipient.Id, Discriminator = "0" }.GetDefaultAvatarBitmapImage();
                 }
                 DataContext.NeedsFetching = false;
 
@@ -218,24 +218,24 @@ namespace Data_Package_Tool.Forms
                 if(this.UnknownId)
                 {
                     // Check if there's a note
-                    DataContext.Note = Main.DataPackage.User.notes.ContainsKey(recipient.id) ? Main.DataPackage.User.notes[recipient.id] : "";
+                    DataContext.Note = Main.DataPackage.User.Notes.ContainsKey(recipient.Id) ? Main.DataPackage.User.Notes[recipient.Id] : "";
 
                     // Perform the duplicate channels check
-                    var dmChannels = Main.DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
+                    var dmChannels = Main.DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.Id)).ToList();
                     foreach (var dmChannel in dmChannels)
                     {
-                        if (dmChannel.id == this.ChannelId) continue; // Don't count self as a duplicate
+                        if (dmChannel.Id == this.ChannelId) continue; // Don't count self as a duplicate
 
                         string recipientId = dmChannel.GetOtherDMRecipient(Main.DataPackage.User);
                         if(recipientId == this.UserId)
                         {
-                            dmChannel.has_duplicates = true;
-                            Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates = true;
+                            dmChannel.HasDuplicates = true;
+                            Main.DataPackage.ChannelsMap[this.ChannelId].HasDuplicates = true;
                         }
                     }
 
                     // Save the user id in settings for reuse
-                    Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] {this.ChannelId, recipient.id});
+                    Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] {this.ChannelId, recipient.Id});
                     Properties.Settings.Default.Save();
 
                     DataContext.UnknownId = false;
@@ -251,7 +251,7 @@ namespace Data_Package_Tool.Forms
                 return;
             }
 
-            if (Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates)
+            if (Main.DataPackage.ChannelsMap[this.ChannelId].HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
@@ -285,7 +285,7 @@ namespace Data_Package_Tool.Forms
 
         private void viewUserMi_Click(object sender, RoutedEventArgs e)
         {
-            if (Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates)
+            if (Main.DataPackage.ChannelsMap[this.ChannelId].HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
