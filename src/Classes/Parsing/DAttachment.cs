@@ -6,35 +6,34 @@ namespace Data_Package_Tool.Classes.Parsing
 {
     public class DAttachment
     {
-        public static List<string> ImageExtensions = new List<string>{ "png", "gif", "jpg", "jpeg", "apng", "jfif", "webp" };
-        public static List<string> VideoExtensions = new List<string> { "mp4", "webm", "avi", "mov" };
+        public static readonly List<string> ImageExtensions = new() { "png", "gif", "jpg", "jpeg", "apng", "jfif", "webp" };
+        public static readonly List<string> VideoExtensions = new() { "mp4", "webm", "avi", "mov" };
 
-        public string url;
-        public DMessage message;
+        public string Url { get; private set; }
+        public DMessage Message { get; private set; }
 
-        public string id;
-        public string filename;
-        public string extension;
+        public string Id { get; private set; }
+        public string FileName { get; private set; }
+        public string Extension { get; private set; }
+
+        public bool IsImage
+        {
+            get => ImageExtensions.Contains(this.Extension);
+        }
+        public bool IsVideo
+        {
+            get => VideoExtensions.Contains(this.Extension);
+        }
 
         public DAttachment(string url, DMessage message)
         {
-            this.url = url;
-            this.message = message;
+            this.Url = url;
+            this.Message = message;
 
             var match = Regex.Match(url, @"attachments\/\d+\/(\d+)\/([\w.-]+\.(\w+))");
-            this.id = match.Groups[1].Value;
-            this.filename = match.Groups[2].Value;
-            this.extension = match.Groups[3].Value;
-        }
-
-        public bool IsImage()
-        {
-            return ImageExtensions.Contains(this.extension);
-        }
-
-        public bool IsVideo()
-        {
-            return VideoExtensions.Contains(this.extension);
+            this.Id = match.Groups[1].Value;
+            this.FileName = match.Groups[2].Value;
+            this.Extension = match.Groups[3].Value;
         }
     }
 }

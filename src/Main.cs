@@ -414,9 +414,9 @@ namespace Data_Package_Tool
                 {
                     if (x.Attachments.Count == 0) return false;
 
-                    if (Properties.Settings.Default.SearchHasImage && x.Attachments.Find(y => y.IsImage()) != null) return true;
-                    if (Properties.Settings.Default.SearchHasVideo && x.Attachments.Find(y => y.IsVideo()) != null) return true;
-                    if (Properties.Settings.Default.SearchHasFile && x.Attachments.Find(y => !y.IsImage() && !y.IsVideo()) != null) return true;
+                    if (Properties.Settings.Default.SearchHasImage && x.Attachments.Find(y => y.IsImage) != null) return true;
+                    if (Properties.Settings.Default.SearchHasVideo && x.Attachments.Find(y => y.IsVideo) != null) return true;
+                    if (Properties.Settings.Default.SearchHasFile && x.Attachments.Find(y => !y.IsImage && !y.IsVideo) != null) return true;
 
                     return false;
                 });

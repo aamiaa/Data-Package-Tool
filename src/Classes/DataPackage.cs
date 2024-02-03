@@ -39,7 +39,7 @@ namespace Data_Package_Tool.Classes
 
         public bool UsesUnsignedCDNLinks
         {
-            get => Attachments.Count > 0 && !Attachments[0].url.Contains("?ex=");
+            get => Attachments.Count > 0 && !Attachments[0].Url.Contains("?ex=");
         }
 
         public LoadStatus LoadStatus = new LoadStatus
@@ -121,7 +121,7 @@ namespace Data_Package_Tool.Classes
                                 
                                 foreach(var attachment in msg.Attachments)
                                 {
-                                    if(attachment.IsImage())
+                                    if(attachment.IsImage)
                                     {
                                         this.Attachments.Add(attachment);
                                     }
@@ -157,7 +157,7 @@ namespace Data_Package_Tool.Classes
                 this.User.avatar_image = avImg;
             });
 
-            this.Attachments = this.Attachments.OrderByDescending(o => Int64.Parse(o.message.Id)).ToList();
+            this.Attachments = this.Attachments.OrderByDescending(o => Int64.Parse(o.Message.Id)).ToList();
             this.LoadStatus.Status = $"Finished! Parsed {this.TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {this.CreationTime.ToShortDateString()}";
 
             this.LoadStatus.Finished = true;

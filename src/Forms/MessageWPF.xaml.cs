@@ -354,7 +354,7 @@ namespace Data_Package_Tool
                 }
                 firstAttachment = false;
 
-                if(attachment.IsImage())
+                if(attachment.IsImage)
                 {
                     var img = new Image();
                     img.MaxWidth = 400;
@@ -368,15 +368,15 @@ namespace Data_Package_Tool
                         {
                             Process.Start(new ProcessStartInfo
                             {
-                                FileName = attachment.url,
+                                FileName = attachment.Url,
                                 UseShellExecute = true
                             });
                         }
                     };
 
-                    if (Discord.AttachmentsCache.ContainsKey(attachment.id))
+                    if (Discord.AttachmentsCache.ContainsKey(attachment.Id))
                     {
-                        img.Source = Discord.AttachmentsCache[attachment.id];
+                        img.Source = Discord.AttachmentsCache[attachment.Id];
                     }
                     else
                     {
@@ -386,7 +386,7 @@ namespace Data_Package_Tool
                             try
                             {
                                 using (var httpClient = new HttpClient())
-                                using (var response = await httpClient.GetAsync(attachment.url))
+                                using (var response = await httpClient.GetAsync(attachment.Url))
                                 {
                                     if (response.IsSuccessStatusCode)
                                     {
@@ -405,7 +405,7 @@ namespace Data_Package_Tool
 
                                             await Dispatcher.BeginInvoke(new Action(() =>
                                             {
-                                                Discord.AttachmentsCache[attachment.id] = bitmap;
+                                                Discord.AttachmentsCache[attachment.Id] = bitmap;
 
                                                 ImageBehavior.SetAnimatedSource(img, null);
                                                 img.Source = bitmap;
@@ -427,8 +427,8 @@ namespace Data_Package_Tool
                 {
                     var file = new FileAttachmentWPF
                     {
-                        FileName = attachment.filename,
-                        Url = attachment.url
+                        FileName = attachment.FileName,
+                        Url = attachment.Url
                     };
 
                     var inlineContainer = new InlineUIContainer(file)
