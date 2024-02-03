@@ -2,19 +2,25 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
+using Newtonsoft.Json;
 
 namespace Data_Package_Tool.Classes.Parsing
 {
     public class DChannel
     {
-        public string id;
-        public int type;
-        public string name;
-        public DPartialGuild guild;
-        public List<DMessage> messages = new List<DMessage>();
-        public string[] recipients;
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("type")]
+        public int Type { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("guild")]
+        public DPartialGuild Guild { get; set; }
+        [JsonProperty("recipients")]
+        public List<string> RecipientIds { get; set; }
 
-        public bool has_duplicates;
+        public List<DMessage> Messages { get; } = new List<DMessage>();
+        public bool HasDuplicates { get; set; }
 
         public void LoadMessages(string csv)
         {
@@ -48,32 +54,27 @@ namespace Data_Package_Tool.Classes.Parsing
 
                             var attachment = new DAttachment(url, msg);
                             msg.attachments.Add(attachment);
-
-                            if (attachment.IsImage())
-                            {
-                                Main.DataPackage.Attachments.Add(attachment);
-                            }
                         }
                     }
 
-                    messages.Add(msg);
+                    this.Messages.Add(msg);
                 }
             }
         }
 
         public bool IsDM()
         {
-            return this.type == 1;
+            return this.Type == 1;
         }
 
         public bool IsGroupDM()
         {
-            return this.type == 3;
+            return this.Type == 3;
         }
 
         public bool IsVoice()
         {
-            return this.type == 2 || this.type == 13;
+            return this.Type == 2 || this.Type == 13;
         }
 
         public string GetOtherDMRecipient(DUser user)
@@ -83,7 +84,7 @@ namespace Data_Package_Tool.Classes.Parsing
                 throw new Exception("GetDMRecipient can only be used on dm channels");
             }
 
-            foreach(string id in recipients)
+            foreach(string id in RecipientIds)
             {
                 if(id != user.id)
                 {

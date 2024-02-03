@@ -149,7 +149,7 @@ namespace Data_Package_Tool.Forms
                 // Get saved id, if exists
                 if (isDeletedUser)
                 {
-                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(channel.id);
+                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(channel.Id);
                     if(idx != -1)
                     {
                         recipientId = Properties.Settings.Default.ResolvedDeletedUsers[idx + 1];
@@ -160,11 +160,11 @@ namespace Data_Package_Tool.Forms
                 DirectMessages.Add(new DmsListEntry
                 { 
                     UserId = isDeletedUser ? "???" : recipientId,
-                    ChannelId = channel.id,
+                    ChannelId = channel.Id,
                     Username = isDeletedUser ? "(Deleted User)" : relationship != null ? relationship.user.GetTag() : "(Unknown User)",
                     Avatar = avatar,
-                    Date = Discord.SnowflakeToTimestap(channel.id).ToShortDateString(),
-                    MessagesCount = channel.messages.Count,
+                    Date = Discord.SnowflakeToTimestap(channel.Id).ToShortDateString(),
+                    MessagesCount = channel.Messages.Count,
                     Note = user.notes.ContainsKey(recipientId) ? user.notes[recipientId] : "",
                     NeedsFetching = relationship == null,
                     UnknownId = isDeletedUser

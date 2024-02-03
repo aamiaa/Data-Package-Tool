@@ -221,16 +221,16 @@ namespace Data_Package_Tool.Forms
                     DataContext.Note = Main.DataPackage.User.notes.ContainsKey(recipient.id) ? Main.DataPackage.User.notes[recipient.id] : "";
 
                     // Perform the duplicate channels check
-                    var dmChannels = Main.DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
+                    var dmChannels = Main.DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.Id)).ToList();
                     foreach (var dmChannel in dmChannels)
                     {
-                        if (dmChannel.id == this.ChannelId) continue; // Don't count self as a duplicate
+                        if (dmChannel.Id == this.ChannelId) continue; // Don't count self as a duplicate
 
                         string recipientId = dmChannel.GetOtherDMRecipient(Main.DataPackage.User);
                         if(recipientId == this.UserId)
                         {
-                            dmChannel.has_duplicates = true;
-                            Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates = true;
+                            dmChannel.HasDuplicates = true;
+                            Main.DataPackage.ChannelsMap[this.ChannelId].HasDuplicates = true;
                         }
                     }
 
@@ -251,7 +251,7 @@ namespace Data_Package_Tool.Forms
                 return;
             }
 
-            if (Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates)
+            if (Main.DataPackage.ChannelsMap[this.ChannelId].HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
@@ -285,7 +285,7 @@ namespace Data_Package_Tool.Forms
 
         private void viewUserMi_Click(object sender, RoutedEventArgs e)
         {
-            if (Main.DataPackage.ChannelsMap[this.ChannelId].has_duplicates)
+            if (Main.DataPackage.ChannelsMap[this.ChannelId].HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }

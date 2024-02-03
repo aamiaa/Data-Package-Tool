@@ -16,9 +16,9 @@ namespace Data_Package_Tool.Classes.Parsing
         public string GetMessageLink()
         {
             string guild = "";
-            if (this.channel.guild != null)
+            if (this.channel.Guild != null)
             {
-                guild = this.channel.guild.id;
+                guild = this.channel.Guild.id;
             }
             else if (this.channel.IsDM() || this.channel.IsGroupDM())
             {
@@ -29,7 +29,7 @@ namespace Data_Package_Tool.Classes.Parsing
                 throw new Exception($"Unable to find the server this message was sent in. This usually happens if you've left the server.");
             }
 
-            return $"{guild}/{this.channel.id}/{this.id}";
+            return $"{guild}/{this.channel.Id}/{this.id}";
         }
     }
 }

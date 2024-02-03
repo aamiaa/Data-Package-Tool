@@ -150,7 +150,7 @@ namespace Data_Package_Tool.Classes
 
             await DHeaders.Init();
 
-            var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{message.channel.id}/messages/{message.id}", new Dictionary<string, string>
+            var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{message.channel.Id}/messages/{message.id}", new Dictionary<string, string>
             {
                 {"Authorization", UserToken}
             });

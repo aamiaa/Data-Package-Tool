@@ -114,7 +114,7 @@ namespace Data_Package_Tool
 
         private void LoadDMChannels()
         {
-            var dmChannels = DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.id)).ToList();
+            var dmChannels = DataPackage.Channels.Where(x => x.IsDM()).OrderByDescending(o => Int64.Parse(o.Id)).ToList();
             var duplicateChannelsMap = new Dictionary<string, DChannel>();
 
             tabControl1.TabPages[4].Text = $"Direct Messages - {dmChannels.Count}";
@@ -126,8 +126,8 @@ namespace Data_Package_Tool
 
                 if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow
                 {
-                    duplicateChannelsMap[recipientId].has_duplicates = true;
-                    dmChannel.has_duplicates = true;
+                    duplicateChannelsMap[recipientId].HasDuplicates = true;
+                    dmChannel.HasDuplicates = true;
                 }
                 duplicateChannelsMap[recipientId] = dmChannel;
             }
@@ -323,12 +323,12 @@ namespace Data_Package_Tool
                 if (!channel.IsDM() && !channel.IsGroupDM() && Properties.Settings.Default.SearchExcludeGuilds) continue;
                 if (Properties.Settings.Default.SearchExcludeIDs != null)
                 {
-                    if (Properties.Settings.Default.SearchExcludeIDs.Contains(channel.id)) continue;
-                    if (channel.guild != null && channel.guild.id != null && Properties.Settings.Default.SearchExcludeIDs.Contains(channel.guild.id)) continue;
+                    if (Properties.Settings.Default.SearchExcludeIDs.Contains(channel.Id)) continue;
+                    if (channel.Guild != null && channel.Guild.id != null && Properties.Settings.Default.SearchExcludeIDs.Contains(channel.Guild.id)) continue;
                 }
                 if (Properties.Settings.Default.SearchWhitelistIDs != null && Properties.Settings.Default.SearchWhitelistIDs.Count > 0)
                 {
-                    if (!Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.id) && !(channel.guild != null && channel.guild.id != null && Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.guild.id))) continue;
+                    if (!Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.Id) && !(channel.Guild != null && channel.Guild.id != null && Properties.Settings.Default.SearchWhitelistIDs.Contains(channel.Guild.id))) continue;
                 }
 
                 // Search modes
@@ -440,7 +440,7 @@ namespace Data_Package_Tool
         {
             int count = 0;
 
-            foreach (var msg in FilterMessages(channel.messages))
+            foreach (var msg in FilterMessages(channel.Messages))
             {
                 LastSearchResults.Add(msg);
                 count++;
@@ -453,7 +453,7 @@ namespace Data_Package_Tool
         {
             int count = 0;
 
-            foreach (var msg in FilterMessages(channel.messages))
+            foreach (var msg in FilterMessages(channel.Messages))
             {
 
                 if (msg.content.IndexOf(searchText, stringComp) >= 0)
@@ -470,7 +470,7 @@ namespace Data_Package_Tool
         {
             int count = 0;
 
-            foreach (var msg in FilterMessages(channel.messages))
+            foreach (var msg in FilterMessages(channel.Messages))
             {
 
                 if (compiledRegex.IsMatch(msg.content))
@@ -667,7 +667,7 @@ namespace Data_Package_Tool
 
             try
             {
-                var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{msg.channel.id}/messages/{msg.id}", new Dictionary<string, string>
+                var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{msg.channel.Id}/messages/{msg.id}", new Dictionary<string, string>
                 {
                     {"Authorization", Discord.UserToken}
                 });

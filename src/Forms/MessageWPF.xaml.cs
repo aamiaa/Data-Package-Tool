@@ -70,15 +70,15 @@ namespace Data_Package_Tool
         {
             var channel = this.Message.channel;
             string metadata = "Channel: ";
-            if (channel.name != null)
+            if (channel.Name != null)
             {
                 if (channel.IsDM() || channel.IsGroupDM() || channel.IsVoice())
                 {
-                    metadata += channel.name;
+                    metadata += channel.Name;
                 }
                 else
                 {
-                    metadata += $"#{channel.name}";
+                    metadata += $"#{channel.Name}";
                 }
             }
             else if (channel.IsDM())
@@ -95,7 +95,7 @@ namespace Data_Package_Tool
                 else if (this.Recipient.IsDeletedUser())
                 {
                     fetchInfoMi.Visibility = Visibility.Visible;
-                    metadata += $"DMs with Unknown Deleted User (channel {channel.id})";
+                    metadata += $"DMs with Unknown Deleted User (channel {channel.Id})";
                 }
                 else
                 {
@@ -104,22 +104,22 @@ namespace Data_Package_Tool
             }
             else
             {
-                metadata += $"unknown ({channel.id}, {(channel.IsGroupDM() ? "Group DM" : channel.IsDM() ? "DM" : "Text Channel")})";
+                metadata += $"unknown ({channel.Id}, {(channel.IsGroupDM() ? "Group DM" : channel.IsDM() ? "DM" : "Text Channel")})";
             }
 
-            if (channel.guild != null)
+            if (channel.Guild != null)
             {
                 copyGuildIdMi.IsEnabled = true;
                 viewInGuildsTab.IsEnabled = true;
 
                 metadata += ", Guild: ";
-                if (channel.guild.name != null)
+                if (channel.Guild.name != null)
                 {
-                    metadata += channel.guild.name;
+                    metadata += channel.Guild.name;
                 }
                 else
                 {
-                    metadata += $"unknown ({channel.guild.id})";
+                    metadata += $"unknown ({channel.Guild.id})";
                 }
             }
 
@@ -153,7 +153,7 @@ namespace Data_Package_Tool
 
                 if(this.Recipient.IsDeletedUser())
                 {
-                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(message.channel.id);
+                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(message.channel.Id);
                     if(idx != -1)
                     {
                         this.Recipient.id = Properties.Settings.Default.ResolvedDeletedUsers[idx + 1];
@@ -442,7 +442,7 @@ namespace Data_Package_Tool
 
         private void goToMessageMi_Click(object sender, RoutedEventArgs e)
         {
-            if(this.Message.channel.has_duplicates)
+            if(this.Message.channel.HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
@@ -487,7 +487,7 @@ namespace Data_Package_Tool
                 Util.MsgBoxErr(Consts.UnknownDeletedUserId);
                 return;
             }
-            if (this.Message.channel.has_duplicates)
+            if (this.Message.channel.HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
@@ -509,7 +509,7 @@ namespace Data_Package_Tool
 
         private void copyChannelIdMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(this.Message.channel.id);
+            Clipboard.SetText(this.Message.channel.Id);
         }
 
         private void copyMetadataMi_Click(object sender, RoutedEventArgs e)
@@ -530,7 +530,7 @@ namespace Data_Package_Tool
 
         private void copyGuildIdMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(this.Message.channel.guild.id);
+            Clipboard.SetText(this.Message.channel.Guild.id);
         }
 
         private async void openDMMi_Click(object sender, RoutedEventArgs e)
@@ -540,13 +540,13 @@ namespace Data_Package_Tool
                 Util.MsgBoxErr(Consts.UnknownDeletedUserId);
                 return;
             }
-            if (this.Message.channel.has_duplicates)
+            if (this.Message.channel.HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
             string userId = this.Recipient.id;
-            if (await Discord.OpenDMFlowAsync(userId, this.Message.channel.id))
+            if (await Discord.OpenDMFlowAsync(userId, this.Message.channel.Id))
             {
                 goToMessageMi_Click(sender, e);
             }
@@ -569,7 +569,7 @@ namespace Data_Package_Tool
         private void viewInGuildsTab_Click(object sender, RoutedEventArgs e)
         {
             // TODO: some non-ugly way of doing this
-            ((Main)Main.ActiveForm).JumpToGuild(this.Message.channel.guild.id);
+            ((Main)Main.ActiveForm).JumpToGuild(this.Message.channel.Guild.id);
         }
 
         private async void fetchInfoMi_Click(object sender, RoutedEventArgs e)
@@ -586,7 +586,7 @@ namespace Data_Package_Tool
             }
             await DHeaders.Init();
 
-            var res = await DRequest.RequestAsync(HttpMethod.Get, $"https://discord.com/api/v9/channels/{this.Message.channel.id}", new Dictionary<string, string>
+            var res = await DRequest.RequestAsync(HttpMethod.Get, $"https://discord.com/api/v9/channels/{this.Message.channel.Id}", new Dictionary<string, string>
             {
                 {"Authorization", Discord.UserToken}
             });
@@ -597,7 +597,7 @@ namespace Data_Package_Tool
                 this.Recipient = recipient;
                 UpdateMetadata();
 
-                Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] { this.Message.channel.id, recipient.id });
+                Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] { this.Message.channel.Id, recipient.id });
                 Properties.Settings.Default.Save();
 
                 // TODO: also change data in the appropriate dmlist entry
