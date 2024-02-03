@@ -87,19 +87,19 @@ namespace Data_Package_Tool
                 openDMMi.IsEnabled = true;
                 copyUserIdMi.IsEnabled = true;
 
-                if (this.Recipient.username != null)
+                if (this.Recipient.Username != null)
                 {
-                    metadata += $"DMs with {this.Recipient.GetTag()}";
+                    metadata += $"DMs with {this.Recipient.Tag}";
                 }
 
-                else if (this.Recipient.IsDeletedUser())
+                else if (this.Recipient.IsDeletedUser)
                 {
                     fetchInfoMi.Visibility = Visibility.Visible;
                     metadata += $"DMs with Unknown Deleted User (channel {channel.Id})";
                 }
                 else
                 {
-                    metadata += $"DMs with {this.Recipient.id}";
+                    metadata += $"DMs with {this.Recipient.Id}";
                 }
             }
             else
@@ -138,7 +138,7 @@ namespace Data_Package_Tool
             if (message.Channel.IsDM())
             {
                 string recipientId = message.Channel.GetOtherDMRecipient(Main.DataPackage.User);
-                DRelationship relationship = Array.Find(Main.DataPackage.User.relationships, x => x.id == recipientId);
+                DRelationship relationship = Main.DataPackage.User.Relationships.Find(x => x.id == recipientId);
                 if (relationship != null)
                 {
                     this.Recipient = relationship.user;
@@ -147,25 +147,25 @@ namespace Data_Package_Tool
                 {
                     this.Recipient = new DUser
                     {
-                        id = recipientId
+                        Id = recipientId
                     };
                 }
 
-                if(this.Recipient.IsDeletedUser())
+                if(this.Recipient.IsDeletedUser)
                 {
                     int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(message.Channel.Id);
                     if(idx != -1)
                     {
-                        this.Recipient.id = Properties.Settings.Default.ResolvedDeletedUsers[idx + 1];
+                        this.Recipient.Id = Properties.Settings.Default.ResolvedDeletedUsers[idx + 1];
                     }
                 }
             }
 
             // Set username
-            usernameLb.Content = Main.DataPackage.User.global_name ?? Main.DataPackage.User.GetTag();
+            usernameLb.Content = Main.DataPackage.User.DisplayName ?? Main.DataPackage.User.Tag;
 
             // Set avatar
-            avatarImg.ImageSource = Main.DataPackage.User.avatar_image;
+            avatarImg.ImageSource = Main.DataPackage.User.AvatarImage;
 
             // Set metadata
             UpdateMetadata();
@@ -482,7 +482,7 @@ namespace Data_Package_Tool
 
         private void viewUserMi_Click(object sender, RoutedEventArgs e)
         {
-            if(this.Recipient.IsDeletedUser())
+            if(this.Recipient.IsDeletedUser)
             {
                 Util.MsgBoxErr(Consts.UnknownDeletedUserId);
                 return;
@@ -494,7 +494,7 @@ namespace Data_Package_Tool
 
             try
             {
-                Discord.LaunchDiscordProtocol($"users/{this.Recipient.id}");
+                Discord.LaunchDiscordProtocol($"users/{this.Recipient.Id}");
             }
             catch (Exception ex)
             {
@@ -519,13 +519,13 @@ namespace Data_Package_Tool
 
         private void copyUserIdMi_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Recipient.IsDeletedUser())
+            if (this.Recipient.IsDeletedUser)
             {
                 Util.MsgBoxErr(Consts.UnknownDeletedUserId);
                 return;
             }
 
-            Clipboard.SetText(this.Recipient.id);
+            Clipboard.SetText(this.Recipient.Id);
         }
 
         private void copyGuildIdMi_Click(object sender, RoutedEventArgs e)
@@ -535,7 +535,7 @@ namespace Data_Package_Tool
 
         private async void openDMMi_Click(object sender, RoutedEventArgs e)
         {
-            if (this.Recipient.IsDeletedUser())
+            if (this.Recipient.IsDeletedUser)
             {
                 Util.MsgBoxErr(Consts.UnknownDeletedUserId);
                 return;
@@ -545,7 +545,7 @@ namespace Data_Package_Tool
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
-            string userId = this.Recipient.id;
+            string userId = this.Recipient.Id;
             if (await Discord.OpenDMFlowAsync(userId, this.Message.Channel.Id))
             {
                 goToMessageMi_Click(sender, e);
@@ -579,7 +579,7 @@ namespace Data_Package_Tool
                 Util.MsgBoxErr(Consts.MissingTokenError);
                 return;
             }
-            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.id))
+            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.Id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return;
@@ -597,7 +597,7 @@ namespace Data_Package_Tool
                 this.Recipient = recipient;
                 UpdateMetadata();
 
-                Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] { this.Message.Channel.Id, recipient.id });
+                Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] { this.Message.Channel.Id, recipient.Id });
                 Properties.Settings.Default.Save();
 
                 // TODO: also change data in the appropriate dmlist entry

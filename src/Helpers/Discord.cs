@@ -142,7 +142,7 @@ namespace Data_Package_Tool.Classes
                 Util.MsgBoxErr(Consts.MissingTokenError);
                 return false;
             }
-            if (!ValidateToken(UserToken, Main.DataPackage.User.id))
+            if (!ValidateToken(UserToken, Main.DataPackage.User.Id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return false;
@@ -198,7 +198,7 @@ namespace Data_Package_Tool.Classes
                 Util.MsgBoxErr(Consts.MissingTokenError);
                 return false;
             }
-            if (!ValidateToken(UserToken, Main.DataPackage.User.id))
+            if (!ValidateToken(UserToken, Main.DataPackage.User.Id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return false;

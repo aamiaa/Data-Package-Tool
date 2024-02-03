@@ -25,7 +25,7 @@ namespace Data_Package_Tool
                 Util.MsgBoxErr(Consts.MissingTokenError);
                 return;
             }
-            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.id))
+            if (!Discord.ValidateToken(Discord.UserToken, Main.DataPackage.User.Id))
             {
                 Util.MsgBoxErr(Consts.InvalidTokenError);
                 return;

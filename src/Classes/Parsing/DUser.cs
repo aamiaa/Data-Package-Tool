@@ -1,4 +1,5 @@
 ﻿using Data_Package_Tool.Helpers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,66 +9,66 @@ namespace Data_Package_Tool.Classes.Parsing
 {
     public class DUser
     {
-        public string id;
-        public string username;
-        public string global_name;
-        public string discriminator;
-        public string avatar_hash;
-        public string avatar; // relationship user field
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("username")]
+        public string Username { get; set; }
+        [JsonProperty("global_name")]
+        public string DisplayName { get; set; }
+        [JsonProperty("discriminator")]
+        public string Discriminator { get; set; }
+        [JsonProperty("avatar_hash")]
+        public string AvatarHash { get; set; }
+        [JsonProperty("avatar")]
+        private string AvatarHash2 { set => AvatarHash = value; } // relationship user field
+        [JsonProperty("relationships")]
+        public List<DRelationship> Relationships { get; set; }
+        [JsonProperty("notes")]
+        public Dictionary<string, string> Notes { get; set; }
 
-        public DRelationship[] relationships;
-        public Dictionary<string, string> notes;
-
-        public BitmapImage avatar_image;
-
+        public BitmapImage AvatarImage { get; set; }
+        public bool IsPomelo
+        {
+            get => this.Discriminator == "0" || this.Discriminator == "0000";
+        }
+        public bool IsDeletedUser
+        {
+            get => this.Id == Consts.DeletedUserId;
+        }
+        public string Tag
+        {
+            get => this.IsPomelo ? this.Username : $"{this.Username}#{this.Discriminator}";
+        }
         private int DefaultAvatarId
         {
             get
             {
-                if(this.IsPomelo())
+                if(this.IsPomelo)
                 {
-                    return (int)((Int64.Parse(this.id) >> 22) % 6);
+                    return (int)((Int64.Parse(this.Id) >> 22) % 6);
                 } else
                 {
-                    return Int32.Parse(this.discriminator) % 5;
+                    return Int32.Parse(this.Discriminator) % 5;
                 }
             }
         }
-
-        public bool IsPomelo()
+        public string AvatarURL
         {
-            return this.discriminator == "0" || this.discriminator == "0000";
-        }
-
-        public bool IsDeletedUser()
-        {
-            return this.id == Consts.DeletedUserId;
-        }
-
-        public string GetTag()
-        {
-            if(this.IsPomelo())
+            get
             {
-                return this.username;
-            }
+                string avatarHash = this.AvatarHash;
+                if (avatarHash != null)
+                {
+                    return $"https://cdn.discordapp.com/avatars/{this.Id}/{avatarHash}.png?size=64";
+                }
 
-            return $"{this.username}#{this.discriminator}";
-        }
+                if (this.IsPomelo)
+                {
+                    return $"https://cdn.discordapp.com/embed/avatars/{this.DefaultAvatarId}.png?size=64";
+                }
 
-        public string GetAvatarURL()
-        {
-            string avatarHash = this.avatar_hash ?? this.avatar;
-            if (avatarHash != null)
-            {
-                return $"https://cdn.discordapp.com/avatars/{id}/{avatarHash}.png?size=64";
-            }
-
-            if (IsPomelo())
-            {
                 return $"https://cdn.discordapp.com/embed/avatars/{this.DefaultAvatarId}.png?size=64";
             }
-
-            return $"https://cdn.discordapp.com/embed/avatars/{this.DefaultAvatarId}.png?size=64";
         }
 
         public Bitmap GetDefaultAvatarBitmap()

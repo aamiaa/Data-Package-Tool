@@ -86,7 +86,7 @@ namespace Data_Package_Tool.Classes.Parsing
 
             foreach(string id in RecipientIds)
             {
-                if(id != user.id)
+                if(id != user.Id)
                 {
                     return id;
                 }

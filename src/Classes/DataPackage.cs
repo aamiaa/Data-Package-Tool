@@ -87,7 +87,7 @@ namespace Data_Package_Tool.Classes
                     this.Guilds = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json);
                 }
 
-                if (User.avatar_hash == null)
+                if (User.AvatarHash == null)
                 {
                     this.User.GetDefaultAvatarBitmap().Save(this.Avatar, System.Drawing.Imaging.ImageFormat.Png);
                 }
@@ -154,7 +154,7 @@ namespace Data_Package_Tool.Classes
                 avImg.EndInit();
                 avImg.Freeze();
 
-                this.User.avatar_image = avImg;
+                this.User.AvatarImage = avImg;
             });
 
             this.Attachments = this.Attachments.OrderByDescending(o => Int64.Parse(o.Message.Id)).ToList();
