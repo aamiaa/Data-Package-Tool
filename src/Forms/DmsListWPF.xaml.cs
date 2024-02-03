@@ -129,14 +129,14 @@ namespace Data_Package_Tool.Forms
             foreach (var channel in channels)
             {
                 var recipientId = channel.GetOtherDMRecipient(user);
-                var relationship = user.Relationships.Find(x => x.id == recipientId);
+                var relationship = user.Relationships.Find(x => x.Id == recipientId);
 
                 BitmapImage avatar;
-                if(relationship != null && relationship.user.AvatarHash != null)
+                if(relationship != null && relationship.User.AvatarHash != null)
                 {
                     avatar = new BitmapImage();
                     avatar.BeginInit();
-                    avatar.UriSource = new Uri(relationship.user.AvatarURL);
+                    avatar.UriSource = new Uri(relationship.User.AvatarURL);
                     avatar.CacheOption = BitmapCacheOption.OnLoad;
                     avatar.EndInit();
                 } else
@@ -161,7 +161,7 @@ namespace Data_Package_Tool.Forms
                 { 
                     UserId = isDeletedUser ? "???" : recipientId,
                     ChannelId = channel.Id,
-                    Username = isDeletedUser ? "(Deleted User)" : relationship != null ? relationship.user.Tag : "(Unknown User)",
+                    Username = isDeletedUser ? "(Deleted User)" : relationship != null ? relationship.User.Tag : "(Unknown User)",
                     Avatar = avatar,
                     Date = Discord.SnowflakeToTimestap(channel.Id).ToShortDateString(),
                     MessagesCount = channel.Messages.Count,

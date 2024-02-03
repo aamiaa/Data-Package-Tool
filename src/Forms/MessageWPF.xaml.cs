@@ -138,10 +138,10 @@ namespace Data_Package_Tool
             if (message.Channel.IsDM())
             {
                 string recipientId = message.Channel.GetOtherDMRecipient(Main.DataPackage.User);
-                DRelationship relationship = Main.DataPackage.User.Relationships.Find(x => x.id == recipientId);
+                DRelationship relationship = Main.DataPackage.User.Relationships.Find(x => x.Id == recipientId);
                 if (relationship != null)
                 {
-                    this.Recipient = relationship.user;
+                    this.Recipient = relationship.User;
                 }
                 else
                 {
