@@ -201,7 +201,7 @@ namespace Data_Package_Tool
                 {
                     foreach (var messageId in Properties.Settings.Default.DeletedMessageIDs)
                     {
-                        if (DataPackage.MessagesMap.ContainsKey(messageId)) DataPackage.MessagesMap[messageId].deleted = true;
+                        if (DataPackage.MessagesMap.ContainsKey(messageId)) DataPackage.MessagesMap[messageId].IsDeleted = true;
                     }
 
                     LoadDMChannels();
@@ -353,11 +353,11 @@ namespace Data_Package_Tool
 
             if (Properties.Settings.Default.SortMode == "asc")
             {
-                LastSearchResults = LastSearchResults.OrderBy(o => Int64.Parse(o.id)).ToList();
+                LastSearchResults = LastSearchResults.OrderBy(o => Int64.Parse(o.Id)).ToList();
             }
             else
             {
-                LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.id)).ToList();
+                LastSearchResults = LastSearchResults.OrderByDescending(o => Int64.Parse(o.Id)).ToList();
             }
         }
 
@@ -412,11 +412,11 @@ namespace Data_Package_Tool
             {
                 m = m.Where(x =>
                 {
-                    if (x.attachments.Count == 0) return false;
+                    if (x.Attachments.Count == 0) return false;
 
-                    if (Properties.Settings.Default.SearchHasImage && x.attachments.Find(y => y.IsImage()) != null) return true;
-                    if (Properties.Settings.Default.SearchHasVideo && x.attachments.Find(y => y.IsVideo()) != null) return true;
-                    if (Properties.Settings.Default.SearchHasFile && x.attachments.Find(y => !y.IsImage() && !y.IsVideo()) != null) return true;
+                    if (Properties.Settings.Default.SearchHasImage && x.Attachments.Find(y => y.IsImage()) != null) return true;
+                    if (Properties.Settings.Default.SearchHasVideo && x.Attachments.Find(y => y.IsVideo()) != null) return true;
+                    if (Properties.Settings.Default.SearchHasFile && x.Attachments.Find(y => !y.IsImage() && !y.IsVideo()) != null) return true;
 
                     return false;
                 });
@@ -425,12 +425,12 @@ namespace Data_Package_Tool
 
             if (Properties.Settings.Default.SearchBeforeEnabled)
             {
-                m = m.Where(x => x.timestamp < Properties.Settings.Default.SearchBeforeDate);
+                m = m.Where(x => x.Timestamp < Properties.Settings.Default.SearchBeforeDate);
             }
 
             if (Properties.Settings.Default.SearchAfterEnabled)
             {
-                m = m.Where(x => x.timestamp > Properties.Settings.Default.SearchAfterDate);
+                m = m.Where(x => x.Timestamp > Properties.Settings.Default.SearchAfterDate);
             }
 
             return m is List<DMessage> l ? l : m.ToList();
@@ -456,7 +456,7 @@ namespace Data_Package_Tool
             foreach (var msg in FilterMessages(channel.Messages))
             {
 
-                if (msg.content.IndexOf(searchText, stringComp) >= 0)
+                if (msg.Content.IndexOf(searchText, stringComp) >= 0)
                 {
                     LastSearchResults.Add(msg);
                     count++;
@@ -473,7 +473,7 @@ namespace Data_Package_Tool
             foreach (var msg in FilterMessages(channel.Messages))
             {
 
-                if (compiledRegex.IsMatch(msg.content))
+                if (compiledRegex.IsMatch(msg.Content))
                 {
                     LastSearchResults.Add(msg);
                     count++;
@@ -662,12 +662,12 @@ namespace Data_Package_Tool
                 }
 
                 msg = LastSearchResults[MassDeleteIdx++];
-                if (!msg.deleted) break;
+                if (!msg.IsDeleted) break;
             }
 
             try
             {
-                var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{msg.channel.Id}/messages/{msg.id}", new Dictionary<string, string>
+                var res = await DRequest.RequestAsync(HttpMethod.Delete, $"https://discord.com/api/v9/channels/{msg.Channel.Id}/messages/{msg.Id}", new Dictionary<string, string>
                 {
                     {"Authorization", Discord.UserToken}
                 });
@@ -676,9 +676,9 @@ namespace Data_Package_Tool
                 {
                     case HttpStatusCode.NotFound: // Already deleted = mark as deleted
                     case HttpStatusCode.NoContent:
-                        msg.deleted = true;
+                        msg.IsDeleted = true;
 
-                        Properties.Settings.Default.DeletedMessageIDs.Add(msg.id);
+                        Properties.Settings.Default.DeletedMessageIDs.Add(msg.Id);
                         Properties.Settings.Default.Save();
                         break;
                     case HttpStatusCode.InternalServerError: // Retry on random backend errors

@@ -117,9 +117,9 @@ namespace Data_Package_Tool.Classes
 
                             foreach(var msg in channel.Messages)
                             {
-                                this.MessagesMap.Add(msg.id, msg);
+                                this.MessagesMap.Add(msg.Id, msg);
                                 
-                                foreach(var attachment in msg.attachments)
+                                foreach(var attachment in msg.Attachments)
                                 {
                                     if(attachment.IsImage())
                                     {
@@ -157,7 +157,7 @@ namespace Data_Package_Tool.Classes
                 this.User.avatar_image = avImg;
             });
 
-            this.Attachments = this.Attachments.OrderByDescending(o => Int64.Parse(o.message.id)).ToList();
+            this.Attachments = this.Attachments.OrderByDescending(o => Int64.Parse(o.message.Id)).ToList();
             this.LoadStatus.Status = $"Finished! Parsed {this.TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {this.CreationTime.ToShortDateString()}";
 
             this.LoadStatus.Finished = true;

@@ -41,10 +41,10 @@ namespace Data_Package_Tool.Classes.Parsing
 
                     var msg = new DMessage
                     {
-                        id = idField,
-                        timestamp = DateTime.Parse(timestampField),
-                        content = contentField,
-                        channel = this
+                        Id = idField,
+                        Timestamp = DateTime.Parse(timestampField),
+                        Content = contentField,
+                        Channel = this
                     };
 
                     if (attachmentsField != "")
@@ -53,7 +53,7 @@ namespace Data_Package_Tool.Classes.Parsing
                         {
 
                             var attachment = new DAttachment(url, msg);
-                            msg.attachments.Add(attachment);
+                            msg.Attachments.Add(attachment);
                         }
                     }
 

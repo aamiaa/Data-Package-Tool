@@ -5,22 +5,21 @@ namespace Data_Package_Tool.Classes.Parsing
 {
     public class DMessage
     {
-        public bool deleted = false;
-
-        public string id;
-        public DateTime timestamp;
-        public string content;
-        public List<DAttachment> attachments = new List<DAttachment>();
-        public DChannel channel;
+        public string Id { get; set; }
+        public DateTime Timestamp { get; set; }
+        public string Content { get; set; }
+        public List<DAttachment> Attachments { get; } = new List<DAttachment>();
+        public DChannel Channel { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public string GetMessageLink()
         {
-            string guild = "";
-            if (this.channel.Guild != null)
+            string guild;
+            if (this.Channel.Guild != null)
             {
-                guild = this.channel.Guild.id;
+                guild = this.Channel.Guild.id;
             }
-            else if (this.channel.IsDM() || this.channel.IsGroupDM())
+            else if (this.Channel.IsDM() || this.Channel.IsGroupDM())
             {
                 guild = "@me";
             }
@@ -29,7 +28,7 @@ namespace Data_Package_Tool.Classes.Parsing
                 throw new Exception($"Unable to find the server this message was sent in. This usually happens if you've left the server.");
             }
 
-            return $"{guild}/{this.channel.Id}/{this.id}";
+            return $"{guild}/{this.Channel.Id}/{this.Id}";
         }
     }
 }

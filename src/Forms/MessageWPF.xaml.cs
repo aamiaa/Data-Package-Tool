@@ -68,7 +68,7 @@ namespace Data_Package_Tool
 
         private void UpdateMetadata()
         {
-            var channel = this.Message.channel;
+            var channel = this.Message.Channel;
             string metadata = "Channel: ";
             if (channel.Name != null)
             {
@@ -123,9 +123,9 @@ namespace Data_Package_Tool
                 }
             }
 
-            if (this.Message.attachments.Count > 0)
+            if (this.Message.Attachments.Count > 0)
             {
-                metadata += $", {this.Message.attachments.Count} attachments";
+                metadata += $", {this.Message.Attachments.Count} attachments";
             }
 
             metadataLb.Content = metadata;
@@ -135,9 +135,9 @@ namespace Data_Package_Tool
         {
             ResetProperties();
 
-            if (message.channel.IsDM())
+            if (message.Channel.IsDM())
             {
-                string recipientId = message.channel.GetOtherDMRecipient(Main.DataPackage.User);
+                string recipientId = message.Channel.GetOtherDMRecipient(Main.DataPackage.User);
                 DRelationship relationship = Array.Find(Main.DataPackage.User.relationships, x => x.id == recipientId);
                 if (relationship != null)
                 {
@@ -153,7 +153,7 @@ namespace Data_Package_Tool
 
                 if(this.Recipient.IsDeletedUser())
                 {
-                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(message.channel.Id);
+                    int idx = Properties.Settings.Default.ResolvedDeletedUsers.IndexOf(message.Channel.Id);
                     if(idx != -1)
                     {
                         this.Recipient.id = Properties.Settings.Default.ResolvedDeletedUsers[idx + 1];
@@ -171,11 +171,11 @@ namespace Data_Package_Tool
             UpdateMetadata();
 
             // Set content and timestamp
-            ParseAndSet(message.content);
-            dateLb.Content = message.timestamp.ToShortDateString() + " " + message.timestamp.ToShortTimeString();
+            ParseAndSet(message.Content);
+            dateLb.Content = message.Timestamp.ToShortDateString() + " " + message.Timestamp.ToShortTimeString();
 
             // Add red tint if the message was deleted with mass deleter
-            if (message.deleted)
+            if (message.IsDeleted)
             {
                 MarkDeleted();
             }
@@ -346,7 +346,7 @@ namespace Data_Package_Tool
 
             // Attachments
             bool firstAttachment = true;
-            foreach(var attachment in Message.attachments)
+            foreach(var attachment in Message.Attachments)
             {
                 if(content != "" || !firstAttachment)
                 {
@@ -442,7 +442,7 @@ namespace Data_Package_Tool
 
         private void goToMessageMi_Click(object sender, RoutedEventArgs e)
         {
-            if(this.Message.channel.HasDuplicates)
+            if(this.Message.Channel.HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
@@ -460,7 +460,7 @@ namespace Data_Package_Tool
 
         private void Grid_MouseEnter(object sender, MouseEventArgs e)
         {
-            if(this.Message.deleted)
+            if(this.Message.IsDeleted)
             {
                 rootGrid.Background = new SolidColorBrush(Color.FromArgb(255, 73, 51, 55));
             } else
@@ -471,7 +471,7 @@ namespace Data_Package_Tool
 
         private void Grid_MouseLeave(object sender, MouseEventArgs e)
         {
-            if(this.Message.deleted)
+            if(this.Message.IsDeleted)
             {
                 rootGrid.Background = new SolidColorBrush(Color.FromArgb(255, 78, 54, 59));
             } else
@@ -487,7 +487,7 @@ namespace Data_Package_Tool
                 Util.MsgBoxErr(Consts.UnknownDeletedUserId);
                 return;
             }
-            if (this.Message.channel.HasDuplicates)
+            if (this.Message.Channel.HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
@@ -504,12 +504,12 @@ namespace Data_Package_Tool
 
         private void copyMessageMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(this.Message.content);
+            Clipboard.SetText(this.Message.Content);
         }
 
         private void copyChannelIdMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(this.Message.channel.Id);
+            Clipboard.SetText(this.Message.Channel.Id);
         }
 
         private void copyMetadataMi_Click(object sender, RoutedEventArgs e)
@@ -530,7 +530,7 @@ namespace Data_Package_Tool
 
         private void copyGuildIdMi_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(this.Message.channel.Guild.id);
+            Clipboard.SetText(this.Message.Channel.Guild.id);
         }
 
         private async void openDMMi_Click(object sender, RoutedEventArgs e)
@@ -540,13 +540,13 @@ namespace Data_Package_Tool
                 Util.MsgBoxErr(Consts.UnknownDeletedUserId);
                 return;
             }
-            if (this.Message.channel.HasDuplicates)
+            if (this.Message.Channel.HasDuplicates)
             {
                 Util.MsgBoxWarn(Consts.DuplicateDMWarning);
             }
 
             string userId = this.Recipient.id;
-            if (await Discord.OpenDMFlowAsync(userId, this.Message.channel.Id))
+            if (await Discord.OpenDMFlowAsync(userId, this.Message.Channel.Id))
             {
                 goToMessageMi_Click(sender, e);
             }
@@ -569,7 +569,7 @@ namespace Data_Package_Tool
         private void viewInGuildsTab_Click(object sender, RoutedEventArgs e)
         {
             // TODO: some non-ugly way of doing this
-            ((Main)Main.ActiveForm).JumpToGuild(this.Message.channel.Guild.id);
+            ((Main)Main.ActiveForm).JumpToGuild(this.Message.Channel.Guild.id);
         }
 
         private async void fetchInfoMi_Click(object sender, RoutedEventArgs e)
@@ -586,7 +586,7 @@ namespace Data_Package_Tool
             }
             await DHeaders.Init();
 
-            var res = await DRequest.RequestAsync(HttpMethod.Get, $"https://discord.com/api/v9/channels/{this.Message.channel.Id}", new Dictionary<string, string>
+            var res = await DRequest.RequestAsync(HttpMethod.Get, $"https://discord.com/api/v9/channels/{this.Message.Channel.Id}", new Dictionary<string, string>
             {
                 {"Authorization", Discord.UserToken}
             });
@@ -597,7 +597,7 @@ namespace Data_Package_Tool
                 this.Recipient = recipient;
                 UpdateMetadata();
 
-                Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] { this.Message.channel.Id, recipient.id });
+                Properties.Settings.Default.ResolvedDeletedUsers.AddRange(new string[] { this.Message.Channel.Id, recipient.id });
                 Properties.Settings.Default.Save();
 
                 // TODO: also change data in the appropriate dmlist entry
