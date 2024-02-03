@@ -1,14 +1,11 @@
 ﻿using Data_Package_Tool.Classes.Parsing;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -23,26 +20,26 @@ namespace Data_Package_Tool.Classes
     }
     public class DataPackage
     {
-        public DUser User;
-        public MemoryStream Avatar = new MemoryStream();
-        public List<DAttachment> Attachments = new List<DAttachment>();
-        public dynamic Guilds;
-        public List<DChannel> Channels = new List<DChannel>();
-        public Dictionary<string, DChannel> ChannelsMap = new Dictionary<string, DChannel>();
-        public Dictionary<string, DMessage> MessagesMap = new Dictionary<string, DMessage>();
+        public DUser User { get; private set; }
+        public readonly MemoryStream Avatar = new();
+        public readonly List<DChannel> Channels = new();
+        public readonly Dictionary<string, DChannel> ChannelsMap = new();
+        public readonly Dictionary<string, DMessage> MessagesMap = new();
 
-        public List<DAnalyticsGuild> JoinedGuilds = new List<DAnalyticsGuild>();
-        public List<DAnalyticsEvent> AcceptedInvites = new List<DAnalyticsEvent>();
+        public List<DAttachment> ImageAttachments { get; private set; } = new List<DAttachment>();
+        public List<DAnalyticsGuild> JoinedGuilds { get; private set; } = new List<DAnalyticsGuild>();
+        public List<DAnalyticsEvent> AcceptedInvites { get; private set; } = new List<DAnalyticsEvent>();
+        public Dictionary<string, string> GuildNamesMap { get; private set; } = new Dictionary<string, string>();
 
-        public DateTime CreationTime;
-        public int TotalMessages = 0;
+        public DateTime CreationTime { get; private set; }
+        public int TotalMessages { get; private set; } = 0;
 
         public bool UsesUnsignedCDNLinks
         {
-            get => Attachments.Count > 0 && !Attachments[0].Url.Contains("?ex=");
+            get => ImageAttachments.Count > 0 && !ImageAttachments[0].Url.Contains("?ex=");
         }
 
-        public LoadStatus LoadStatus = new LoadStatus
+        public LoadStatus LoadStatus = new()
         {
                Progress = 0,
                Max = 0,
@@ -50,7 +47,7 @@ namespace Data_Package_Tool.Classes
                Finished = false
         };
 
-        public LoadStatus GuildsLoadStatus = new LoadStatus
+        public LoadStatus GuildsLoadStatus = new()
         {
             Progress = 0,
             Max = 100,
@@ -84,7 +81,7 @@ namespace Data_Package_Tool.Classes
                 using (var r = new StreamReader(zip.GetEntry("servers/index.json").Open()))
                 {
                     var json = r.ReadToEnd();
-                    this.Guilds = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(json);
+                    this.GuildNamesMap = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
                 }
 
                 if (User.AvatarHash == null)
@@ -123,7 +120,7 @@ namespace Data_Package_Tool.Classes
                                 {
                                     if(attachment.IsImage)
                                     {
-                                        this.Attachments.Add(attachment);
+                                        this.ImageAttachments.Add(attachment);
                                     }
                                 }
                             }
@@ -157,7 +154,7 @@ namespace Data_Package_Tool.Classes
                 this.User.AvatarImage = avImg;
             });
 
-            this.Attachments = this.Attachments.OrderByDescending(o => Int64.Parse(o.Message.Id)).ToList();
+            this.ImageAttachments = this.ImageAttachments.OrderByDescending(o => Int64.Parse(o.Message.Id)).ToList();
             this.LoadStatus.Status = $"Finished! Parsed {this.TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {this.CreationTime.ToShortDateString()}";
 
             this.LoadStatus.Finished = true;

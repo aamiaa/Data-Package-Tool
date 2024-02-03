@@ -143,9 +143,9 @@ namespace Data_Package_Tool
             foreach (var guild in DataPackage.JoinedGuilds)
             {
                 string guildName = "";
-                if (DataPackage.Guilds[guild.Id] != null)
+                if (DataPackage.GuildNamesMap.ContainsKey(guild.Id))
                 {
-                    guildName = DataPackage.Guilds[guild.Id];
+                    guildName = DataPackage.GuildNamesMap[guild.Id];
                 }
 
                 string[] values = { guild.Timestamp.ToShortDateString(), guild.Id, guildName, guild.JoinType, guild.Location, String.Join(", ", guild.Invites) };
@@ -506,7 +506,7 @@ namespace Data_Package_Tool
         private int imageSquareSize = 200;
         private void LoadImages()
         {
-            if (DataPackage.Attachments.Count == 0)
+            if (DataPackage.ImageAttachments.Count == 0)
             {
                 imagesCountLb.Text = $"No images found";
                 return;
@@ -516,10 +516,10 @@ namespace Data_Package_Tool
             imagesPrevBtn.Enabled = false;
 
             if (imagesOffset < 0) imagesOffset = 0;
-            if (imagesOffset >= DataPackage.Attachments.Count || imagesOffset + imagesPerPage >= DataPackage.Attachments.Count) imagesOffset = DataPackage.Attachments.Count - imagesPerPage;
+            if (imagesOffset >= DataPackage.ImageAttachments.Count || imagesOffset + imagesPerPage >= DataPackage.ImageAttachments.Count) imagesOffset = DataPackage.ImageAttachments.Count - imagesPerPage;
 
             imagesPanel.Controls.Clear();
-            imagesCountLb.Text = $"{imagesOffset + 1}-{imagesOffset + imagesPerPage} of {DataPackage.Attachments.Count}";
+            imagesCountLb.Text = $"{imagesOffset + 1}-{imagesOffset + imagesPerPage} of {DataPackage.ImageAttachments.Count}";
 
             for (int i = 0; i < imagesPerPage; i++)
             {
@@ -530,7 +530,7 @@ namespace Data_Package_Tool
                     loc = new Point(imagesPanel.Controls.Count % imagesPerRow == 0 ? 3 : last.Location.X + last.Size.Width + 6, imagesPanel.Controls.Count % imagesPerRow == 0 ? last.Location.Y + imageSquareSize + 44 : last.Location.Y);
                 }
 
-                var attachment = DataPackage.Attachments[imagesOffset + i];
+                var attachment = DataPackage.ImageAttachments[imagesOffset + i];
 
                 var pb = new Attachment(attachment)
                 {
