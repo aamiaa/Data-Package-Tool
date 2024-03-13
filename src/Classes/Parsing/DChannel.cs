@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Data_Package_Tool.Classes.Parsing
 {
@@ -22,7 +23,7 @@ namespace Data_Package_Tool.Classes.Parsing
         public List<DMessage> Messages { get; } = new List<DMessage>();
         public bool HasDuplicates { get; set; }
 
-        public void LoadMessages(string csv)
+        public void LoadMessagesFromCsv(string csv)
         {
             using(TextFieldParser parser = new TextFieldParser(new StringReader(csv)))
             {
@@ -39,27 +40,44 @@ namespace Data_Package_Tool.Classes.Parsing
 
                     if (idField == "ID") continue; // Header collumns
 
-                    var msg = new DMessage
-                    {
-                        Id = idField,
-                        Timestamp = DateTime.Parse(timestampField),
-                        Content = contentField,
-                        Channel = this
-                    };
-
-                    if (attachmentsField != "")
-                    {
-                        foreach (var url in attachmentsField.Split(' '))
-                        {
-
-                            var attachment = new DAttachment(url, msg);
-                            msg.Attachments.Add(attachment);
-                        }
-                    }
-
-                    this.Messages.Add(msg);
+                    AddMessage(idField, timestampField, contentField, attachmentsField);
                 }
             }
+        }
+
+        public void LoadMessagesFromJson(string json)
+        {
+            var jsonMsgAray = JArray.Parse(json);
+            foreach (var jsonMsg in jsonMsgAray)
+            {
+                string idField = jsonMsg["ID"].ToString();
+                string timestampField = jsonMsg["Timestamp"].ToString();
+                string contentField = jsonMsg["Contents"].ToString();
+                string attachmentsField = jsonMsg["Attachments"].ToString();
+                AddMessage(idField, timestampField, contentField, attachmentsField);
+            }
+        }
+
+        private void AddMessage(string id, string timestamp, string contents, string attachments)
+        {
+            var msg = new DMessage
+            {
+                Id = id,
+                Timestamp = DateTime.Parse(timestamp),
+                Content = contents,
+                Channel = this
+            };
+
+            if (attachments != "")
+            {
+                foreach (var url in attachments.Split(' '))
+                {
+                    var attachment = new DAttachment(url, msg);
+                    msg.Attachments.Add(attachment);
+                }
+            }
+
+            this.Messages.Add(msg);
         }
 
         public bool IsDM()
