@@ -116,13 +116,14 @@ namespace Data_Package_Tool.Classes
                         using (var rMessages = new StreamReader(entry.Open()))
                         {
                             var content = rMessages.ReadToEnd();
-                            if (string.Equals(fileExtension, "csv", StringComparison.OrdinalIgnoreCase))
+                            switch (fileExtension)
                             {
-                                channel.LoadMessagesFromCsv(content);
-                            }
-                            else if (string.Equals(fileExtension, "json", StringComparison.OrdinalIgnoreCase))
-                            {
-                                channel.LoadMessagesFromJson(content);
+                                case "csv":
+                                    channel.LoadMessagesFromCsv(content);
+                                    break;
+                                case "json":
+                                    channel.LoadMessagesFromJson(content);
+                                    break;
                             }
                         }
 
