@@ -1,6 +1,7 @@
 ﻿using Data_Package_Tool.Classes.Parsing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -89,7 +90,7 @@ namespace Data_Package_Tool.Classes
                     this.User.GetDefaultAvatarBitmap().Save(this.Avatar, System.Drawing.Imaging.ImageFormat.Png);
                 }
 
-                var messagesRegex = new Regex(@"messages/(c?(\d+))/messages\.csv", RegexOptions.Compiled);
+                var messagesRegex = new Regex(@"messages/(c?(\d+))/messages\.(csv|json)", RegexOptions.Compiled);
                 var avatarRegex = new Regex(@"account/avatar\.[a-z]+", RegexOptions.Compiled);
                 int i = 0;
                 foreach (var entry in zip.Entries)
@@ -103,32 +104,44 @@ namespace Data_Package_Tool.Classes
                     {
                         var channelId = match.Groups[2].Value;
                         var folderName = match.Groups[1].Value; // folder name might not start with "c" in older versions
-                        using (var rJson = new StreamReader(zip.GetEntry($"messages/{folderName}/channel.json").Open()))
-                        using (var rCsv = new StreamReader(entry.Open()))
+                        var fileExtension = match.Groups[3].Value;
+
+                        DChannel channel;
+                        using (var rChannel = new StreamReader(zip.GetEntry($"messages/{folderName}/channel.json").Open()))
                         {
-                            var json = rJson.ReadToEnd();
-                            var csv = rCsv.ReadToEnd();
+                            var json = rChannel.ReadToEnd();
+                            channel = Newtonsoft.Json.JsonConvert.DeserializeObject<DChannel>(json);
+                        }
 
-                            var channel = Newtonsoft.Json.JsonConvert.DeserializeObject<DChannel>(json);
-                            channel.LoadMessages(csv);
-
-                            foreach(var msg in channel.Messages)
+                        using (var rMessages = new StreamReader(entry.Open()))
+                        {
+                            var content = rMessages.ReadToEnd();
+                            if (string.Equals(fileExtension, "csv", StringComparison.OrdinalIgnoreCase))
                             {
-                                this.MessagesMap.Add(msg.Id, msg);
-                                
-                                foreach(var attachment in msg.Attachments)
+                                channel.LoadMessagesFromCsv(content);
+                            }
+                            else if (string.Equals(fileExtension, "json", StringComparison.OrdinalIgnoreCase))
+                            {
+                                channel.LoadMessagesFromJson(content);
+                            }
+                        }
+
+                        foreach(var msg in channel.Messages)
+                        {
+                            this.MessagesMap.Add(msg.Id, msg);
+
+                            foreach(var attachment in msg.Attachments)
+                            {
+                                if(attachment.IsImage)
                                 {
-                                    if(attachment.IsImage)
-                                    {
-                                        this.ImageAttachments.Add(attachment);
-                                    }
+                                    this.ImageAttachments.Add(attachment);
                                 }
                             }
-
-                            this.TotalMessages += channel.Messages.Count;
-                            this.Channels.Add(channel);
-                            this.ChannelsMap[channel.Id] = channel;
                         }
+
+                        this.TotalMessages += channel.Messages.Count;
+                        this.Channels.Add(channel);
+                        this.ChannelsMap[channel.Id] = channel;
                     }
                     else if (avatarRegex.IsMatch(entry.FullName))
                     {
