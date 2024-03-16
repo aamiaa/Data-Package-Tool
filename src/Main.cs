@@ -3,7 +3,6 @@ using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Forms;
 using Data_Package_Tool.Helpers;
 using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,6 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -67,7 +65,7 @@ namespace Data_Package_Tool
             }
 
             // Persist settings across program versions
-            if(!ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).HasFile)
+            if (!ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).HasFile)
             {
                 Properties.Settings.Default.Upgrade();
             }
@@ -77,8 +75,8 @@ namespace Data_Package_Tool
                 Properties.Settings.Default.DeletedMessageIDs = new System.Collections.Specialized.StringCollection();
                 Properties.Settings.Default.Save();
             }
-            
-            if(Properties.Settings.Default.ResolvedDeletedUsers == null)
+
+            if (Properties.Settings.Default.ResolvedDeletedUsers == null)
             {
                 Properties.Settings.Default.ResolvedDeletedUsers = new System.Collections.Specialized.StringCollection();
                 Properties.Settings.Default.Save();
@@ -156,7 +154,7 @@ namespace Data_Package_Tool
 
         public void JumpToGuild(string guildId)
         {
-            for(int i=0;i<serversLv.Items.Count;i++)
+            for (int i = 0; i < serversLv.Items.Count; i++)
             {
                 var item = serversLv.Items[i];
                 if (item.SubItems[1].Text == guildId)
@@ -213,7 +211,7 @@ namespace Data_Package_Tool
                     messagesPrevBtn.Enabled = true;
                     messagesNextBtn.Enabled = true;
 
-                    if(DataPackage.UsesUnsignedCDNLinks)
+                    if (DataPackage.UsesUnsignedCDNLinks)
                     {
                         Util.MsgBoxWarn("This data package was created before Discord's attachment url signing.\nImages may be broken, and other attachments may be inaccessible!");
                     }
@@ -696,7 +694,8 @@ namespace Data_Package_Tool
 
                             int retryAfter = errorData.retry_after;
                             Thread.Sleep(retryAfter * 1000);
-                        } catch(Exception) // Non-json response (cf error?)
+                        }
+                        catch (Exception) // Non-json response (cf error?)
                         {
                             Util.MsgBoxErr($"Unknown ratelimit error.");
                             return;
@@ -711,7 +710,7 @@ namespace Data_Package_Tool
 
                             string errorMsg = errorData.message;
                             int errorCode = errorData.code;
-                            switch(errorCode)
+                            switch (errorCode)
                             {
                                 case 50001: // No access to channel
                                 case 50083: // Thread archived
@@ -721,7 +720,8 @@ namespace Data_Package_Tool
                                     return;
                             }
 
-                        } catch(Exception)
+                        }
+                        catch (Exception)
                         {
                             Util.MsgBoxErr($"Request error: {res.response.StatusCode} {res.body}");
                             return;
