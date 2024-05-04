@@ -30,6 +30,8 @@ namespace Data_Package_Tool
             {
                 Messages.Add(messages[i]);
             }
+
+            mainList.ScrollIntoView(messages[startIdx]);
         }
     }
 }
