@@ -6,7 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-	<Version>1.0.7.1</Version>
+	<Version>1.0.7.2</Version>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Forms\Attachment.cs">
