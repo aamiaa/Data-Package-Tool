@@ -138,12 +138,9 @@ namespace Data_Package_Tool
             if (message.Channel.IsDM())
             {
                 string recipientId = message.Channel.GetOtherDMRecipient(Main.DataPackage.User);
-                DRelationship relationship = Main.DataPackage.User.Relationships.Find(x => x.Id == recipientId);
-                if (relationship != null)
-                {
-                    this.Recipient = relationship.User;
-                }
-                else
+                Main.DataPackage.UsersMap.TryGetValue(recipientId, out this.Recipient);
+
+                if (this.Recipient == null)
                 {
                     this.Recipient = new DUser
                     {

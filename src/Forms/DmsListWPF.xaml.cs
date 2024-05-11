@@ -1,4 +1,4 @@
-﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes;
 using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Helpers;
 using System;
@@ -129,14 +129,14 @@ namespace Data_Package_Tool.Forms
             foreach (var channel in channels)
             {
                 var recipientId = channel.GetOtherDMRecipient(user);
-                var relationship = user.Relationships.Find(x => x.Id == recipientId);
+                Main.DataPackage.UsersMap.TryGetValue(recipientId, out var recipientUser);
 
                 BitmapImage avatar;
-                if(relationship != null && relationship.User.AvatarHash != null)
+                if(recipientUser != null && recipientUser.AvatarHash != null)
                 {
                     avatar = new BitmapImage();
                     avatar.BeginInit();
-                    avatar.UriSource = new Uri(relationship.User.AvatarURL);
+                    avatar.UriSource = new Uri(recipientUser.AvatarURL);
                     avatar.CacheOption = BitmapCacheOption.OnLoad;
                     avatar.EndInit();
                 } else
@@ -161,12 +161,12 @@ namespace Data_Package_Tool.Forms
                 { 
                     UserId = isDeletedUser ? "???" : recipientId,
                     ChannelId = channel.Id,
-                    Username = isDeletedUser ? "(Deleted User)" : relationship != null ? relationship.User.Tag : "(Unknown User)",
+                    Username = isDeletedUser ? "(Deleted User)" : recipientUser != null ? recipientUser.Tag : "(Unknown User)",
                     Avatar = avatar,
                     Date = Discord.SnowflakeToTimestap(channel.Id).ToShortDateString(),
                     MessagesCount = channel.Messages.Count,
                     Note = user.Notes.ContainsKey(recipientId) ? user.Notes[recipientId] : "",
-                    NeedsFetching = relationship == null,
+                    NeedsFetching = recipientUser == null,
                     UnknownId = isDeletedUser
                 });
             }

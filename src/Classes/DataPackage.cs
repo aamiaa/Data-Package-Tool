@@ -1,4 +1,5 @@
-﻿using Data_Package_Tool.Classes.Parsing;
+using Data_Package_Tool.Classes.Parsing;
+using Data_Package_Tool.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,6 +27,7 @@ namespace Data_Package_Tool.Classes
         public readonly List<DChannel> Channels = new();
         public readonly Dictionary<string, DChannel> ChannelsMap = new();
         public readonly Dictionary<string, DMessage> MessagesMap = new();
+        public readonly Dictionary<string, DUser> UsersMap = new();
 
         public List<DAttachment> ImageAttachments { get; private set; } = new List<DAttachment>();
         public List<DAnalyticsGuild> JoinedGuilds { get; private set; } = new List<DAnalyticsGuild>();
@@ -79,10 +81,9 @@ namespace Data_Package_Tool.Classes
                     this.User = Newtonsoft.Json.JsonConvert.DeserializeObject<DUser>(json);
                 }
 
-                using (var r = new StreamReader(zip.GetEntry("servers/index.json").Open()))
+                foreach(var relationship in this.User.Relationships)
                 {
-                    var json = r.ReadToEnd();
-                    this.GuildNamesMap = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                    this.UsersMap.Add(relationship.User.Id, relationship.User);
                 }
 
                 if (User.AvatarHash == null)
@@ -90,8 +91,22 @@ namespace Data_Package_Tool.Classes
                     this.User.GetDefaultAvatarBitmap().Save(this.Avatar, System.Drawing.Imaging.ImageFormat.Png);
                 }
 
+                var channelNamesMap = new Dictionary<string, string>();
+                using (var r = new StreamReader(zip.GetEntry("messages/index.json").Open()))
+                {
+                    var json = r.ReadToEnd();
+                    channelNamesMap = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                }
+
+                using (var r = new StreamReader(zip.GetEntry("servers/index.json").Open()))
+                {
+                    var json = r.ReadToEnd();
+                    this.GuildNamesMap = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                }                
+
                 var messagesRegex = new Regex(@"messages/(c?(\d+))/messages\.(csv|json)", RegexOptions.Compiled);
                 var avatarRegex = new Regex(@"account/avatar\.[a-z]+", RegexOptions.Compiled);
+                var nameRegex = new Regex(@"^Direct Message with (.+)#(\d{1,4})$", RegexOptions.Compiled);
                 int i = 0;
                 foreach (var entry in zip.Entries)
                 {
@@ -111,6 +126,25 @@ namespace Data_Package_Tool.Classes
                         {
                             var json = rChannel.ReadToEnd();
                             channel = Newtonsoft.Json.JsonConvert.DeserializeObject<DChannel>(json);
+                        }
+
+                        if(channel.IsDM())
+                        {
+                            var recipientId = channel.GetOtherDMRecipient(this.User);
+
+                            if (!this.UsersMap.ContainsKey(recipientId) && recipientId != Consts.DeletedUserId && channelNamesMap.TryGetValue(channelId, out var channelName))
+                            {
+                                var nameMatch = nameRegex.Match(channelName);
+                                if (nameMatch.Success)
+                                {
+                                    this.UsersMap.Add(recipientId, new DUser
+                                    {
+                                        Id = recipientId,
+                                        Username = nameMatch.Groups[1].Value,
+                                        Discriminator = nameMatch.Groups[2].Value
+                                    });
+                                }
+                            }
                         }
 
                         using (var rMessages = new StreamReader(entry.Open()))
