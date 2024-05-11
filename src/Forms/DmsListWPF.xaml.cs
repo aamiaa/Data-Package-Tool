@@ -1,4 +1,4 @@
-using Data_Package_Tool.Classes;
+﻿using Data_Package_Tool.Classes;
 using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Helpers;
 using System;
@@ -128,7 +128,7 @@ namespace Data_Package_Tool.Forms
         {
             foreach (var channel in channels)
             {
-                var recipientId = channel.GetOtherDMRecipient(user);
+                var recipientId = channel.DMRecipientId;
                 Main.DataPackage.UsersMap.TryGetValue(recipientId, out var recipientUser);
 
                 BitmapImage avatar;

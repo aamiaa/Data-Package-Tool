@@ -137,7 +137,7 @@ namespace Data_Package_Tool
 
             if (message.Channel.IsDM())
             {
-                string recipientId = message.Channel.GetOtherDMRecipient(Main.DataPackage.User);
+                string recipientId = message.Channel.DMRecipientId;
                 Main.DataPackage.UsersMap.TryGetValue(recipientId, out this.Recipient);
 
                 if (this.Recipient == null)

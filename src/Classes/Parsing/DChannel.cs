@@ -21,6 +21,7 @@ namespace Data_Package_Tool.Classes.Parsing
         public List<string> RecipientIds { get; set; }
 
         public List<DMessage> Messages { get; } = new List<DMessage>();
+        public string DMRecipientId { get; set; }
         public bool HasDuplicates { get; set; }
 
         public void LoadMessagesFromCsv(string csv)

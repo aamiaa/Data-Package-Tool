@@ -131,6 +131,7 @@ namespace Data_Package_Tool.Classes
                         if(channel.IsDM())
                         {
                             var recipientId = channel.GetOtherDMRecipient(this.User);
+                            channel.DMRecipientId = recipientId;
 
                             if (!this.UsersMap.ContainsKey(recipientId) && recipientId != Consts.DeletedUserId && channelNamesMap.TryGetValue(channelId, out var channelName))
                             {

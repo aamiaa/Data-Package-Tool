@@ -1,4 +1,4 @@
-﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes;
 using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Forms;
 using Data_Package_Tool.Helpers;
@@ -119,7 +119,7 @@ namespace Data_Package_Tool
 
             foreach (var dmChannel in dmChannels)
             {
-                string recipientId = dmChannel.GetOtherDMRecipient(DataPackage.User);
+                string recipientId = dmChannel.DMRecipientId;
                 if (recipientId == Consts.DeletedUserId) continue; // Don't mark the fake deleted user id as duplicate
 
                 if (duplicateChannelsMap.ContainsKey(recipientId)) // Optimization. Calling Find() every time would be slow

@@ -226,7 +226,7 @@ namespace Data_Package_Tool.Forms
                     {
                         if (dmChannel.Id == this.ChannelId) continue; // Don't count self as a duplicate
 
-                        string recipientId = dmChannel.GetOtherDMRecipient(Main.DataPackage.User);
+                        string recipientId = dmChannel.DMRecipientId;
                         if(recipientId == this.UserId)
                         {
                             dmChannel.HasDuplicates = true;
