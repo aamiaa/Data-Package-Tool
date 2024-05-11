@@ -1,4 +1,4 @@
-using Data_Package_Tool.Classes.Parsing;
+﻿using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Helpers;
 using System;
 using System.Collections.Generic;
@@ -188,6 +188,11 @@ namespace Data_Package_Tool.Classes
                             this.Avatar.Position = 0;
                         }
                     }
+
+                    if(i % 1000 == 0)
+                    {
+                        GC.Collect();
+                    }
                 }
             }
 
@@ -207,6 +212,8 @@ namespace Data_Package_Tool.Classes
             this.LoadStatus.Status = $"Finished! Parsed {this.TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {this.CreationTime.ToShortDateString()}";
 
             this.LoadStatus.Finished = true;
+
+            GC.Collect();
         }
 
         public void LoadGuilds(string fileName)
@@ -269,8 +276,9 @@ namespace Data_Package_Tool.Classes
             }
 
             this.JoinedGuilds = this.JoinedGuilds.OrderByDescending(o => o.Timestamp.Ticks).ToList();
-
             this.GuildsLoadStatus.Finished = true;
+
+            GC.Collect();
         }
 
         private void ProcessAnalyticsLine(string line)

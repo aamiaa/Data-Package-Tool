@@ -1,4 +1,4 @@
-using Data_Package_Tool.Classes;
+﻿using Data_Package_Tool.Classes;
 using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Forms;
 using Data_Package_Tool.Helpers;
@@ -256,6 +256,7 @@ namespace Data_Package_Tool
 
             // Clear images cache to free up RAM
             Discord.AttachmentsCache.Clear();
+            GC.Collect();
 
             ((MessageListWPF)elementHost1.Child).Clear();
             resultsCountLb.Text = $"{SearchResultsOffset + 1}-{Math.Min(SearchResultsOffset + MaxSearchResults, LastSearchResults.Count)} of {LastSearchResults.Count}";
@@ -288,6 +289,7 @@ namespace Data_Package_Tool
 
             // Clear images cache to free up RAM
             Discord.AttachmentsCache.Clear();
+            GC.Collect();
 
             searchBw.RunWorkerAsync();
             searchTimer.Start();
