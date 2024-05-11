@@ -141,7 +141,8 @@ namespace Data_Package_Tool.Forms
                     avatar.EndInit();
                 } else
                 {;
-                    avatar = new DUser() { Id = recipientId, Discriminator = "0" }.GetDefaultAvatarBitmapImage();
+                    var discrim = recipientUser != null ? recipientUser.Discriminator : "0";
+                    avatar = new DUser() { Id = recipientId, Discriminator = discrim }.GetDefaultAvatarBitmapImage();
                 }
 
                 bool isDeletedUser = recipientId == Consts.DeletedUserId;
