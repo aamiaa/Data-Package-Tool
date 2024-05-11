@@ -66,7 +66,7 @@ namespace Data_Package_Tool
             dmsTab = new System.Windows.Forms.TabPage();
             elementHost2 = new System.Windows.Forms.Integration.ElementHost();
             settingsTab = new System.Windows.Forms.TabPage();
-            versionLb = new System.Windows.Forms.Label();
+            repoLb = new System.Windows.Forms.LinkLabel();
             groupBox2 = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             botTokenTb = new System.Windows.Forms.TextBox();
@@ -452,7 +452,7 @@ namespace Data_Package_Tool
             // settingsTab
             // 
             settingsTab.BackColor = System.Drawing.Color.FromArgb(49, 51, 56);
-            settingsTab.Controls.Add(versionLb);
+            settingsTab.Controls.Add(repoLb);
             settingsTab.Controls.Add(groupBox2);
             settingsTab.Controls.Add(groupBox1);
             settingsTab.Location = new System.Drawing.Point(4, 24);
@@ -463,17 +463,21 @@ namespace Data_Package_Tool
             settingsTab.TabIndex = 3;
             settingsTab.Text = "Settings";
             // 
-            // versionLb
+            // repoLb
             // 
-            versionLb.Dock = System.Windows.Forms.DockStyle.Bottom;
-            versionLb.ForeColor = System.Drawing.SystemColors.Control;
-            versionLb.Location = new System.Drawing.Point(4, 269);
-            versionLb.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            versionLb.Name = "versionLb";
-            versionLb.Size = new System.Drawing.Size(572, 17);
-            versionLb.TabIndex = 3;
-            versionLb.Text = "v1.2.3";
-            versionLb.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            repoLb.ActiveLinkColor = System.Drawing.Color.MediumSlateBlue;
+            repoLb.Dock = System.Windows.Forms.DockStyle.Bottom;
+            repoLb.ForeColor = System.Drawing.SystemColors.Control;
+            repoLb.LinkColor = System.Drawing.Color.CornflowerBlue;
+            repoLb.Location = new System.Drawing.Point(4, 269);
+            repoLb.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            repoLb.Name = "repoLb";
+            repoLb.Size = new System.Drawing.Size(572, 17);
+            repoLb.TabIndex = 3;
+            repoLb.TabStop = true;
+            repoLb.Text = "Github Repo";
+            repoLb.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            repoLb.LinkClicked += repoLb_LinkClicked;
             // 
             // groupBox2
             // 
@@ -748,7 +752,7 @@ namespace Data_Package_Tool
         private System.Windows.Forms.TextBox botTokenTb;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox userTokenTb;
-        private System.Windows.Forms.Label versionLb;
+        private System.Windows.Forms.LinkLabel repoLb;
     }
 }
 

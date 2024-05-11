@@ -19,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 namespace Data_Package_Tool
 {
@@ -107,7 +108,7 @@ namespace Data_Package_Tool
                     break;
             }
 
-            versionLb.Text = "v" + Application.ProductVersion;
+            this.Text += " v" + Application.ProductVersion;
         }
 
         private void LoadDMChannels()
@@ -769,6 +770,15 @@ namespace Data_Package_Tool
         private void botTokenTb_TextChanged(object sender, EventArgs e)
         {
             Discord.BotToken = botTokenTb.Text.Trim();
+        }
+
+        private void repoLb_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://github.com/aamiaa/Data-Package-Tool",
+                UseShellExecute = true
+            });
         }
     }
 }
