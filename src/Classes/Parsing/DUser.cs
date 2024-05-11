@@ -62,11 +62,6 @@ namespace Data_Package_Tool.Classes.Parsing
                     return $"https://cdn.discordapp.com/avatars/{this.Id}/{avatarHash}.png?size=64";
                 }
 
-                if (this.IsPomelo)
-                {
-                    return $"https://cdn.discordapp.com/embed/avatars/{this.DefaultAvatarId}.png?size=64";
-                }
-
                 return $"https://cdn.discordapp.com/embed/avatars/{this.DefaultAvatarId}.png?size=64";
             }
         }
