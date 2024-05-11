@@ -91,14 +91,14 @@ namespace Data_Package_Tool.Forms
         public static readonly DependencyProperty NoteProperty =
             DependencyProperty.Register("Note", typeof(string), typeof(DmWPF));
 
-        public bool NeedsFetching
+        public bool CanFetch
         {
-            get { return (bool)GetValue(NeedsFetchingProperty); }
-            set { SetValue(NeedsFetchingProperty, value); }
+            get { return (bool)GetValue(CanFetchProperty); }
+            set { SetValue(CanFetchProperty, value); }
         }
 
-        public static readonly DependencyProperty NeedsFetchingProperty =
-            DependencyProperty.Register("NeedsFetching", typeof(bool), typeof(DmWPF));
+        public static readonly DependencyProperty CanFetchProperty =
+            DependencyProperty.Register("CanFetch", typeof(bool), typeof(DmWPF));
 
         public bool UnknownId
         {
@@ -212,7 +212,7 @@ namespace Data_Package_Tool.Forms
                 {
                     DataContext.Avatar = new DUser() { Id = recipient.Id, Discriminator = "0" }.GetDefaultAvatarBitmapImage();
                 }
-                DataContext.NeedsFetching = false;
+                DataContext.CanFetch = false;
 
                 // Now that we know the id, do what we couldn't do before
                 if(this.UnknownId)

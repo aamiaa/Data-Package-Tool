@@ -89,16 +89,16 @@ namespace Data_Package_Tool.Forms
                     NotifyPropertyChanged();
                 }
             }
-            private bool NeedsFetchingValue;
-            public bool NeedsFetching
+            private bool CanFetchValue;
+            public bool CanFetch
             {
                 get
                 {
-                    return this.NeedsFetchingValue;
+                    return this.CanFetchValue;
                 }
                 set
                 {
-                    this.NeedsFetchingValue = value;
+                    this.CanFetchValue = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -166,7 +166,7 @@ namespace Data_Package_Tool.Forms
                     Date = Discord.SnowflakeToTimestap(channel.Id).ToShortDateString(),
                     MessagesCount = channel.Messages.Count,
                     Note = user.Notes.ContainsKey(recipientId) ? user.Notes[recipientId] : "",
-                    NeedsFetching = recipientUser == null,
+                    CanFetch = true,
                     UnknownId = isDeletedUser
                 });
             }

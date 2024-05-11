@@ -54,7 +54,7 @@
         <Grid Grid.Column="4">
             <Button x:Name="fetchBtn" Content="Fetch info"
                     Cursor="Hand"
-                    Visibility="{Binding Path=NeedsFetching, Converter={StaticResource BoolToVis}}"
+                    Visibility="{Binding Path=CanFetch, Converter={StaticResource BoolToVis}}"
                     HorizontalAlignment="Right"
                     Margin="0,0,75,0"
                     Width="60" Height="32"
