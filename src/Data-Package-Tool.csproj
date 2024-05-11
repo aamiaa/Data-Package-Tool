@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
@@ -7,7 +7,11 @@
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	<Version>1.0.7.2</Version>
+	<ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Resources\icon.ico" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Update="Forms\Attachment.cs">
       <SubType>UserControl</SubType>

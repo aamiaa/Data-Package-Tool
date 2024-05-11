@@ -30,6 +30,7 @@ namespace Data_Package_Tool
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             tabControl1 = new System.Windows.Forms.TabControl();
             loadTb = new System.Windows.Forms.TabPage();
             progressBar1 = new System.Windows.Forms.ProgressBar();
@@ -672,9 +673,9 @@ namespace Data_Package_Tool
             BackColor = System.Drawing.SystemColors.Control;
             ClientSize = new System.Drawing.Size(588, 317);
             Controls.Add(tabControl1);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "Main";
-            ShowIcon = false;
             Text = "Data Package Tool";
             tabControl1.ResumeLayout(false);
             loadTb.ResumeLayout(false);
