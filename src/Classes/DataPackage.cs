@@ -281,11 +281,12 @@ namespace Data_Package_Tool.Classes
 
             GC.Collect();
         }
-
+        private static string[] AnalyticsLines = { "guild_joined", "create_guild", "accepted_instant_invite", "voice_disconnect" };
         private void ProcessAnalyticsLine(string line)
         {
+
             // Pro optimization
-            if (!new string[] { "guild_joined", "create_guild", "accepted_instant_invite", "voice_disconnect" }.Any(x=>line.StartsWith("{\"event_type\":\""+x)))
+            if (!AnalyticsLines.Any(x=>line.StartsWith("{\"event_type\":\""+x)))
             {
                 return;
             }
