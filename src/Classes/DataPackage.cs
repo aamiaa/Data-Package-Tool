@@ -32,6 +32,7 @@ namespace Data_Package_Tool.Classes
         public List<DAttachment> ImageAttachments { get; private set; } = new List<DAttachment>();
         public List<DAnalyticsGuild> JoinedGuilds { get; private set; } = new List<DAnalyticsGuild>();
         public List<DAnalyticsEvent> AcceptedInvites { get; private set; } = new List<DAnalyticsEvent>();
+        public List<DVoiceConnection> VoiceDisconnections { get; private set; } = new List<DVoiceConnection>();
         public Dictionary<string, string> GuildNamesMap { get; private set; } = new Dictionary<string, string>();
 
         public DateTime CreationTime { get; private set; }
@@ -284,7 +285,7 @@ namespace Data_Package_Tool.Classes
         private void ProcessAnalyticsLine(string line)
         {
             // Pro optimization
-            if (!line.StartsWith("{\"event_type\":\"guild_joined") && !line.StartsWith("{\"event_type\":\"create_guild") && !line.StartsWith("{\"event_type\":\"accepted_instant_invite"))
+            if (!new string[] { "guild_joined", "create_guild", "accepted_instant_invite", "voice_connection_success", "voice_disconnect" }.Any(x=>line.StartsWith("{\"event_type\":\""+x)))
             {
                 return;
             }
@@ -336,6 +337,18 @@ namespace Data_Package_Tool.Classes
                     break;
                 case "accepted_instant_invite":
                     if (eventData.GuildId != null) this.AcceptedInvites.Add(eventData);
+                    break;
+                case "voice_connection_success":
+
+                    break;
+                case "voice_disconnect":
+                    this.VoiceDisconnections.Add(new DVoiceConnection()
+                    {
+                        ChannelId = eventData.ChannelId,
+                        GuildId = eventData.GuildId,
+                        Timestamp = eventData.Timestamp,
+                        Duration = new TimeSpan(eventData.Duration * 10000)
+                    });
                     break;
             }
         }

@@ -11,6 +11,8 @@ namespace Data_Package_Tool.Classes.Parsing
 
         [JsonProperty("guild")]
         public string GuildId { get; set; } // the guild id on invite events
+        [JsonProperty("channel_id")]
+        public string ChannelId { get; set; } // the channel id on voice events
         [JsonProperty("invite")]
         public string InviteCode { get; set; }
 
@@ -29,5 +31,8 @@ namespace Data_Package_Tool.Classes.Parsing
         public DateTime Timestamp { get; set; }
         [JsonProperty("timestamp")]
         private string Timestamp2 { set => Timestamp = DateTime.Parse(value.Replace("\"", ""), null, DateTimeStyles.RoundtripKind); }
+
+        [JsonProperty("duration")]
+        public long Duration { get; set; } // the call duration on voice disconnect events
     }
 }

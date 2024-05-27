@@ -152,6 +152,15 @@ namespace Data_Package_Tool
                 serversLv.Items.Add(lvItem);
             }
         }
+        private void LoadTopVC()
+        {
+            topVC.Items.Clear();
+            topVCGuilds.Items.Clear();
+
+
+            topVC.Items.AddRange(DataPackage.VoiceDisconnections.GroupBy(x => x.ChannelId).Select(x => new DVoiceConnection() { ChannelId = x.First().ChannelId, GuildId = x.First().GuildId, Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks)) }).OrderByDescending(x => x.Duration).Select(x => new ListViewItem(new string[] { ((x.ChannelId != null && DataPackage.ChannelsMap.ContainsKey(x.ChannelId)) ? (DataPackage.ChannelsMap[x.ChannelId].GetName(DataPackage.User, DataPackage.UsersMap) ?? "") : ""), x.ChannelId, x.Duration.ToString(@"%d'days '%h\h%m\m%s\s"), ((x.GuildId != null && DataPackage.GuildNamesMap.ContainsKey(x.GuildId)) ? DataPackage.GuildNamesMap[x.GuildId] : (x.GuildId ?? "DMs")) })).ToArray());
+            topVCGuilds.Items.AddRange(DataPackage.VoiceDisconnections.GroupBy(x => x.GuildId).Select(x => new DVoiceConnection() { GuildId = x.First().GuildId, Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks)) }).OrderByDescending(x => x.Duration).Select(x => new ListViewItem(new string[] { ((x.GuildId != null && DataPackage.GuildNamesMap.ContainsKey(x.GuildId)) ? DataPackage.GuildNamesMap[x.GuildId] : (x.GuildId == null ? "DMs" : "")), x.Duration.ToString(@"%d'days '%h\h%m\m%s\s"), x.GuildId })).ToArray());
+        }
 
         public void JumpToGuild(string guildId)
         {
@@ -225,6 +234,9 @@ namespace Data_Package_Tool
                 guildsTask.ContinueWith(t =>
                 {
                     LoadJoinedGuilds();
+
+                    if (task.IsCompleted) LoadTopVC();
+                    else task.ContinueWith(t=>LoadTopVC());
 
                     serversStatusStrip.Visible = false;
                 }, TaskScheduler.FromCurrentSynchronizationContext());

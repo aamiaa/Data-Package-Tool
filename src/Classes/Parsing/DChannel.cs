@@ -113,5 +113,14 @@ namespace Data_Package_Tool.Classes.Parsing
 
             throw new Exception("This shouldn't happen");
         }
+        public string GetName(DUser user, Dictionary<string, DUser> UserMap)
+        {
+            if (Name != null || !this.IsDM()) return Name;
+            string other = GetOtherDMRecipient(user);
+            if (other == null) return "";
+            DUser otherUser = UserMap.ContainsKey(other) ? UserMap[other] : null;
+            if (otherUser == null) return other;
+            return otherUser.DisplayName ?? otherUser.Username;
+        }
     }
 }

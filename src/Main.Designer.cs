@@ -66,6 +66,17 @@ namespace Data_Package_Tool
             copyInvitesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             dmsTab = new System.Windows.Forms.TabPage();
             elementHost2 = new System.Windows.Forms.Integration.ElementHost();
+            vcTab = new System.Windows.Forms.TabPage();
+            splitContainer1 = new System.Windows.Forms.SplitContainer();
+            topVC = new System.Windows.Forms.ListView();
+            columnHeader11 = new System.Windows.Forms.ColumnHeader();
+            columnHeader7 = new System.Windows.Forms.ColumnHeader();
+            columnHeader8 = new System.Windows.Forms.ColumnHeader();
+            columnHeader12 = new System.Windows.Forms.ColumnHeader();
+            topVCGuilds = new System.Windows.Forms.ListView();
+            columnHeader13 = new System.Windows.Forms.ColumnHeader();
+            columnHeader10 = new System.Windows.Forms.ColumnHeader();
+            columnHeader9 = new System.Windows.Forms.ColumnHeader();
             settingsTab = new System.Windows.Forms.TabPage();
             repoLb = new System.Windows.Forms.LinkLabel();
             groupBox2 = new System.Windows.Forms.GroupBox();
@@ -94,6 +105,11 @@ namespace Data_Package_Tool
             serversStatusStrip.SuspendLayout();
             serversContextMenu.SuspendLayout();
             dmsTab.SuspendLayout();
+            vcTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
             settingsTab.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -106,6 +122,7 @@ namespace Data_Package_Tool
             tabControl1.Controls.Add(imagesTab);
             tabControl1.Controls.Add(serversTab);
             tabControl1.Controls.Add(dmsTab);
+            tabControl1.Controls.Add(vcTab);
             tabControl1.Controls.Add(settingsTab);
             tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -450,6 +467,87 @@ namespace Data_Package_Tool
             elementHost2.TabIndex = 0;
             elementHost2.Text = "elementHost2";
             // 
+            // vcTab
+            // 
+            vcTab.BackColor = System.Drawing.Color.FromArgb(49, 51, 56);
+            vcTab.Controls.Add(splitContainer1);
+            vcTab.Location = new System.Drawing.Point(4, 24);
+            vcTab.Name = "vcTab";
+            vcTab.Size = new System.Drawing.Size(580, 289);
+            vcTab.TabIndex = 6;
+            vcTab.Text = "Voice Stats";
+            // 
+            // splitContainer1
+            // 
+            splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer1.Location = new System.Drawing.Point(0, 0);
+            splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(topVC);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.Controls.Add(topVCGuilds);
+            splitContainer1.Size = new System.Drawing.Size(580, 289);
+            splitContainer1.SplitterDistance = 279;
+            splitContainer1.TabIndex = 2;
+            // 
+            // topVC
+            // 
+            topVC.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { columnHeader11, columnHeader7, columnHeader8, columnHeader12 });
+            topVC.Dock = System.Windows.Forms.DockStyle.Fill;
+            topVC.Location = new System.Drawing.Point(0, 0);
+            topVC.Name = "topVC";
+            topVC.Size = new System.Drawing.Size(279, 289);
+            topVC.TabIndex = 0;
+            topVC.UseCompatibleStateImageBehavior = false;
+            topVC.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader11
+            // 
+            columnHeader11.Text = "Channel Name";
+            // 
+            // columnHeader7
+            // 
+            columnHeader7.Text = "Channel Id";
+            columnHeader7.Width = 80;
+            // 
+            // columnHeader8
+            // 
+            columnHeader8.Text = "Duration";
+            columnHeader8.Width = 150;
+            // 
+            // columnHeader12
+            // 
+            columnHeader12.Text = "Guild Name";
+            // 
+            // topVCGuilds
+            // 
+            topVCGuilds.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { columnHeader13, columnHeader10, columnHeader9 });
+            topVCGuilds.Dock = System.Windows.Forms.DockStyle.Fill;
+            topVCGuilds.Location = new System.Drawing.Point(0, 0);
+            topVCGuilds.Name = "topVCGuilds";
+            topVCGuilds.Size = new System.Drawing.Size(297, 289);
+            topVCGuilds.TabIndex = 1;
+            topVCGuilds.UseCompatibleStateImageBehavior = false;
+            topVCGuilds.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader13
+            // 
+            columnHeader13.Text = "Guild Name";
+            // 
+            // columnHeader10
+            // 
+            columnHeader10.Text = "Duration";
+            columnHeader10.Width = 150;
+            // 
+            // columnHeader9
+            // 
+            columnHeader9.Text = "Guild Id";
+            columnHeader9.Width = 80;
+            // 
             // settingsTab
             // 
             settingsTab.BackColor = System.Drawing.Color.FromArgb(49, 51, 56);
@@ -689,6 +787,11 @@ namespace Data_Package_Tool
             serversStatusStrip.PerformLayout();
             serversContextMenu.ResumeLayout(false);
             dmsTab.ResumeLayout(false);
+            vcTab.ResumeLayout(false);
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
             settingsTab.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
@@ -754,6 +857,17 @@ namespace Data_Package_Tool
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox userTokenTb;
         private System.Windows.Forms.LinkLabel repoLb;
+        private System.Windows.Forms.TabPage vcTab;
+        private System.Windows.Forms.ListView topVC;
+        private System.Windows.Forms.ListView topVCGuilds;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.ColumnHeader columnHeader10;
+        private System.Windows.Forms.ColumnHeader columnHeader7;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.ColumnHeader columnHeader11;
+        private System.Windows.Forms.ColumnHeader columnHeader12;
+        private System.Windows.Forms.ColumnHeader columnHeader13;
     }
 }
 
