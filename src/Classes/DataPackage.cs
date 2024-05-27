@@ -285,7 +285,7 @@ namespace Data_Package_Tool.Classes
         private void ProcessAnalyticsLine(string line)
         {
             // Pro optimization
-            if (!new string[] { "guild_joined", "create_guild", "accepted_instant_invite", "voice_connection_success", "voice_disconnect" }.Any(x=>line.StartsWith("{\"event_type\":\""+x)))
+            if (!new string[] { "guild_joined", "create_guild", "accepted_instant_invite", "voice_disconnect" }.Any(x=>line.StartsWith("{\"event_type\":\""+x)))
             {
                 return;
             }
@@ -337,9 +337,6 @@ namespace Data_Package_Tool.Classes
                     break;
                 case "accepted_instant_invite":
                     if (eventData.GuildId != null) this.AcceptedInvites.Add(eventData);
-                    break;
-                case "voice_connection_success":
-
                     break;
                 case "voice_disconnect":
                     this.VoiceDisconnections.Add(new DVoiceConnection()
