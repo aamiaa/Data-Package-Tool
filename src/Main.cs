@@ -535,7 +535,7 @@ namespace Data_Package_Tool
         private int imagesPerPage = 36;
         private int imagesPerRow = 9;
         private int imageSquareSize = 200;
-        private void LoadImages()
+        private async Task LoadImages()
         {
             if (DataPackage.ImageAttachments.Count == 0)
             {
@@ -548,6 +548,26 @@ namespace Data_Package_Tool
 
             if (imagesOffset < 0) imagesOffset = 0;
             if (imagesOffset >= DataPackage.ImageAttachments.Count || imagesOffset + imagesPerPage >= DataPackage.ImageAttachments.Count) imagesOffset = DataPackage.ImageAttachments.Count - imagesPerPage;
+
+            // Refresh images on the current page
+            if (DataPackage.UsesUnsignedCDNLinks)
+            {
+                var needRefreshing = new List<DAttachment>();
+                for (int i = 0; i < imagesPerPage; i++)
+                {
+                    var attachment = DataPackage.ImageAttachments[imagesOffset + i];
+                    if(!attachment.IsSigned)
+                    {
+                        needRefreshing.Add(attachment);
+                    }
+                }
+
+                if (needRefreshing.Count > 0)
+                {
+                    imagesCountLb.Text = $"Refreshing {needRefreshing.Count} attachments...";
+                    await Discord.RefreshAttachmentsAsync(needRefreshing);
+                }
+            }
 
             imagesPanel.Controls.Clear();
             imagesCountLb.Text = $"{imagesOffset + 1}-{imagesOffset + imagesPerPage} of {DataPackage.ImageAttachments.Count}";
@@ -578,31 +598,31 @@ namespace Data_Package_Tool
             imagesNextBtn.Enabled = true;
             imagesPrevBtn.Enabled = true;
         }
-        private void imagesNextBtn_Click(object sender, EventArgs e)
+        private async void imagesNextBtn_Click(object sender, EventArgs e)
         {
             if (imagesPanel.Controls.Count > 0)
             {
                 imagesOffset += imagesPerPage;
             }
-            LoadImages();
+            await LoadImages();
         }
 
-        private void imagesPrevBtn_Click(object sender, EventArgs e)
+        private async void imagesPrevBtn_Click(object sender, EventArgs e)
         {
             if (imagesPanel.Controls.Count > 0)
             {
                 imagesOffset -= imagesPerPage;
             }
-            LoadImages();
+            await LoadImages();
         }
 
-        private void imagesCountLb_DoubleClick(object sender, EventArgs e)
+        private async void imagesCountLb_DoubleClick(object sender, EventArgs e)
         {
             var offset = Interaction.InputBox("Enter the offset number", "Prompt");
             try
             {
                 imagesOffset = Int32.Parse(offset);
-                LoadImages();
+                await LoadImages();
             }
             catch (Exception) { }
         }
@@ -794,12 +814,27 @@ namespace Data_Package_Tool
 
         private void userTokenTb_TextChanged(object sender, EventArgs e)
         {
-            Discord.UserToken = userTokenTb.Text.Trim();
+            string token = userTokenTb.Text.Trim();
+            if (token != "")
+            {
+                Discord.UserToken = token;
+            } else
+            {
+                Discord.UserToken = null;
+            }
         }
 
         private void botTokenTb_TextChanged(object sender, EventArgs e)
         {
-            Discord.BotToken = botTokenTb.Text.Trim();
+            string token = botTokenTb.Text.Trim();
+            if (token != "")
+            {
+                Discord.BotToken = token;
+            }
+            else
+            {
+                Discord.BotToken = null;
+            }
         }
 
         private void repoLb_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
