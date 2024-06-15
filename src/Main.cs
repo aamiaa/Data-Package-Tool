@@ -164,6 +164,7 @@ namespace Data_Package_Tool
                     x => new DVoiceConnection()
                     {
                         ChannelId = x.First().ChannelId,
+                        ChannelType = x.First().ChannelType,
                         GuildId = x.First().GuildId,
                         Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks))
                     })
@@ -171,14 +172,39 @@ namespace Data_Package_Tool
                 .Select(
                     x =>
                     {
-                        DataPackage.ChannelsMap.TryGetValue(x.ChannelId ?? "", out DChannel channel);
-                        string guildName;
-                        if (channel?.IsDM() ?? false) guildName = "DMs";
-                        else if (channel?.IsGroupDM() ?? false) guildName = "Group DMs";
-                        else DataPackage.GuildNamesMap.TryGetValue(x.GuildId ?? "", out guildName);
+                        DataPackage.ChannelsMap.TryGetValue(x.ChannelId, out DChannel channel);
+
+                        string channelName = "";
+                        string location = "";
+                        if (x.GuildId != null)
+                        {
+                            DataPackage.GuildNamesMap.TryGetValue(x.GuildId, out location);
+                        }
+                        else
+                        {
+                            // Note: both of these may not be present
+                            var channelType = x.ChannelType ?? channel?.Type;
+                            if (channelType == 1)
+                            {
+                                location = "(DM)";
+                            }
+                            else if (channelType == 3)
+                            {
+                                location = "(Group DM)";
+                            } else // Assume that lack of guild id = somewhere in dms...
+                            {
+                                location = "(DM or Group DM)";
+                            }
+                        }
+
+                        if (channel != null)
+                        {
+                            channelName = channel.GetName(DataPackage.User, DataPackage.UsersMap);
+                        }
+
                         return new ListViewItem(new string[] {
-                                (channel != null) ? channel.GetName(DataPackage.User, DataPackage.UsersMap) : "",
-                                guildName,
+                                channelName,
+                                location,
                                 x.Duration.ToString(@"%d'd '%h'h '%m'm '%s\s"),
                                 x.ChannelId,
                                 x.GuildId,

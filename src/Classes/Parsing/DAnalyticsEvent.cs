@@ -13,6 +13,8 @@ namespace Data_Package_Tool.Classes.Parsing
         public string GuildId { get; set; } // the guild id on invite events
         [JsonProperty("channel_id")]
         public string ChannelId { get; set; } // the channel id on voice events
+        [JsonProperty("channel_type")]
+        public string ChannelType { get; set; }
         [JsonProperty("invite")]
         public string InviteCode { get; set; }
 

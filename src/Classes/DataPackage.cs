@@ -343,6 +343,7 @@ namespace Data_Package_Tool.Classes
                     this.VoiceDisconnections.Add(new DVoiceConnection()
                     {
                         ChannelId = eventData.ChannelId,
+                        ChannelType = eventData.ChannelType != null ? int.Parse(eventData.ChannelType) : null,
                         GuildId = eventData.GuildId,
                         Timestamp = eventData.Timestamp,
                         Duration = TimeSpan.FromMilliseconds(eventData.Duration)
