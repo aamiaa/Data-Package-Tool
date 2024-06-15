@@ -1,4 +1,4 @@
-﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes;
 using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Forms;
 using Data_Package_Tool.Helpers;
@@ -251,17 +251,53 @@ namespace Data_Package_Tool
 
         private List<DMessage> LastSearchResults;
         private int SearchResultsOffset = 0;
-        private void LoadSearchResults()
+        private async Task LoadSearchResults()
         {
             if (LastSearchResults == null || LastSearchResults.Count == 0) return;
+
+            searchBtn.Enabled = false;
+            searchTb.Enabled = false;
+            searchOptionsBtn.Enabled = false;
+            messagesPrevBtn.Enabled = false;
+            messagesNextBtn.Enabled = false;
 
             // Clear images cache to free up RAM
             Discord.AttachmentsCache.Clear();
             GC.Collect();
 
             ((MessageListWPF)elementHost1.Child).Clear();
+            var msgsToShow = LastSearchResults.Skip(SearchResultsOffset).Take(MaxSearchResults).ToList();
+
+            // Refresh attachments on the current page, if possible
+            if (DataPackage.UsesUnsignedCDNLinks)
+            {
+                var needRefreshing = new List<DAttachment>();
+                foreach(var msg in msgsToShow)
+                {
+                    foreach(var attachment in msg.Attachments)
+                    {
+                        if(!attachment.IsSigned)
+                        {
+                            needRefreshing.Add(attachment);
+                        }
+                    }
+                }
+
+                if(needRefreshing.Count > 0)
+                {
+                    resultsCountLb.Text = $"Refreshing {needRefreshing.Count} attachments...";
+                    await Discord.RefreshAttachmentsAsync(needRefreshing);
+                }
+            }
+
+            ((MessageListWPF)elementHost1.Child).DisplayMessages(msgsToShow);
             resultsCountLb.Text = $"{SearchResultsOffset + 1}-{Math.Min(SearchResultsOffset + MaxSearchResults, LastSearchResults.Count)} of {LastSearchResults.Count}";
-            ((MessageListWPF)elementHost1.Child).DisplayMessages(LastSearchResults, SearchResultsOffset, Math.Min(LastSearchResults.Count - 1, SearchResultsOffset + MaxSearchResults));
+
+            searchBtn.Enabled = true;
+            searchTb.Enabled = true;
+            searchOptionsBtn.Enabled = true;
+            messagesPrevBtn.Enabled = true;
+            messagesNextBtn.Enabled = true;
         }
         private void searchBtn_Click(object sender, EventArgs e)
         {
@@ -377,13 +413,13 @@ namespace Data_Package_Tool
             }
         }
 
-        private void searchBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private async void searchBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             searchTimer.Stop();
 
             if (LastSearchResults.Count > 0)
             {
-                LoadSearchResults();
+                await LoadSearchResults();
 
                 if (LastSearchResults.Count >= MaxSearchResults)
                 {
@@ -398,12 +434,6 @@ namespace Data_Package_Tool
             {
                 resultsCountLb.Text = "No results";
             }
-
-            searchBtn.Enabled = true;
-            searchTb.Enabled = true;
-            searchOptionsBtn.Enabled = true;
-            messagesPrevBtn.Enabled = true;
-            messagesNextBtn.Enabled = true;
         }
 
         private List<DMessage> FilterMessages(List<DMessage> messages)
@@ -484,21 +514,21 @@ namespace Data_Package_Tool
             return count;
         }
 
-        private void messagesPrevBtn_Click(object sender, EventArgs e)
+        private async void messagesPrevBtn_Click(object sender, EventArgs e)
         {
             if (SearchResultsOffset - MaxSearchResults < 0) return;
 
             SearchResultsOffset -= MaxSearchResults;
-            LoadSearchResults();
+            await LoadSearchResults();
         }
 
-        private void messagesNextBtn_Click(object sender, EventArgs e)
+        private async void messagesNextBtn_Click(object sender, EventArgs e)
         {
             if (LastSearchResults.Count <= MaxSearchResults) return;
             if (SearchResultsOffset + MaxSearchResults > LastSearchResults.Count) return;
 
             SearchResultsOffset += MaxSearchResults;
-            LoadSearchResults();
+            await LoadSearchResults();
         }
 
         private int imagesOffset = 0;

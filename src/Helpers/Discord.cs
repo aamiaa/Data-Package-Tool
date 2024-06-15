@@ -1,12 +1,14 @@
 ﻿using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Helpers;
 using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.ApplicationServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -257,6 +259,68 @@ namespace Data_Package_Tool.Classes
                 Util.MsgBoxErr($"Request error: {response.response.StatusCode} {response.body}");
                 return false;
             }
+        }
+
+        public static async Task<bool> RefreshAttachmentsAsync(List<DAttachment> attachments)
+        {
+            if (BotToken == null)
+            {
+                return false;
+            }
+            if(!ValidateToken(BotToken))
+            {
+                Util.MsgBoxErr(Consts.InvalidBotTokenError);
+                return false;
+            }
+            if(ValidateToken(BotToken, Main.DataPackage.User.Id))
+            {
+                Util.MsgBoxErr(Consts.WrongTokenType);
+                return false;
+            }
+
+            int maxUrls = 50;
+            try
+            {
+                for (int i = 0; i < attachments.Count; i += maxUrls)
+                {
+                    if (i > 0)
+                    {
+                        await Task.Delay(100);
+                    }
+
+                    var urls = attachments.Select(x => x.Url).Skip(i).Take(maxUrls).ToArray();
+                    var body = new Dictionary<string, string[]>
+                    {
+                        { "attachment_urls", urls }
+                    };
+
+                    var res = await DRequest.RequestAsync(HttpMethod.Post, $"https://discord.com/api/v9/attachments/refresh-urls", new Dictionary<string, string>
+                    {
+                        {"Authorization", $"Bot {Discord.BotToken}"}
+                    }, JsonConvert.SerializeObject(body), false);
+
+                    if (res.response.StatusCode == HttpStatusCode.OK)
+                    {
+                        dynamic data = JObject.Parse(res.body);
+                        JArray refreshedUrls = data.refreshed_urls;
+
+                        foreach (var urlData in refreshedUrls)
+                        {
+                            attachments.ToList().Find(x => x.Url == (string)urlData["original"]).UpdateUrl((string)urlData["refreshed"]);
+                        }
+                    }
+                    else
+                    {
+                        Util.MsgBoxErr($"Failed to refresh attachments: status code {res.response.StatusCode} - {res.body}");
+                        return false;
+                    }
+                }
+            } catch(Exception ex)
+            {
+                Util.MsgBoxErr($"Failed to refresh attachments: {ex}");
+            }
+
+            return true;
         }
     }
 }

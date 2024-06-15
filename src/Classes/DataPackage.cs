@@ -37,10 +37,7 @@ namespace Data_Package_Tool.Classes
         public DateTime CreationTime { get; private set; }
         public int TotalMessages { get; private set; } = 0;
 
-        public bool UsesUnsignedCDNLinks
-        {
-            get => ImageAttachments.Count > 0 && !ImageAttachments[0].Url.Contains("?ex=");
-        }
+        public bool UsesUnsignedCDNLinks { get; private set; }
 
         public LoadStatus LoadStatus = new()
         {
@@ -209,6 +206,7 @@ namespace Data_Package_Tool.Classes
             });
 
             this.ImageAttachments = this.ImageAttachments.OrderByDescending(o => Int64.Parse(o.Message.Id)).ToList();
+            this.UsesUnsignedCDNLinks = ImageAttachments.Count > 0 && !ImageAttachments[0].IsSigned;
             this.LoadStatus.Status = $"Finished! Parsed {this.TotalMessages.ToString("N0", new NumberFormatInfo { NumberGroupSeparator = " " })} messages in {Math.Floor((DateTime.Now - startTime).TotalSeconds)}s\nPackage created at: {this.CreationTime.ToShortDateString()}";
 
             this.LoadStatus.Finished = true;

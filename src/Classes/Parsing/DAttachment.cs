@@ -24,11 +24,20 @@ namespace Data_Package_Tool.Classes.Parsing
         {
             get => VideoExtensions.Contains(this.Extension);
         }
+        public bool IsSigned
+        {
+            get => Url.Contains("?ex=");
+        }
 
         public DAttachment(string url, DMessage message)
         {
-            this.Url = url;
             this.Message = message;
+            this.UpdateUrl(url);
+        }
+
+        public void UpdateUrl(string url)
+        {
+            this.Url = url;
 
             var match = Regex.Match(url, @"attachments\/\d+\/(\d+)\/([\w.-]+\.(\w+))");
             this.Id = match.Groups[1].Value;
