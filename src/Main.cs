@@ -134,7 +134,7 @@ namespace Data_Package_Tool
             ((DmsListWPF)elementHost2.Child).DisplayMessages(DataPackage.User, dmChannels);
         }
 
-        private void LoadJoinedGuilds()
+        private void LoadAnalytics()
         {
             tabControl1.TabPages[3].Text = $"Servers - {DataPackage.JoinedGuilds.Count}";
 
@@ -324,23 +324,23 @@ namespace Data_Package_Tool
                     }
                 }, TaskScheduler.FromCurrentSynchronizationContext());
 
-                var guildsTask = new Task(() =>
+                var analyticsTask = new Task(() =>
                 {
                     DataPackage.LoadGuilds(openFileDialog1.FileName);
                 });
-                guildsTask.ContinueWith(t =>
+                analyticsTask.ContinueWith(t =>
                 {
-                    LoadJoinedGuilds();
-
-                    if (task.IsCompleted) LoadTopVC();
-                    else task.ContinueWith(t => LoadTopVC());
+                    LoadAnalytics();
 
                     serversStatusStrip.Visible = false;
                 }, TaskScheduler.FromCurrentSynchronizationContext());
 
                 serversStatusStrip.Visible = true;
+
                 task.Start();
-                guildsTask.Start();
+                analyticsTask.Start();
+
+                Task.WhenAll(new Task[] { task, analyticsTask }).ContinueWith((_,_)=>LoadTopVC(),null, TaskScheduler.FromCurrentSynchronizationContext());
 
                 loadTimer.Start();
             }
