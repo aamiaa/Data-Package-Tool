@@ -172,6 +172,15 @@ namespace Data_Package_Tool
             Util.MsgBoxErr("Server could not be found in your joined servers list (bug?)");
         }
 
+        private void ToggleSearchOptions(bool enabled)
+        {
+            searchBtn.Enabled = enabled;
+            searchTb.Enabled = enabled;
+            searchOptionsBtn.Enabled = enabled;
+            messagesPrevBtn.Enabled = enabled;
+            messagesNextBtn.Enabled = enabled;
+        }
+
         private void loadFileBtn_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
@@ -214,7 +223,7 @@ namespace Data_Package_Tool
 
                     if (DataPackage.UsesUnsignedCDNLinks)
                     {
-                        Util.MsgBoxWarn("This data package was created before Discord's attachment url signing.\nImages may be broken, and other attachments may be inaccessible!");
+                        Util.MsgBoxWarn("This data package was created before Discord's attachment url signing!\n\nIf you want to be able to view images and other attachments, please enter a bot token in the settings tab.");
                     }
                 }, TaskScheduler.FromCurrentSynchronizationContext());
 
@@ -251,17 +260,45 @@ namespace Data_Package_Tool
 
         private List<DMessage> LastSearchResults;
         private int SearchResultsOffset = 0;
-        private void LoadSearchResults()
+        private async Task LoadSearchResults()
         {
             if (LastSearchResults == null || LastSearchResults.Count == 0) return;
+
+            ToggleSearchOptions(false);
 
             // Clear images cache to free up RAM
             Discord.AttachmentsCache.Clear();
             GC.Collect();
 
             ((MessageListWPF)elementHost1.Child).Clear();
+            var msgsToShow = LastSearchResults.Skip(SearchResultsOffset).Take(MaxSearchResults).ToList();
+
+            // Refresh attachments on the current page, if possible
+            if (DataPackage.UsesUnsignedCDNLinks)
+            {
+                var needRefreshing = new List<DAttachment>();
+                foreach(var msg in msgsToShow)
+                {
+                    foreach(var attachment in msg.Attachments)
+                    {
+                        if(!attachment.IsSigned)
+                        {
+                            needRefreshing.Add(attachment);
+                        }
+                    }
+                }
+
+                if(needRefreshing.Count > 0)
+                {
+                    resultsCountLb.Text = $"Refreshing {needRefreshing.Count} attachments...";
+                    await Discord.RefreshAttachmentsAsync(needRefreshing);
+                }
+            }
+
+            ((MessageListWPF)elementHost1.Child).DisplayMessages(msgsToShow);
             resultsCountLb.Text = $"{SearchResultsOffset + 1}-{Math.Min(SearchResultsOffset + MaxSearchResults, LastSearchResults.Count)} of {LastSearchResults.Count}";
-            ((MessageListWPF)elementHost1.Child).DisplayMessages(LastSearchResults, SearchResultsOffset, Math.Min(LastSearchResults.Count - 1, SearchResultsOffset + MaxSearchResults));
+
+            ToggleSearchOptions(true);
         }
         private void searchBtn_Click(object sender, EventArgs e)
         {
@@ -278,11 +315,7 @@ namespace Data_Package_Tool
                 }
             }
 
-            searchBtn.Enabled = false;
-            searchTb.Enabled = false;
-            searchOptionsBtn.Enabled = false;
-            messagesPrevBtn.Enabled = false;
-            messagesNextBtn.Enabled = false;
+            ToggleSearchOptions(false);
             ((MessageListWPF)elementHost1.Child).Clear();
 
             LastSearchResults = new List<DMessage>();
@@ -377,13 +410,13 @@ namespace Data_Package_Tool
             }
         }
 
-        private void searchBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private async void searchBw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             searchTimer.Stop();
 
             if (LastSearchResults.Count > 0)
             {
-                LoadSearchResults();
+                await LoadSearchResults();
 
                 if (LastSearchResults.Count >= MaxSearchResults)
                 {
@@ -398,12 +431,6 @@ namespace Data_Package_Tool
             {
                 resultsCountLb.Text = "No results";
             }
-
-            searchBtn.Enabled = true;
-            searchTb.Enabled = true;
-            searchOptionsBtn.Enabled = true;
-            messagesPrevBtn.Enabled = true;
-            messagesNextBtn.Enabled = true;
         }
 
         private List<DMessage> FilterMessages(List<DMessage> messages)
@@ -484,28 +511,28 @@ namespace Data_Package_Tool
             return count;
         }
 
-        private void messagesPrevBtn_Click(object sender, EventArgs e)
+        private async void messagesPrevBtn_Click(object sender, EventArgs e)
         {
             if (SearchResultsOffset - MaxSearchResults < 0) return;
 
             SearchResultsOffset -= MaxSearchResults;
-            LoadSearchResults();
+            await LoadSearchResults();
         }
 
-        private void messagesNextBtn_Click(object sender, EventArgs e)
+        private async void messagesNextBtn_Click(object sender, EventArgs e)
         {
             if (LastSearchResults.Count <= MaxSearchResults) return;
             if (SearchResultsOffset + MaxSearchResults > LastSearchResults.Count) return;
 
             SearchResultsOffset += MaxSearchResults;
-            LoadSearchResults();
+            await LoadSearchResults();
         }
 
         private int imagesOffset = 0;
         private int imagesPerPage = 36;
         private int imagesPerRow = 9;
         private int imageSquareSize = 200;
-        private void LoadImages()
+        private async Task LoadImages()
         {
             if (DataPackage.ImageAttachments.Count == 0)
             {
@@ -518,6 +545,26 @@ namespace Data_Package_Tool
 
             if (imagesOffset < 0) imagesOffset = 0;
             if (imagesOffset >= DataPackage.ImageAttachments.Count || imagesOffset + imagesPerPage >= DataPackage.ImageAttachments.Count) imagesOffset = DataPackage.ImageAttachments.Count - imagesPerPage;
+
+            // Refresh images on the current page
+            if (DataPackage.UsesUnsignedCDNLinks)
+            {
+                var needRefreshing = new List<DAttachment>();
+                for (int i = 0; i < imagesPerPage; i++)
+                {
+                    var attachment = DataPackage.ImageAttachments[imagesOffset + i];
+                    if(!attachment.IsSigned)
+                    {
+                        needRefreshing.Add(attachment);
+                    }
+                }
+
+                if (needRefreshing.Count > 0)
+                {
+                    imagesCountLb.Text = $"Refreshing {needRefreshing.Count} attachments...";
+                    await Discord.RefreshAttachmentsAsync(needRefreshing);
+                }
+            }
 
             imagesPanel.Controls.Clear();
             imagesCountLb.Text = $"{imagesOffset + 1}-{imagesOffset + imagesPerPage} of {DataPackage.ImageAttachments.Count}";
@@ -548,31 +595,31 @@ namespace Data_Package_Tool
             imagesNextBtn.Enabled = true;
             imagesPrevBtn.Enabled = true;
         }
-        private void imagesNextBtn_Click(object sender, EventArgs e)
+        private async void imagesNextBtn_Click(object sender, EventArgs e)
         {
             if (imagesPanel.Controls.Count > 0)
             {
                 imagesOffset += imagesPerPage;
             }
-            LoadImages();
+            await LoadImages();
         }
 
-        private void imagesPrevBtn_Click(object sender, EventArgs e)
+        private async void imagesPrevBtn_Click(object sender, EventArgs e)
         {
             if (imagesPanel.Controls.Count > 0)
             {
                 imagesOffset -= imagesPerPage;
             }
-            LoadImages();
+            await LoadImages();
         }
 
-        private void imagesCountLb_DoubleClick(object sender, EventArgs e)
+        private async void imagesCountLb_DoubleClick(object sender, EventArgs e)
         {
             var offset = Interaction.InputBox("Enter the offset number", "Prompt");
             try
             {
                 imagesOffset = Int32.Parse(offset);
-                LoadImages();
+                await LoadImages();
             }
             catch (Exception) { }
         }
@@ -764,12 +811,27 @@ namespace Data_Package_Tool
 
         private void userTokenTb_TextChanged(object sender, EventArgs e)
         {
-            Discord.UserToken = userTokenTb.Text.Trim();
+            string token = userTokenTb.Text.Trim();
+            if (token != "")
+            {
+                Discord.UserToken = token;
+            } else
+            {
+                Discord.UserToken = null;
+            }
         }
 
         private void botTokenTb_TextChanged(object sender, EventArgs e)
         {
-            Discord.BotToken = botTokenTb.Text.Trim();
+            string token = botTokenTb.Text.Trim();
+            if (token != "")
+            {
+                Discord.BotToken = token;
+            }
+            else
+            {
+                Discord.BotToken = null;
+            }
         }
 
         private void repoLb_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

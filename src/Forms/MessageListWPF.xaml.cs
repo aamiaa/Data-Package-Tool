@@ -24,14 +24,14 @@ namespace Data_Package_Tool
             Messages.Clear();
         }
 
-        public void DisplayMessages(List<DMessage> messages, int startIdx, int endIdx)
+        public void DisplayMessages(List<DMessage> messages)
         {
-            for(int i=startIdx;i<=endIdx;i++)
+            foreach(var msg in messages)
             {
-                Messages.Add(messages[i]);
+                Messages.Add(msg);
             }
 
-            mainList.ScrollIntoView(messages[startIdx]);
+            mainList.ScrollIntoView(messages[0]);
         }
     }
 }
