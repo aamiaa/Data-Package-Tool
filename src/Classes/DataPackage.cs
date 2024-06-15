@@ -345,7 +345,7 @@ namespace Data_Package_Tool.Classes
                         ChannelId = eventData.ChannelId,
                         GuildId = eventData.GuildId,
                         Timestamp = eventData.Timestamp,
-                        Duration = new TimeSpan(eventData.Duration * 10000)
+                        Duration = TimeSpan.FromMilliseconds(eventData.Duration)
                     });
                     break;
             }

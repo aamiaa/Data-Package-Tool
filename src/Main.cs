@@ -161,35 +161,68 @@ namespace Data_Package_Tool
                 DataPackage.VoiceDisconnections
                 .GroupBy(x => x.ChannelId)
                 .Select(
-                    x => new DVoiceConnection() { 
+                    x => new DVoiceConnection()
+                    {
                         ChannelId = x.First().ChannelId,
                         GuildId = x.First().GuildId,
                         Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks))
                     })
                 .OrderByDescending(x => x.Duration)
                 .Select(
-                    x => new ListViewItem(new string[] {
-                        (x.ChannelId != null && DataPackage.ChannelsMap.ContainsKey(x.ChannelId)) ?
-                        (DataPackage.ChannelsMap[x.ChannelId].GetName(DataPackage.User, DataPackage.UsersMap) ?? "") : "", // Get channel name from ChannelId
-                        x.ChannelId,
-                        x.Duration.ToString(@"%d'days '%h\h%m\m%s\s"),
-                        ((x.GuildId != null && DataPackage.GuildNamesMap.ContainsKey(x.GuildId)) ? DataPackage.GuildNamesMap[x.GuildId] : (x.GuildId ?? "DMs"))  // Get guild name from GuildId
-                    }))
+                    x =>
+                    {
+                        DataPackage.ChannelsMap.TryGetValue(x.ChannelId ?? "", out DChannel channel);
+                        string guildName;
+                        if (channel?.IsDM() ?? false) guildName = "DMs";
+                        else if (channel?.IsGroupDM() ?? false) guildName = "Group DMs";
+                        else DataPackage.GuildNamesMap.TryGetValue(x.GuildId ?? "", out guildName);
+                        return new ListViewItem(new string[] {
+                                (channel != null) ? channel.GetName(DataPackage.User, DataPackage.UsersMap) : "",
+                                x.Duration.ToString(@"%d'd '%h'h '%m'm '%s\s"),
+                                guildName,
+                                x.ChannelId,
+                                x.GuildId,
+                        });
+                    })
                 .ToArray());
 
             topVCGuilds.Items.AddRange(
                 DataPackage.VoiceDisconnections
-                .GroupBy(x => x.GuildId)
-                .Select(x => new DVoiceConnection() {
-                    GuildId = x.First().GuildId,
-                    Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks))
+                .GroupBy(x => x.ChannelId) // Group by channel to avoid getting the same channel multiple times in the future.
+                .Select(
+                    x => new DVoiceConnection()
+                    {
+                        ChannelId = x.First().ChannelId,
+                        GuildId = x.First().GuildId,
+                        Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks))
+                    })
+                .GroupBy(x =>
+                {
+                    DataPackage.ChannelsMap.TryGetValue(x.ChannelId ?? "", out DChannel channel);
+                    return x.GuildId + channel?.Type;
+                })
+                .Select(x =>
+                {
+                    DataPackage.ChannelsMap.TryGetValue(x.First().ChannelId ?? "", out DChannel channel);
+                    return new DVoiceConnection()
+                    {
+                        GuildId = x.First().GuildId ?? (channel?.Type ?? 0).ToString(),
+                        Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks))
+                    };
                 })
                 .OrderByDescending(x => x.Duration)
-                .Select(x => new ListViewItem(new string[] {
-                    ((x.GuildId != null && DataPackage.GuildNamesMap.ContainsKey(x.GuildId)) ? DataPackage.GuildNamesMap[x.GuildId] : (x.GuildId == null ? "DMs" : "")),  // Get guild name from GuildId
-                    x.Duration.ToString(@"%d'days '%h\h%m\m%s\s"),
-                    x.GuildId 
-                }))
+                .Select(x =>
+                {
+                    string guildName;
+                    if (x.GuildId == "1") guildName = "DMs";
+                    else if (x.GuildId == "3") guildName = "Group DMs";
+                    else DataPackage.GuildNamesMap.TryGetValue(x.GuildId ?? "", out guildName);
+                    return new ListViewItem(new string[] {
+                        guildName,
+                        x.Duration.ToString(@"%d'd '%h'h '%m'm '%s\s"),
+                        x.GuildId,
+                    });
+                })
                 .ToArray());
         }
 
@@ -267,7 +300,7 @@ namespace Data_Package_Tool
                     LoadJoinedGuilds();
 
                     if (task.IsCompleted) LoadTopVC();
-                    else task.ContinueWith(t=>LoadTopVC());
+                    else task.ContinueWith(t => LoadTopVC());
 
                     serversStatusStrip.Visible = false;
                 }, TaskScheduler.FromCurrentSynchronizationContext());
@@ -822,6 +855,30 @@ namespace Data_Package_Tool
                 FileName = "https://github.com/aamiaa/Data-Package-Tool",
                 UseShellExecute = true
             });
+        }
+
+        private void copyVCChannelIdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (topVC.SelectedItems.Count == 0) return;
+
+            string channelId = topVC.SelectedItems[0].SubItems[3].Text;
+            Clipboard.SetText(channelId);
+        }
+
+        private void copyVCGuildIdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (topVC.SelectedItems.Count == 0) return;
+
+            string guildId = topVC.SelectedItems[0].SubItems[4].Text;
+            Clipboard.SetText(guildId);
+        }
+
+        private void copyVCIdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (topVC.SelectedItems.Count == 0) return;
+
+            string guildId = topVCGuilds.SelectedItems[0].SubItems[2].Text;
+            Clipboard.SetText(guildId);
         }
     }
 }
