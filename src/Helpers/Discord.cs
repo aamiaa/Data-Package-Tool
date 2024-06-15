@@ -318,6 +318,7 @@ namespace Data_Package_Tool.Classes
             } catch(Exception ex)
             {
                 Util.MsgBoxErr($"Failed to refresh attachments: {ex}");
+                return false;
             }
 
             return true;
