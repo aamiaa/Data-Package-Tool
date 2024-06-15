@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using Microsoft.VisualBasic.ApplicationServices;
 
 namespace Data_Package_Tool
 {
@@ -134,7 +135,7 @@ namespace Data_Package_Tool
             ((DmsListWPF)elementHost2.Child).DisplayMessages(DataPackage.User, dmChannels);
         }
 
-        private void LoadJoinedGuilds()
+        private void LoadAnalytics()
         {
             tabControl1.TabPages[3].Text = $"Servers - {DataPackage.JoinedGuilds.Count}";
 
@@ -151,6 +152,140 @@ namespace Data_Package_Tool
                 var lvItem = new ListViewItem(values);
                 serversLv.Items.Add(lvItem);
             }
+        }
+        private void LoadTopVC()
+        {
+            topVC.Items.Clear();
+            topVCGuilds.Items.Clear();
+
+            topVC.Items.AddRange(
+                DataPackage.VoiceDisconnections
+                .GroupBy(x => x.ChannelId)
+                .Select(
+                    x => new DVoiceConnection()
+                    {
+                        ChannelId = x.First().ChannelId,
+                        ChannelType = x.First().ChannelType,
+                        GuildId = x.First().GuildId,
+                        Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks))
+                    })
+                .OrderByDescending(x => x.Duration)
+                .Select(
+                    x =>
+                    {
+                        DataPackage.ChannelsMap.TryGetValue(x.ChannelId, out DChannel channel);
+
+                        string channelName = "";
+                        string location = "";
+                        if (x.GuildId != null)
+                        {
+                            DataPackage.GuildNamesMap.TryGetValue(x.GuildId, out location);
+                        }
+                        else
+                        {
+                            // Note: both of these may not be present
+                            var channelType = x.ChannelType ?? channel?.Type;
+                            if (channelType == 1)
+                            {
+                                location = "(DM)";
+                            }
+                            else if (channelType == 3)
+                            {
+                                location = "(Group DM)";
+                            } else // Assume that lack of guild id = somewhere in dms...
+                            {
+                                location = "(DM or Group DM)";
+                            }
+                        }
+
+                        if (channel != null)
+                        {
+                            if (channel.IsDM())
+                            {
+                                if (DataPackage.UsersMap.TryGetValue(channel.DMRecipientId, out DUser recipient))
+                                {
+                                    channelName = recipient.DisplayName ?? recipient.Tag;
+                                }
+                                else
+                                {
+                                    channelName = "(Unknown user)";
+                                }
+                            }
+                            else
+                            {
+                                if (channel.Name != null)
+                                {
+                                    channelName = channel.Name;
+                                }
+                                else
+                                {
+                                    if (channel.IsGroupDM())
+                                    {
+                                        channelName = string.Join(", ", channel.RecipientIds.Select((string recipientId) =>
+                                        {
+                                            if (DataPackage.UsersMap.TryGetValue(recipientId, out DUser recipient)) return recipient.DisplayName ?? recipient.Tag;
+                                            else return null;
+                                        }).Where(recipient=>recipient!=null));
+                                    }
+                                }
+                            }
+                        }
+
+                        return new ListViewItem(new string[] {
+                                channelName,
+                                location,
+                                x.Duration.ToString(@"%d'd '%h'h '%m'm '%s\s"),
+                                x.ChannelId,
+                                x.GuildId,
+                        });
+                    })
+                .ToArray());
+
+            topVCGuilds.Items.AddRange(
+                DataPackage.VoiceDisconnections
+                .GroupBy(x =>
+                {
+                    return x.GuildId + x.ChannelType;
+                })
+                .Select(x =>
+                {
+                    DataPackage.ChannelsMap.TryGetValue(x.First().ChannelId, out DChannel channel);
+                    return new DVoiceConnection()
+                    {
+                        GuildId = x.First().GuildId,
+                        Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks)),
+                        ChannelType = x.First().ChannelType ?? channel?.Type,
+                    };
+                })
+                .OrderByDescending(x => x.Duration)
+                .Select(x =>
+                {
+                    string location;
+                    if (x.GuildId != null)
+                    {
+                        DataPackage.GuildNamesMap.TryGetValue(x.GuildId ?? "", out location);
+                    } else
+                    {
+                        if (x.ChannelType == 1)
+                        {
+                            location = "(DM)";
+                        }
+                        else if (x.ChannelType == 3)
+                        {
+                            location = "(Group DM)";
+                        }
+                        else // Assume that lack of guild id = somewhere in dms...
+                        {
+                            location = "(DM or Group DM)";
+                        }
+                    }
+                    return new ListViewItem(new string[] {
+                        location,
+                        x.Duration.ToString(@"%d'd '%h'h '%m'm '%s\s"),
+                        x.GuildId,
+                    });
+                })
+                .ToArray());
         }
 
         public void JumpToGuild(string guildId)
@@ -227,20 +362,23 @@ namespace Data_Package_Tool
                     }
                 }, TaskScheduler.FromCurrentSynchronizationContext());
 
-                var guildsTask = new Task(() =>
+                var analyticsTask = new Task(() =>
                 {
                     DataPackage.LoadGuilds(openFileDialog1.FileName);
                 });
-                guildsTask.ContinueWith(t =>
+                analyticsTask.ContinueWith(t =>
                 {
-                    LoadJoinedGuilds();
+                    LoadAnalytics();
 
                     serversStatusStrip.Visible = false;
                 }, TaskScheduler.FromCurrentSynchronizationContext());
 
                 serversStatusStrip.Visible = true;
+
                 task.Start();
-                guildsTask.Start();
+                analyticsTask.Start();
+
+                Task.WhenAll(new Task[] { task, analyticsTask }).ContinueWith((_,_)=>LoadTopVC(),null, TaskScheduler.FromCurrentSynchronizationContext());
 
                 loadTimer.Start();
             }
@@ -841,6 +979,30 @@ namespace Data_Package_Tool
                 FileName = "https://github.com/aamiaa/Data-Package-Tool",
                 UseShellExecute = true
             });
+        }
+
+        private void copyVCChannelIdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (topVC.SelectedItems.Count == 0) return;
+
+            string channelId = topVC.SelectedItems[0].SubItems[3].Text;
+            Clipboard.SetText(channelId);
+        }
+
+        private void copyVCGuildIdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (topVC.SelectedItems.Count == 0) return;
+
+            string guildId = topVC.SelectedItems[0].SubItems[4].Text;
+            Clipboard.SetText(guildId);
+        }
+
+        private void copyVCIdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (topVCGuilds.SelectedItems.Count == 0) return;
+
+            string guildId = topVCGuilds.SelectedItems[0].SubItems[2].Text;
+            Clipboard.SetText(guildId);
         }
     }
 }

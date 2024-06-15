@@ -66,6 +66,22 @@ namespace Data_Package_Tool
             copyInvitesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             dmsTab = new System.Windows.Forms.TabPage();
             elementHost2 = new System.Windows.Forms.Integration.ElementHost();
+            vcTab = new System.Windows.Forms.TabPage();
+            splitContainer1 = new System.Windows.Forms.SplitContainer();
+            topChannelsLb = new System.Windows.Forms.Label();
+            topVC = new System.Windows.Forms.ListView();
+            columnHeader11 = new System.Windows.Forms.ColumnHeader();
+            columnHeader12 = new System.Windows.Forms.ColumnHeader();
+            columnHeader8 = new System.Windows.Forms.ColumnHeader();
+            topVCContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
+            copyVCChannelIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            copyVCGuildIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            topServersLb = new System.Windows.Forms.Label();
+            topVCGuilds = new System.Windows.Forms.ListView();
+            columnHeader13 = new System.Windows.Forms.ColumnHeader();
+            columnHeader10 = new System.Windows.Forms.ColumnHeader();
+            topVCGuildsContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
+            copyVCIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             settingsTab = new System.Windows.Forms.TabPage();
             repoLb = new System.Windows.Forms.LinkLabel();
             groupBox2 = new System.Windows.Forms.GroupBox();
@@ -94,6 +110,13 @@ namespace Data_Package_Tool
             serversStatusStrip.SuspendLayout();
             serversContextMenu.SuspendLayout();
             dmsTab.SuspendLayout();
+            vcTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
+            topVCContextMenu.SuspendLayout();
+            topVCGuildsContextMenu.SuspendLayout();
             settingsTab.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -106,6 +129,7 @@ namespace Data_Package_Tool
             tabControl1.Controls.Add(imagesTab);
             tabControl1.Controls.Add(serversTab);
             tabControl1.Controls.Add(dmsTab);
+            tabControl1.Controls.Add(vcTab);
             tabControl1.Controls.Add(settingsTab);
             tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -450,6 +474,145 @@ namespace Data_Package_Tool
             elementHost2.TabIndex = 0;
             elementHost2.Text = "elementHost2";
             // 
+            // vcTab
+            // 
+            vcTab.BackColor = System.Drawing.Color.FromArgb(49, 51, 56);
+            vcTab.Controls.Add(splitContainer1);
+            vcTab.Location = new System.Drawing.Point(4, 24);
+            vcTab.Name = "vcTab";
+            vcTab.Size = new System.Drawing.Size(580, 289);
+            vcTab.TabIndex = 6;
+            vcTab.Text = "Voice Stats";
+            // 
+            // splitContainer1
+            // 
+            splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer1.Location = new System.Drawing.Point(0, 0);
+            splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(topChannelsLb);
+            splitContainer1.Panel1.Controls.Add(topVC);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.Controls.Add(topServersLb);
+            splitContainer1.Panel2.Controls.Add(topVCGuilds);
+            splitContainer1.Size = new System.Drawing.Size(580, 289);
+            splitContainer1.SplitterDistance = 308;
+            splitContainer1.TabIndex = 2;
+            // 
+            // topChannelsLb
+            // 
+            topChannelsLb.Dock = System.Windows.Forms.DockStyle.Top;
+            topChannelsLb.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            topChannelsLb.ForeColor = System.Drawing.Color.White;
+            topChannelsLb.Location = new System.Drawing.Point(0, 0);
+            topChannelsLb.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            topChannelsLb.Name = "topChannelsLb";
+            topChannelsLb.Size = new System.Drawing.Size(308, 31);
+            topChannelsLb.TabIndex = 1;
+            topChannelsLb.Text = "Top Channels";
+            topChannelsLb.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // topVC
+            // 
+            topVC.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            topVC.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { columnHeader11, columnHeader12, columnHeader8 });
+            topVC.ContextMenuStrip = topVCContextMenu;
+            topVC.FullRowSelect = true;
+            topVC.Location = new System.Drawing.Point(4, 30);
+            topVC.Name = "topVC";
+            topVC.Size = new System.Drawing.Size(304, 255);
+            topVC.TabIndex = 0;
+            topVC.UseCompatibleStateImageBehavior = false;
+            topVC.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader11
+            // 
+            columnHeader11.Text = "Name";
+            columnHeader11.Width = 100;
+            // 
+            // columnHeader12
+            // 
+            columnHeader12.Text = "Location";
+            columnHeader12.Width = 100;
+            // 
+            // columnHeader8
+            // 
+            columnHeader8.Text = "Duration";
+            columnHeader8.Width = 100;
+            // 
+            // topVCContextMenu
+            // 
+            topVCContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { copyVCChannelIdToolStripMenuItem, copyVCGuildIdToolStripMenuItem });
+            topVCContextMenu.Name = "serversContextMenu";
+            topVCContextMenu.Size = new System.Drawing.Size(161, 48);
+            // 
+            // copyVCChannelIdToolStripMenuItem
+            // 
+            copyVCChannelIdToolStripMenuItem.Name = "copyVCChannelIdToolStripMenuItem";
+            copyVCChannelIdToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            copyVCChannelIdToolStripMenuItem.Text = "Copy channel id";
+            copyVCChannelIdToolStripMenuItem.Click += copyVCChannelIdToolStripMenuItem_Click;
+            // 
+            // copyVCGuildIdToolStripMenuItem
+            // 
+            copyVCGuildIdToolStripMenuItem.Name = "copyVCGuildIdToolStripMenuItem";
+            copyVCGuildIdToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            copyVCGuildIdToolStripMenuItem.Text = "Copy guild id";
+            copyVCGuildIdToolStripMenuItem.Click += copyVCGuildIdToolStripMenuItem_Click;
+            // 
+            // topServersLb
+            // 
+            topServersLb.Dock = System.Windows.Forms.DockStyle.Top;
+            topServersLb.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            topServersLb.ForeColor = System.Drawing.Color.White;
+            topServersLb.Location = new System.Drawing.Point(0, 0);
+            topServersLb.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            topServersLb.Name = "topServersLb";
+            topServersLb.Size = new System.Drawing.Size(268, 31);
+            topServersLb.TabIndex = 2;
+            topServersLb.Text = "Top Servers";
+            topServersLb.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // topVCGuilds
+            // 
+            topVCGuilds.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            topVCGuilds.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { columnHeader13, columnHeader10 });
+            topVCGuilds.ContextMenuStrip = topVCGuildsContextMenu;
+            topVCGuilds.FullRowSelect = true;
+            topVCGuilds.Location = new System.Drawing.Point(0, 30);
+            topVCGuilds.Name = "topVCGuilds";
+            topVCGuilds.Size = new System.Drawing.Size(264, 255);
+            topVCGuilds.TabIndex = 1;
+            topVCGuilds.UseCompatibleStateImageBehavior = false;
+            topVCGuilds.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader13
+            // 
+            columnHeader13.Text = "Name";
+            columnHeader13.Width = 160;
+            // 
+            // columnHeader10
+            // 
+            columnHeader10.Text = "Duration";
+            columnHeader10.Width = 100;
+            // 
+            // topVCGuildsContextMenu
+            // 
+            topVCGuildsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { copyVCIdToolStripMenuItem });
+            topVCGuildsContextMenu.Name = "serversContextMenu";
+            topVCGuildsContextMenu.Size = new System.Drawing.Size(146, 26);
+            // 
+            // copyVCIdToolStripMenuItem
+            // 
+            copyVCIdToolStripMenuItem.Name = "copyVCIdToolStripMenuItem";
+            copyVCIdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            copyVCIdToolStripMenuItem.Text = "Copy guild id";
+            copyVCIdToolStripMenuItem.Click += copyVCIdToolStripMenuItem_Click;
+            // 
             // settingsTab
             // 
             settingsTab.BackColor = System.Drawing.Color.FromArgb(49, 51, 56);
@@ -689,6 +852,13 @@ namespace Data_Package_Tool
             serversStatusStrip.PerformLayout();
             serversContextMenu.ResumeLayout(false);
             dmsTab.ResumeLayout(false);
+            vcTab.ResumeLayout(false);
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
+            topVCContextMenu.ResumeLayout(false);
+            topVCGuildsContextMenu.ResumeLayout(false);
             settingsTab.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
@@ -754,6 +924,22 @@ namespace Data_Package_Tool
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox userTokenTb;
         private System.Windows.Forms.LinkLabel repoLb;
+        private System.Windows.Forms.TabPage vcTab;
+        private System.Windows.Forms.ListView topVC;
+        private System.Windows.Forms.ListView topVCGuilds;
+        private System.Windows.Forms.ColumnHeader columnHeader10;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.ColumnHeader columnHeader11;
+        private System.Windows.Forms.ColumnHeader columnHeader12;
+        private System.Windows.Forms.ColumnHeader columnHeader13;
+        private System.Windows.Forms.ContextMenuStrip topVCContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem copyVCGuildIdToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyVCChannelIdToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip topVCGuildsContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem copyVCIdToolStripMenuItem;
+        private System.Windows.Forms.Label topChannelsLb;
+        private System.Windows.Forms.Label topServersLb;
     }
 }
 

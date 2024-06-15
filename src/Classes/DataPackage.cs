@@ -32,6 +32,7 @@ namespace Data_Package_Tool.Classes
         public List<DAttachment> ImageAttachments { get; private set; } = new List<DAttachment>();
         public List<DAnalyticsGuild> JoinedGuilds { get; private set; } = new List<DAnalyticsGuild>();
         public List<DAnalyticsEvent> AcceptedInvites { get; private set; } = new List<DAnalyticsEvent>();
+        public List<DVoiceConnection> VoiceDisconnections { get; private set; } = new List<DVoiceConnection>();
         public Dictionary<string, string> GuildNamesMap { get; private set; } = new Dictionary<string, string>();
 
         public DateTime CreationTime { get; private set; }
@@ -278,11 +279,12 @@ namespace Data_Package_Tool.Classes
 
             GC.Collect();
         }
-
+        private static string[] AnalyticsLines = { "guild_joined", "create_guild", "accepted_instant_invite", "voice_disconnect" };
         private void ProcessAnalyticsLine(string line)
         {
+
             // Pro optimization
-            if (!line.StartsWith("{\"event_type\":\"guild_joined") && !line.StartsWith("{\"event_type\":\"create_guild") && !line.StartsWith("{\"event_type\":\"accepted_instant_invite"))
+            if (!AnalyticsLines.Any(x=>line.StartsWith("{\"event_type\":\""+x)))
             {
                 return;
             }
@@ -334,6 +336,16 @@ namespace Data_Package_Tool.Classes
                     break;
                 case "accepted_instant_invite":
                     if (eventData.GuildId != null) this.AcceptedInvites.Add(eventData);
+                    break;
+                case "voice_disconnect":
+                    this.VoiceDisconnections.Add(new DVoiceConnection()
+                    {
+                        ChannelId = eventData.ChannelId,
+                        ChannelType = eventData.ChannelType != null ? int.Parse(eventData.ChannelType) : null,
+                        GuildId = eventData.GuildId,
+                        Timestamp = eventData.Timestamp,
+                        Duration = TimeSpan.FromMilliseconds(eventData.Duration)
+                    });
                     break;
             }
         }
