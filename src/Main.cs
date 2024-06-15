@@ -1,4 +1,4 @@
-using Data_Package_Tool.Classes;
+﻿using Data_Package_Tool.Classes;
 using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Forms;
 using Data_Package_Tool.Helpers;
@@ -214,7 +214,7 @@ namespace Data_Package_Tool
 
                     if (DataPackage.UsesUnsignedCDNLinks)
                     {
-                        Util.MsgBoxWarn("This data package was created before Discord's attachment url signing.\nImages may be broken, and other attachments may be inaccessible!");
+                        Util.MsgBoxWarn("This data package was created before Discord's attachment url signing!\n\nIf you want to be able to view images and other attachments, please enter a bot token in the settings tab.");
                     }
                 }, TaskScheduler.FromCurrentSynchronizationContext());
 
