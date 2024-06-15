@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using Microsoft.VisualBasic.ApplicationServices;
 
 namespace Data_Package_Tool
 {
@@ -199,7 +200,35 @@ namespace Data_Package_Tool
 
                         if (channel != null)
                         {
-                            channelName = channel.GetName(DataPackage.User, DataPackage.UsersMap);
+                            if (channel.IsDM())
+                            {
+                                if (DataPackage.UsersMap.TryGetValue(channel.DMRecipientId, out DUser recipient))
+                                {
+                                    channelName = recipient.DisplayName ?? recipient.Tag;
+                                }
+                                else
+                                {
+                                    channelName = "(Unknown user)";
+                                }
+                            }
+                            else
+                            {
+                                if (channel.Name != null)
+                                {
+                                    channelName = channel.Name;
+                                }
+                                else
+                                {
+                                    if (channel.IsGroupDM())
+                                    {
+                                        channelName = string.Join(", ", channel.RecipientIds.Select((string recipientId) =>
+                                        {
+                                            if (DataPackage.UsersMap.TryGetValue(recipientId, out DUser recipient)) return recipient.DisplayName ?? recipient.Tag;
+                                            else return null;
+                                        }).Where(recipient=>recipient!=null));
+                                    }
+                                }
+                            }
                         }
 
                         return new ListViewItem(new string[] {
