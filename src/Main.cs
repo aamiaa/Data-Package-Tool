@@ -172,6 +172,15 @@ namespace Data_Package_Tool
             Util.MsgBoxErr("Server could not be found in your joined servers list (bug?)");
         }
 
+        private void ToggleSearchOptions(bool enabled)
+        {
+            searchBtn.Enabled = enabled;
+            searchTb.Enabled = enabled;
+            searchOptionsBtn.Enabled = enabled;
+            messagesPrevBtn.Enabled = enabled;
+            messagesNextBtn.Enabled = enabled;
+        }
+
         private void loadFileBtn_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
@@ -255,11 +264,7 @@ namespace Data_Package_Tool
         {
             if (LastSearchResults == null || LastSearchResults.Count == 0) return;
 
-            searchBtn.Enabled = false;
-            searchTb.Enabled = false;
-            searchOptionsBtn.Enabled = false;
-            messagesPrevBtn.Enabled = false;
-            messagesNextBtn.Enabled = false;
+            ToggleSearchOptions(false);
 
             // Clear images cache to free up RAM
             Discord.AttachmentsCache.Clear();
@@ -293,11 +298,7 @@ namespace Data_Package_Tool
             ((MessageListWPF)elementHost1.Child).DisplayMessages(msgsToShow);
             resultsCountLb.Text = $"{SearchResultsOffset + 1}-{Math.Min(SearchResultsOffset + MaxSearchResults, LastSearchResults.Count)} of {LastSearchResults.Count}";
 
-            searchBtn.Enabled = true;
-            searchTb.Enabled = true;
-            searchOptionsBtn.Enabled = true;
-            messagesPrevBtn.Enabled = true;
-            messagesNextBtn.Enabled = true;
+            ToggleSearchOptions(true);
         }
         private void searchBtn_Click(object sender, EventArgs e)
         {
@@ -314,11 +315,7 @@ namespace Data_Package_Tool
                 }
             }
 
-            searchBtn.Enabled = false;
-            searchTb.Enabled = false;
-            searchOptionsBtn.Enabled = false;
-            messagesPrevBtn.Enabled = false;
-            messagesNextBtn.Enabled = false;
+            ToggleSearchOptions(false);
             ((MessageListWPF)elementHost1.Child).Clear();
 
             LastSearchResults = new List<DMessage>();
