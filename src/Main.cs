@@ -901,7 +901,7 @@ namespace Data_Package_Tool
 
         private void copyVCIdToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (topVC.SelectedItems.Count == 0) return;
+            if (topVCGuilds.SelectedItems.Count == 0) return;
 
             string guildId = topVCGuilds.SelectedItems[0].SubItems[2].Text;
             Clipboard.SetText(guildId);
