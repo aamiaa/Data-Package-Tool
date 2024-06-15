@@ -214,37 +214,44 @@ namespace Data_Package_Tool
 
             topVCGuilds.Items.AddRange(
                 DataPackage.VoiceDisconnections
-                .GroupBy(x => x.ChannelId) // Group by channel to avoid getting the same channel multiple times in the future.
-                .Select(
-                    x => new DVoiceConnection()
-                    {
-                        ChannelId = x.First().ChannelId,
-                        GuildId = x.First().GuildId,
-                        Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks))
-                    })
                 .GroupBy(x =>
                 {
-                    DataPackage.ChannelsMap.TryGetValue(x.ChannelId ?? "", out DChannel channel);
-                    return x.GuildId + channel?.Type;
+                    return x.GuildId + x.ChannelType;
                 })
                 .Select(x =>
                 {
-                    DataPackage.ChannelsMap.TryGetValue(x.First().ChannelId ?? "", out DChannel channel);
+                    DataPackage.ChannelsMap.TryGetValue(x.First().ChannelId, out DChannel channel);
                     return new DVoiceConnection()
                     {
-                        GuildId = x.First().GuildId ?? (channel?.Type ?? 0).ToString(),
-                        Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks))
+                        GuildId = x.First().GuildId,
+                        Duration = new TimeSpan(x.Sum(y => y.Duration.Ticks)),
+                        ChannelType = x.First().ChannelType ?? channel?.Type,
                     };
                 })
                 .OrderByDescending(x => x.Duration)
                 .Select(x =>
                 {
-                    string guildName;
-                    if (x.GuildId == "1") guildName = "DMs";
-                    else if (x.GuildId == "3") guildName = "Group DMs";
-                    else DataPackage.GuildNamesMap.TryGetValue(x.GuildId ?? "", out guildName);
+                    string location;
+                    if (x.GuildId != null)
+                    {
+                        DataPackage.GuildNamesMap.TryGetValue(x.GuildId ?? "", out location);
+                    } else
+                    {
+                        if (x.ChannelType == 1)
+                        {
+                            location = "(DM)";
+                        }
+                        else if (x.ChannelType == 3)
+                        {
+                            location = "(Group DM)";
+                        }
+                        else // Assume that lack of guild id = somewhere in dms...
+                        {
+                            location = "(DM or Group DM)";
+                        }
+                    }
                     return new ListViewItem(new string[] {
-                        guildName,
+                        location,
                         x.Duration.ToString(@"%d'd '%h'h '%m'm '%s\s"),
                         x.GuildId,
                     });
