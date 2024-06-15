@@ -68,15 +68,15 @@ namespace Data_Package_Tool
             elementHost2 = new System.Windows.Forms.Integration.ElementHost();
             vcTab = new System.Windows.Forms.TabPage();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
-            label3 = new System.Windows.Forms.Label();
+            topChannelsLb = new System.Windows.Forms.Label();
             topVC = new System.Windows.Forms.ListView();
             columnHeader11 = new System.Windows.Forms.ColumnHeader();
-            columnHeader8 = new System.Windows.Forms.ColumnHeader();
             columnHeader12 = new System.Windows.Forms.ColumnHeader();
+            columnHeader8 = new System.Windows.Forms.ColumnHeader();
             topVCContextMenu = new System.Windows.Forms.ContextMenuStrip(components);
             copyVCChannelIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             copyVCGuildIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            label4 = new System.Windows.Forms.Label();
+            topServersLb = new System.Windows.Forms.Label();
             topVCGuilds = new System.Windows.Forms.ListView();
             columnHeader13 = new System.Windows.Forms.ColumnHeader();
             columnHeader10 = new System.Windows.Forms.ColumnHeader();
@@ -492,36 +492,36 @@ namespace Data_Package_Tool
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(label3);
+            splitContainer1.Panel1.Controls.Add(topChannelsLb);
             splitContainer1.Panel1.Controls.Add(topVC);
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(label4);
+            splitContainer1.Panel2.Controls.Add(topServersLb);
             splitContainer1.Panel2.Controls.Add(topVCGuilds);
             splitContainer1.Size = new System.Drawing.Size(580, 289);
             splitContainer1.SplitterDistance = 308;
             splitContainer1.TabIndex = 2;
             // 
-            // label3
+            // topChannelsLb
             // 
-            label3.AutoSize = true;
-            label3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            label3.ForeColor = System.Drawing.Color.White;
-            label3.Location = new System.Drawing.Point(6, 6);
-            label3.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
-            label3.MaximumSize = new System.Drawing.Size(100, 50);
-            label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(84, 17);
-            label3.TabIndex = 1;
-            label3.Text = "Top channels";
-            label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            topChannelsLb.Dock = System.Windows.Forms.DockStyle.Top;
+            topChannelsLb.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            topChannelsLb.ForeColor = System.Drawing.Color.White;
+            topChannelsLb.Location = new System.Drawing.Point(0, 0);
+            topChannelsLb.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            topChannelsLb.Name = "topChannelsLb";
+            topChannelsLb.Size = new System.Drawing.Size(308, 31);
+            topChannelsLb.TabIndex = 1;
+            topChannelsLb.Text = "Top Channels";
+            topChannelsLb.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // topVC
             // 
             topVC.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            topVC.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { columnHeader11, columnHeader8, columnHeader12 });
+            topVC.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { columnHeader11, columnHeader12, columnHeader8 });
             topVC.ContextMenuStrip = topVCContextMenu;
+            topVC.FullRowSelect = true;
             topVC.Location = new System.Drawing.Point(4, 30);
             topVC.Name = "topVC";
             topVC.Size = new System.Drawing.Size(304, 255);
@@ -531,18 +531,18 @@ namespace Data_Package_Tool
             // 
             // columnHeader11
             // 
-            columnHeader11.Text = "Channel Name";
+            columnHeader11.Text = "Name";
             columnHeader11.Width = 100;
+            // 
+            // columnHeader12
+            // 
+            columnHeader12.Text = "Location";
+            columnHeader12.Width = 100;
             // 
             // columnHeader8
             // 
             columnHeader8.Text = "Duration";
             columnHeader8.Width = 100;
-            // 
-            // columnHeader12
-            // 
-            columnHeader12.Text = "Guild Name";
-            columnHeader12.Width = 100;
             // 
             // topVCContextMenu
             // 
@@ -564,25 +564,25 @@ namespace Data_Package_Tool
             copyVCGuildIdToolStripMenuItem.Text = "Copy guild id";
             copyVCGuildIdToolStripMenuItem.Click += copyVCGuildIdToolStripMenuItem_Click;
             // 
-            // label4
+            // topServersLb
             // 
-            label4.AutoSize = true;
-            label4.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            label4.ForeColor = System.Drawing.Color.White;
-            label4.Location = new System.Drawing.Point(6, 6);
-            label4.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
-            label4.MaximumSize = new System.Drawing.Size(100, 50);
-            label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(69, 17);
-            label4.TabIndex = 2;
-            label4.Text = "Top guilds";
-            label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            topServersLb.Dock = System.Windows.Forms.DockStyle.Top;
+            topServersLb.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            topServersLb.ForeColor = System.Drawing.Color.White;
+            topServersLb.Location = new System.Drawing.Point(0, 0);
+            topServersLb.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            topServersLb.Name = "topServersLb";
+            topServersLb.Size = new System.Drawing.Size(268, 31);
+            topServersLb.TabIndex = 2;
+            topServersLb.Text = "Top Servers";
+            topServersLb.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // topVCGuilds
             // 
             topVCGuilds.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             topVCGuilds.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { columnHeader13, columnHeader10 });
             topVCGuilds.ContextMenuStrip = topVCGuildsContextMenu;
+            topVCGuilds.FullRowSelect = true;
             topVCGuilds.Location = new System.Drawing.Point(0, 30);
             topVCGuilds.Name = "topVCGuilds";
             topVCGuilds.Size = new System.Drawing.Size(264, 255);
@@ -592,25 +592,25 @@ namespace Data_Package_Tool
             // 
             // columnHeader13
             // 
-            columnHeader13.Text = "Guild Name";
-            columnHeader13.Width = 150;
+            columnHeader13.Text = "Name";
+            columnHeader13.Width = 160;
             // 
             // columnHeader10
             // 
             columnHeader10.Text = "Duration";
-            columnHeader10.Width = 110;
+            columnHeader10.Width = 100;
             // 
             // topVCGuildsContextMenu
             // 
             topVCGuildsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { copyVCIdToolStripMenuItem });
             topVCGuildsContextMenu.Name = "serversContextMenu";
-            topVCGuildsContextMenu.Size = new System.Drawing.Size(116, 26);
+            topVCGuildsContextMenu.Size = new System.Drawing.Size(146, 26);
             // 
             // copyVCIdToolStripMenuItem
             // 
             copyVCIdToolStripMenuItem.Name = "copyVCIdToolStripMenuItem";
-            copyVCIdToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
-            copyVCIdToolStripMenuItem.Text = "Copy id";
+            copyVCIdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            copyVCIdToolStripMenuItem.Text = "Copy guild id";
             copyVCIdToolStripMenuItem.Click += copyVCIdToolStripMenuItem_Click;
             // 
             // settingsTab
@@ -854,9 +854,7 @@ namespace Data_Package_Tool
             dmsTab.ResumeLayout(false);
             vcTab.ResumeLayout(false);
             splitContainer1.Panel1.ResumeLayout(false);
-            splitContainer1.Panel1.PerformLayout();
             splitContainer1.Panel2.ResumeLayout(false);
-            splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             topVCContextMenu.ResumeLayout(false);
@@ -940,8 +938,8 @@ namespace Data_Package_Tool
         private System.Windows.Forms.ToolStripMenuItem copyVCChannelIdToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip topVCGuildsContextMenu;
         private System.Windows.Forms.ToolStripMenuItem copyVCIdToolStripMenuItem;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label topChannelsLb;
+        private System.Windows.Forms.Label topServersLb;
     }
 }
 

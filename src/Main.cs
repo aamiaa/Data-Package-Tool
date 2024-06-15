@@ -178,8 +178,8 @@ namespace Data_Package_Tool
                         else DataPackage.GuildNamesMap.TryGetValue(x.GuildId ?? "", out guildName);
                         return new ListViewItem(new string[] {
                                 (channel != null) ? channel.GetName(DataPackage.User, DataPackage.UsersMap) : "",
-                                x.Duration.ToString(@"%d'd '%h'h '%m'm '%s\s"),
                                 guildName,
+                                x.Duration.ToString(@"%d'd '%h'h '%m'm '%s\s"),
                                 x.ChannelId,
                                 x.GuildId,
                         });
