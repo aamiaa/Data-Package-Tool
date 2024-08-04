@@ -26,6 +26,8 @@ namespace Data_Package_Tool.Classes.Parsing
         public string Location { get; set; }
         [JsonProperty("invite_code")]
         private string InviteCode2 { set => InviteCode = value; }
+        [JsonProperty("control_type")]
+        public string ControlType { get; set; }
         public DateTime Timestamp { get; set; }
         [JsonProperty("timestamp")]
         private string Timestamp2 { set => Timestamp = DateTime.Parse(value.Replace("\"", ""), null, DateTimeStyles.RoundtripKind); }
