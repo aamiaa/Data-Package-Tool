@@ -20,7 +20,7 @@ namespace Data_Package_Tool.Classes.Parsing
 
     public enum RelationshipType
     {
-        MONE = 0,
+        NONE = 0,
         FRIEND = 1,
         BLOCKED = 2,
         PENDING_INCOMING = 3,
