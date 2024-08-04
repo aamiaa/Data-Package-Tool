@@ -20,6 +20,27 @@ namespace Data_Package_Tool.Classes
         public string Status;
         public bool Finished;
     }
+    public enum AnalyticsStatus
+    {
+        Unknown,
+        NeverDisabled,
+        DisabledBefore,
+        PartiallyDisabledNow,
+        DisabledNow
+    }
+    public enum ActivityFile
+    {
+        Analytics,
+        Modeling,
+        Reporting,
+        TNS
+    }
+    public struct ActivityDataStatus
+    {
+        public AnalyticsStatus Status;
+        public DateTime? CutoffDate;
+        public bool? MissingData;
+    }
     public class DataPackage
     {
         public DUser User { get; private set; }
@@ -38,6 +59,13 @@ namespace Data_Package_Tool.Classes
         public int TotalMessages { get; private set; } = 0;
 
         public bool UsesUnsignedCDNLinks { get; private set; }
+
+        public ActivityDataStatus ActivityDataStatus = new()
+        {
+            Status = AnalyticsStatus.Unknown,
+            CutoffDate = null,
+            MissingData = null,
+        };
 
         public LoadStatus LoadStatus = new()
         {
@@ -216,27 +244,161 @@ namespace Data_Package_Tool.Classes
 
         public void LoadGuilds(string fileName)
         {
-            var compiledRegex = new Regex(@"activity/reporting/events.+\.json", RegexOptions.Compiled);
+            /*
+             * https://github.com/aamiaa/Data-Package-Tool/issues/12
+             * 
+             * The logic is as follows:
+             * For packages created before 05.2024, use activity/reporting.
+             * For packages created after 06.2024, use activity/analytics.
+             * For packages created in-between, attempt to guess which one to use:
+             *   If the account was registered in 2024, use activity/reporting since it doesn't matter.
+             *   If the account has any events from before 2024, use activity/reporting.
+             *   Otherwise use activity/analytics.
+             * 
+             * If activity/analytics isn't present, fallback to activity/modeling.
+             * If activity/modeling also isn't present, fallback to activity/reporting.
+             */
+
+            var reportingRegex = new Regex(@"activity/reporting/events.+\.json", RegexOptions.Compiled);
+            var modelingRegex = new Regex(@"activity/modeling/events.+\.json", RegexOptions.Compiled);
+            var analyticsRegex = new Regex(@"activity/analytics/events.+\.json", RegexOptions.Compiled);
 
             using (var file = File.OpenRead(fileName))
             using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
             {
+                ZipArchiveEntry reportingFile = null;
+                ZipArchiveEntry modelingFile = null;
+                ZipArchiveEntry analyticsFile = null;
+
                 foreach (var entry in zip.Entries)
                 {
-                    if (compiledRegex.IsMatch(entry.FullName))
+                    if (reportingRegex.IsMatch(entry.FullName))
                     {
-                        using (var data = new StreamReader(entry.Open()))
-                        {
-                            long bytesRead = 0;
-                            while (!data.EndOfStream)
-                            {
-                                var line = data.ReadLine();
-                                bytesRead += line.Length;
+                        reportingFile = entry;
+                    } else if(modelingRegex.IsMatch(entry.FullName))
+                    {
+                        modelingFile = entry;
+                    } else if(analyticsRegex.IsMatch(entry.FullName))
+                    {
+                        analyticsFile = entry;
+                    }
+                }
 
-                                this.GuildsLoadStatus.Progress = (int)((double)bytesRead / (long)entry.Length * 100);
-                                ProcessAnalyticsLine(line);
+                ActivityFile fileToUse = ActivityFile.Analytics;
+
+                var startDate = new DateTime(2024, 5, 1);
+                var endDate = new DateTime(2024, 6, 30);
+                var creationTime = reportingFile.LastWriteTime.DateTime; // Using this instead of this.CreationTime to prevent race conditions
+                if (creationTime < startDate)
+                {
+                    this.ActivityDataStatus.MissingData = false;
+                    fileToUse = ActivityFile.Reporting;
+                }
+                else if (creationTime > endDate)
+                {
+                    fileToUse = ActivityFile.Analytics;
+                }
+                else
+                {
+                    // Get true account creation date (not the fingerprint date)
+                    DateTime? registerDate = null;
+                    bool hasEventsBefore2024 = false;
+                    using (var data = new StreamReader(reportingFile.Open()))
+                    {
+                        var ignoreEvents = new HashSet<string>() {  "payment_", "subscription_" };
+                        long bytesRead = 0;
+                        while (!data.EndOfStream)
+                        {
+                            var line = data.ReadLine();
+                            if(line.StartsWith("{\"event_type\":\"register\""))
+                            {
+                                var eventData = Newtonsoft.Json.JsonConvert.DeserializeObject<DAnalyticsEvent>(line);
+                                registerDate = eventData.Timestamp;
+                            } else if(!hasEventsBefore2024)
+                            {
+                                var eventData = Newtonsoft.Json.JsonConvert.DeserializeObject<DAnalyticsEvent>(line);
+                                if(eventData.Timestamp.Year < 2024 && !ignoreEvents.Any(x => eventData.EventType.StartsWith(x)))
+                                {
+                                    hasEventsBefore2024 = true;
+                                }
+                            }
+
+                            bytesRead += line.Length;
+                            this.GuildsLoadStatus.Progress = (int)((double)bytesRead / (long)reportingFile.Length * 100);
+
+                            if(registerDate != null && hasEventsBefore2024)
+                            {
+                                break;
                             }
                         }
+                    }
+
+                    if(registerDate == null)
+                    {
+                        throw new Exception("Couldn't find the register event");
+                    }
+
+                    // Use activity/reporting for 2024 accounts, since pre-2024 events being nuked won't affect those
+                    if (((DateTime)registerDate).Year == 2024 || hasEventsBefore2024)
+                    {
+                        this.ActivityDataStatus.MissingData = false;
+                        fileToUse = ActivityFile.Reporting;
+                    } else
+                    {
+                        fileToUse = ActivityFile.Analytics;
+                    }
+                }
+
+                if(fileToUse == ActivityFile.Analytics && analyticsFile == null)
+                {
+                    if (modelingFile == null)
+                    {
+                        // Analytics disabled. Fallback to activity/reporting.
+                        this.ActivityDataStatus.Status = AnalyticsStatus.DisabledNow;
+                        this.ActivityDataStatus.MissingData = true;
+                        fileToUse = ActivityFile.Reporting;
+                    }
+                    else
+                    {
+                        /*
+                         * The MissingData bool here makes a big assumption that the edge case of
+                         * "disable analytics & modeling -> re-enable just modeling" will never happen.
+                         * 
+                         * There is no reliable way to verify this, since the `privacy_control_updated`
+                         * event is not in the modeling file. The closest thing we could do is check
+                         * if the earliest event in modeling is `update_user_settings`, but that would
+                         * require json-parsing every single line, which would slow down the whole process.
+                         */
+                        this.ActivityDataStatus.Status = AnalyticsStatus.PartiallyDisabledNow;
+                        this.ActivityDataStatus.MissingData = true;
+                        fileToUse = ActivityFile.Modeling;
+                    }
+                }
+
+                ZipArchiveEntry entryToUse = null;
+                switch (fileToUse)
+                {
+                    case ActivityFile.Analytics:
+                        entryToUse = analyticsFile;
+                        break;
+                    case ActivityFile.Modeling:
+                        entryToUse = modelingFile;
+                        break;
+                    case ActivityFile.Reporting:
+                        entryToUse = reportingFile;
+                        break;
+                }
+
+                using (var data = new StreamReader(entryToUse.Open()))
+                {
+                    long bytesRead = 0;
+                    while (!data.EndOfStream)
+                    {
+                        var line = data.ReadLine();
+                        bytesRead += line.Length;
+
+                        this.GuildsLoadStatus.Progress = (int)((double)bytesRead / (long)entryToUse.Length * 100);
+                        ProcessAnalyticsLine(line);
                     }
                 }
             }
@@ -282,7 +444,10 @@ namespace Data_Package_Tool.Classes
         private void ProcessAnalyticsLine(string line)
         {
             // Pro optimization
-            if (!line.StartsWith("{\"event_type\":\"guild_joined") && !line.StartsWith("{\"event_type\":\"create_guild") && !line.StartsWith("{\"event_type\":\"accepted_instant_invite"))
+            if (
+                !line.StartsWith("{\"event_type\":\"guild_joined") && !line.StartsWith("{\"event_type\":\"create_guild")
+                && !line.StartsWith("{\"event_type\":\"accepted_instant_invite") && !line.StartsWith("{\"event_type\":\"privacy_control_updated")
+            )
             {
                 return;
             }
@@ -334,6 +499,23 @@ namespace Data_Package_Tool.Classes
                     break;
                 case "accepted_instant_invite":
                     if (eventData.GuildId != null) this.AcceptedInvites.Add(eventData);
+                    break;
+                case "privacy_control_updated":
+                    // Since this event is only in activity/analytics (aka if we've reached this point then we're 100% processing that file)
+                    // then we only care if only that file's analytics have been toggled in the past.
+                    if (eventData.ControlType == "usage_statistics")
+                    {
+                        if (this.ActivityDataStatus.MissingData == null)
+                        {
+                            this.ActivityDataStatus.MissingData = true;
+                        }
+                        this.ActivityDataStatus.Status = AnalyticsStatus.DisabledBefore;
+
+                        if (this.ActivityDataStatus.CutoffDate == null || eventData.Timestamp < this.ActivityDataStatus.CutoffDate)
+                        {
+                            this.ActivityDataStatus.CutoffDate = eventData.Timestamp;
+                        }
+                    }
                     break;
             }
         }

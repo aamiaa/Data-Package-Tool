@@ -114,6 +114,7 @@ namespace Data_Package_Tool
             tabControl1.SelectedIndex = 0;
             tabControl1.Size = new System.Drawing.Size(588, 317);
             tabControl1.TabIndex = 0;
+            tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
             // loadTb
             // 

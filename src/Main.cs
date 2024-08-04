@@ -136,7 +136,8 @@ namespace Data_Package_Tool
 
         private void LoadJoinedGuilds()
         {
-            tabControl1.TabPages[3].Text = $"Servers - {DataPackage.JoinedGuilds.Count}";
+            var isMissingData = DataPackage.ActivityDataStatus.MissingData == true;
+            tabControl1.TabPages[3].Text = $"Servers - {DataPackage.JoinedGuilds.Count}{(isMissingData ? "+" : "")}";
 
             serversLv.Items.Clear();
             foreach (var guild in DataPackage.JoinedGuilds)
@@ -150,6 +151,11 @@ namespace Data_Package_Tool
                 string[] values = { guild.Timestamp.ToShortDateString(), guild.Id, guildName, guild.JoinType, guild.Location, String.Join(", ", guild.Invites) };
                 var lvItem = new ListViewItem(values);
                 serversLv.Items.Add(lvItem);
+            }
+
+            if (isMissingData && tabControl1.SelectedIndex == 3)
+            {
+                ShowMissingAnalyticsDataWarning();
             }
         }
 
@@ -277,18 +283,18 @@ namespace Data_Package_Tool
             if (DataPackage.UsesUnsignedCDNLinks)
             {
                 var needRefreshing = new List<DAttachment>();
-                foreach(var msg in msgsToShow)
+                foreach (var msg in msgsToShow)
                 {
-                    foreach(var attachment in msg.Attachments)
+                    foreach (var attachment in msg.Attachments)
                     {
-                        if(!attachment.IsSigned)
+                        if (!attachment.IsSigned)
                         {
                             needRefreshing.Add(attachment);
                         }
                     }
                 }
 
-                if(needRefreshing.Count > 0)
+                if (needRefreshing.Count > 0)
                 {
                     resultsCountLb.Text = $"Refreshing {needRefreshing.Count} attachments...";
                     await Discord.RefreshAttachmentsAsync(needRefreshing);
@@ -553,7 +559,7 @@ namespace Data_Package_Tool
                 for (int i = 0; i < imagesPerPage; i++)
                 {
                     var attachment = DataPackage.ImageAttachments[imagesOffset + i];
-                    if(!attachment.IsSigned)
+                    if (!attachment.IsSigned)
                     {
                         needRefreshing.Add(attachment);
                     }
@@ -815,7 +821,8 @@ namespace Data_Package_Tool
             if (token != "")
             {
                 Discord.UserToken = token;
-            } else
+            }
+            else
             {
                 Discord.UserToken = null;
             }
@@ -841,6 +848,32 @@ namespace Data_Package_Tool
                 FileName = "https://github.com/aamiaa/Data-Package-Tool",
                 UseShellExecute = true
             });
+        }
+
+        private bool AnalyticsWarningShown = false;
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(DataPackage.ActivityDataStatus.MissingData == true && !AnalyticsWarningShown)
+            {
+                ShowMissingAnalyticsDataWarning();
+            }
+        }
+
+        private void ShowMissingAnalyticsDataWarning()
+        {
+            this.AnalyticsWarningShown = true;
+            switch (DataPackage.ActivityDataStatus.Status)
+            {
+                case AnalyticsStatus.DisabledNow:
+                    Util.MsgBoxWarn("It seems like your Discord account has analytics disabled.\nSince disabling analytics deletes past events in your package, the Servers tab will be limited to around past 6 months!");
+                    break;
+                case AnalyticsStatus.DisabledBefore:
+                    Util.MsgBoxWarn($"It seems like you've disabled analytics on your Discord account in the past.\nSince disabling analytics deletes past events in your package, the Servers tab will be limited to the date when you've re-enabled analytics, that is {((DateTime)DataPackage.ActivityDataStatus.CutoffDate).ToShortDateString()}.");
+                    break;
+                case AnalyticsStatus.PartiallyDisabledNow:
+                    Util.MsgBoxWarn($"It seems like you have some analytics disabled on your Discord account.\nSince disabling analytics deletes past events in your package, the Servers tab might show info from a limited time span!");
+                    break;
+            }
         }
     }
 }
