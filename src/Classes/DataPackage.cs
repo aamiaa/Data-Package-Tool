@@ -288,12 +288,13 @@ namespace Data_Package_Tool.Classes
 
                 var startDate = new DateTime(2024, 5, 1);
                 var endDate = new DateTime(2024, 6, 30);
-                if (this.CreationTime < startDate)
+                var creationTime = reportingFile.LastWriteTime.DateTime; // Using this instead of this.CreationTime to prevent race conditions
+                if (creationTime < startDate)
                 {
                     this.ActivityDataStatus.MissingData = false;
                     fileToUse = ActivityFile.Reporting;
                 }
-                else if (this.CreationTime > endDate)
+                else if (creationTime > endDate)
                 {
                     fileToUse = ActivityFile.Analytics;
                 }
