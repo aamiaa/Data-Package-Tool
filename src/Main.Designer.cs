@@ -678,6 +678,7 @@ namespace Data_Package_Tool
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "Main";
             Text = "Data Package Tool";
+            Load += Main_Load;
             tabControl1.ResumeLayout(false);
             loadTb.ResumeLayout(false);
             messagesTab.ResumeLayout(false);

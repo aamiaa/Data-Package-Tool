@@ -107,8 +107,30 @@ namespace Data_Package_Tool
                     webCanaryRb.Checked = true;
                     break;
             }
+        }
 
+        private async void Main_Load(object sender, EventArgs e)
+        {
             this.Text += " v" + Application.ProductVersion;
+
+            try
+            {
+                if (await Program.CheckForUpdates())
+                {
+                    this.Text += " (Update Available)";
+
+                    var result = Util.MsgBoxInfo("A new version is available. Would you like to open the download page now?", "Data Package Tool", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "https://github.com/aamiaa/Data-Package-Tool/releases/latest",
+                            UseShellExecute = true
+                        });
+                    }
+                }
+            }
+            catch (Exception) { }
         }
 
         private void LoadDMChannels()

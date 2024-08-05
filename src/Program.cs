@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
 
@@ -16,6 +18,18 @@ namespace Data_Package_Tool
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());
+        }
+
+        public static async Task<bool> CheckForUpdates()
+        {
+            using var client = new HttpClient();
+            string version = await client.GetStringAsync("https://raw.githubusercontent.com/aamiaa/Data-Package-Tool/main/version.txt");
+            if(version != Application.ProductVersion)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
