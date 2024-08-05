@@ -1,4 +1,4 @@
-using Data_Package_Tool.Classes.Parsing;
+﻿using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Helpers;
 using System;
 using System.Collections.Generic;
@@ -92,18 +92,94 @@ namespace Data_Package_Tool.Classes
             {
                 this.LoadStatus.Max = zip.Entries.Count;
 
+                // Messages folder is the primary folder this tool needs,
+                // so we check for it in the 1st step.
+                var messagesFile = zip.GetEntry("messages/index.json");
+                if(messagesFile == null)
+                {
+                    throw new Exception("Invalid data package: missing messages/index.json");
+                }
+                this.CreationTime = messagesFile.LastWriteTime.DateTime;
+
                 var userFile = zip.GetEntry("account/user.json");
                 if (userFile == null)
                 {
-                    throw new Exception("Invalid data package: missing user.json");
-                }
+                    // Create a dummy user obj for partial package
 
-                this.CreationTime = userFile.LastWriteTime.DateTime;
+                    this.User = new DUser
+                    {
+                        Username = "You",
+                        DisplayName = "You",
+                        Discriminator = "0",
+                        Relationships = new List<DRelationship>(),
+                        Notes = new Dictionary<string, string>()
+                    };
 
-                using (var r = new StreamReader(userFile.Open()))
+                    // Attempt to guess the user id from dm recipients
+                    this.LoadStatus.Status = $"Determining user id";
+
+                    var channelRegex = new Regex(@"messages/(c?\d+)/channel\.json", RegexOptions.Compiled);
+                    var potentialIds = new Dictionary<string, int>();
+                    int i = 0;
+                    foreach (var entry in zip.Entries)
+                    {
+                        i++;
+                        this.LoadStatus.Progress = i;
+                        this.LoadStatus.Status = $"Determining user id\n{i}/{zip.Entries.Count}";
+
+                        if (channelRegex.IsMatch(entry.FullName))
+                        {
+                            DChannel channel;
+                            using (var rChannel = new StreamReader(entry.Open()))
+                            {
+                                var json = rChannel.ReadToEnd();
+                                channel = Newtonsoft.Json.JsonConvert.DeserializeObject<DChannel>(json);
+                            }
+
+                            if(channel.IsDM())
+                            {
+                                foreach (var userId in channel.RecipientIds)
+                                {
+                                    if (userId == Consts.DeletedUserId) continue;
+
+                                    if (potentialIds.ContainsKey(userId))
+                                    {
+                                        potentialIds[userId]++;
+                                    }
+                                    else
+                                    {
+                                        potentialIds[userId] = 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    string mostCommon = "";
+                    int highestCount = 0;
+                    foreach(KeyValuePair<string, int> kvp in potentialIds)
+                    {
+                        if(kvp.Value > highestCount)
+                        {
+                            mostCommon = kvp.Key;
+                            highestCount = kvp.Value;
+                        }
+                    }
+
+                    if(highestCount > 2)
+                    {
+                        this.User.Id = mostCommon;
+                    } else
+                    {
+                        throw new Exception("Unable to determine your user id! Please request a new data package and make sure to tick the \"Account\" option.");
+                    }
+                } else
                 {
-                    var json = r.ReadToEnd();
-                    this.User = Newtonsoft.Json.JsonConvert.DeserializeObject<DUser>(json);
+                    using (var r = new StreamReader(userFile.Open()))
+                    {
+                        var json = r.ReadToEnd();
+                        this.User = Newtonsoft.Json.JsonConvert.DeserializeObject<DUser>(json);
+                    }
                 }
 
                 foreach(var relationship in this.User.Relationships)
@@ -117,7 +193,7 @@ namespace Data_Package_Tool.Classes
                 }
 
                 var channelNamesMap = new Dictionary<string, string>();
-                using (var r = new StreamReader(zip.GetEntry("messages/index.json").Open()))
+                using (var r = new StreamReader(messagesFile.Open()))
                 {
                     var json = r.ReadToEnd();
                     channelNamesMap = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
@@ -137,12 +213,12 @@ namespace Data_Package_Tool.Classes
                 var messagesRegex = new Regex(@"messages/(c?(\d+))/messages\.(csv|json)", RegexOptions.Compiled);
                 var avatarRegex = new Regex(@"account/avatar\.[a-z]+", RegexOptions.Compiled);
                 var nameRegex = new Regex(@"^Direct Message with (.+)#(\d{1,4})$", RegexOptions.Compiled);
-                int i = 0;
+                int j = 0;
                 foreach (var entry in zip.Entries)
                 {
-                    i++;
-                    this.LoadStatus.Progress = i;
-                    this.LoadStatus.Status = $"Reading {entry.FullName}\n{i}/{zip.Entries.Count}";
+                    j++;
+                    this.LoadStatus.Progress = j;
+                    this.LoadStatus.Status = $"Reading {entry.FullName}\n{j}/{zip.Entries.Count}";
 
                     var match = messagesRegex.Match(entry.FullName);
                     if (match.Success)
@@ -219,7 +295,7 @@ namespace Data_Package_Tool.Classes
                         }
                     }
 
-                    if(i % 1000 == 0)
+                    if(j % 1000 == 0)
                     {
                         GC.Collect();
                     }
