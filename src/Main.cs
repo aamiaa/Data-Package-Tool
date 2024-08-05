@@ -436,6 +436,7 @@ namespace Data_Package_Tool
             else
             {
                 resultsCountLb.Text = "No results";
+                ToggleSearchOptions(true);
             }
         }
 
