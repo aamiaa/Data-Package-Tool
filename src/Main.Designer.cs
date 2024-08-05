@@ -86,6 +86,7 @@ namespace Data_Package_Tool
             searchBw = new System.ComponentModel.BackgroundWorker();
             searchTimer = new System.Windows.Forms.Timer(components);
             loadTimer = new System.Windows.Forms.Timer(components);
+            checkForUpdatesCb = new System.Windows.Forms.CheckBox();
             tabControl1.SuspendLayout();
             loadTb.SuspendLayout();
             messagesTab.SuspendLayout();
@@ -454,6 +455,7 @@ namespace Data_Package_Tool
             // settingsTab
             // 
             settingsTab.BackColor = System.Drawing.Color.FromArgb(49, 51, 56);
+            settingsTab.Controls.Add(checkForUpdatesCb);
             settingsTab.Controls.Add(repoLb);
             settingsTab.Controls.Add(groupBox2);
             settingsTab.Controls.Add(groupBox1);
@@ -666,6 +668,20 @@ namespace Data_Package_Tool
             // 
             loadTimer.Tick += loadTimer_Tick;
             // 
+            // checkForUpdatesCb
+            // 
+            checkForUpdatesCb.AutoSize = true;
+            checkForUpdatesCb.Checked = true;
+            checkForUpdatesCb.CheckState = System.Windows.Forms.CheckState.Checked;
+            checkForUpdatesCb.ForeColor = System.Drawing.SystemColors.Control;
+            checkForUpdatesCb.Location = new System.Drawing.Point(12, 139);
+            checkForUpdatesCb.Name = "checkForUpdatesCb";
+            checkForUpdatesCb.Size = new System.Drawing.Size(122, 19);
+            checkForUpdatesCb.TabIndex = 4;
+            checkForUpdatesCb.Text = "Check for updates";
+            checkForUpdatesCb.UseVisualStyleBackColor = true;
+            checkForUpdatesCb.CheckedChanged += checkForUpdatesCb_CheckedChanged;
+            // 
             // Main
             // 
             AcceptButton = searchBtn;
@@ -692,6 +708,7 @@ namespace Data_Package_Tool
             serversContextMenu.ResumeLayout(false);
             dmsTab.ResumeLayout(false);
             settingsTab.ResumeLayout(false);
+            settingsTab.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             groupBox1.ResumeLayout(false);
@@ -756,6 +773,7 @@ namespace Data_Package_Tool
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox userTokenTb;
         private System.Windows.Forms.LinkLabel repoLb;
+        private System.Windows.Forms.CheckBox checkForUpdatesCb;
     }
 }
 
