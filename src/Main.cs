@@ -108,7 +108,34 @@ namespace Data_Package_Tool
                     break;
             }
 
+            checkForUpdatesCb.Checked = Properties.Settings.Default.CheckForUpdates;
+        }
+
+        private async void Main_Load(object sender, EventArgs e)
+        {
             this.Text += " v" + Application.ProductVersion;
+
+            if (Properties.Settings.Default.CheckForUpdates)
+            {
+                try
+                {
+                    if (await Program.CheckForUpdates())
+                    {
+                        this.Text += " (Update Available)";
+
+                        var result = Util.MsgBoxInfo("A new version is available. Would you like to open the download page now?", "Data Package Tool", MessageBoxButtons.YesNo);
+                        if (result == DialogResult.Yes)
+                        {
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = "https://github.com/aamiaa/Data-Package-Tool/releases/latest",
+                                UseShellExecute = true
+                            });
+                        }
+                    }
+                }
+                catch (Exception) { }
+            }
         }
 
         private void LoadDMChannels()
@@ -854,7 +881,7 @@ namespace Data_Package_Tool
         private bool AnalyticsWarningShown = false;
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(DataPackage.ActivityDataStatus.MissingData == true && !AnalyticsWarningShown)
+            if (DataPackage.ActivityDataStatus.MissingData == true && !AnalyticsWarningShown)
             {
                 ShowMissingAnalyticsDataWarning();
             }
@@ -875,6 +902,12 @@ namespace Data_Package_Tool
                     Util.MsgBoxWarn($"It seems like you have some analytics disabled on your Discord account.\nSince disabling analytics deletes past events in your package, the Servers tab might show info from a limited time span!");
                     break;
             }
+        }
+
+        private void checkForUpdatesCb_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.CheckForUpdates = checkForUpdatesCb.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }
