@@ -123,11 +123,16 @@ namespace Data_Package_Tool.Classes
                     channelNamesMap = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
                 }
 
-                using (var r = new StreamReader(zip.GetEntry("servers/index.json").Open()))
+                var guildsFile = zip.GetEntry("servers/index.json");
+                if(guildsFile != null)
                 {
-                    var json = r.ReadToEnd();
-                    this.GuildNamesMap = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-                }                
+                    using (var r = new StreamReader(guildsFile.Open()))
+                    {
+                        var json = r.ReadToEnd();
+                        this.GuildNamesMap = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                    }  
+                }
+                              
 
                 var messagesRegex = new Regex(@"messages/(c?(\d+))/messages\.(csv|json)", RegexOptions.Compiled);
                 var avatarRegex = new Regex(@"account/avatar\.[a-z]+", RegexOptions.Compiled);
