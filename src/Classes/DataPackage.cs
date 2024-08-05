@@ -1,4 +1,4 @@
-﻿using Data_Package_Tool.Classes.Parsing;
+using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Helpers;
 using System;
 using System.Collections.Generic;
@@ -282,6 +282,12 @@ namespace Data_Package_Tool.Classes
                     {
                         analyticsFile = entry;
                     }
+                }
+
+                if(reportingFile == null) // Partial data package without the activity folder
+                {
+                    this.GuildsLoadStatus.Finished = true;
+                    return;
                 }
 
                 ActivityFile fileToUse = ActivityFile.Analytics;
