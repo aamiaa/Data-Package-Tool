@@ -180,7 +180,7 @@ namespace Data_Package_Tool
                 serversLv.Items.Add(lvItem);
             }
 
-            if (isMissingData && tabControl1.SelectedIndex == 3)
+            if (isMissingData && tabControl1.SelectedIndex == 3 && !this.AnalyticsWarningShown)
             {
                 ShowMissingAnalyticsDataWarning();
             }
@@ -886,7 +886,7 @@ namespace Data_Package_Tool
         private bool AnalyticsWarningShown = false;
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (DataPackage.ActivityDataStatus.MissingData == true && !AnalyticsWarningShown)
+            if (DataPackage.ActivityDataStatus.MissingData == true && tabControl1.SelectedIndex == 3 && !AnalyticsWarningShown)
             {
                 ShowMissingAnalyticsDataWarning();
             }
