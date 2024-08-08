@@ -246,5 +246,17 @@ namespace Data_Package_Tool.Properties {
                 this["CheckForUpdates"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SearchExcludeDeleted {
+            get {
+                return ((bool)(this["SearchExcludeDeleted"]));
+            }
+            set {
+                this["SearchExcludeDeleted"] = value;
+            }
+        }
     }
 }

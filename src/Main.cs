@@ -470,6 +470,11 @@ namespace Data_Package_Tool
         private List<DMessage> FilterMessages(List<DMessage> messages)
         {
             IEnumerable<DMessage> m = messages;
+            if(Properties.Settings.Default.SearchExcludeDeleted)
+            {
+                m = m.Where(x => x.IsDeleted == false);
+            }
+
             if (Properties.Settings.Default.SearchHasImage || Properties.Settings.Default.SearchHasVideo || Properties.Settings.Default.SearchHasFile)
             {
                 m = m.Where(x =>

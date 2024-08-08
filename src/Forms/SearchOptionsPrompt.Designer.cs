@@ -56,6 +56,7 @@
             hasFileCb = new System.Windows.Forms.CheckBox();
             hasImageCb = new System.Windows.Forms.CheckBox();
             hasVideoCb = new System.Windows.Forms.CheckBox();
+            excludeDeletedCb = new System.Windows.Forms.CheckBox();
             SuspendLayout();
             // 
             // excludeGuildsCb
@@ -99,7 +100,7 @@
             excludedIdsLb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             excludedIdsLb.FormattingEnabled = true;
             excludedIdsLb.ItemHeight = 15;
-            excludedIdsLb.Location = new System.Drawing.Point(12, 210);
+            excludedIdsLb.Location = new System.Drawing.Point(12, 238);
             excludedIdsLb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             excludedIdsLb.Name = "excludedIdsLb";
             excludedIdsLb.Size = new System.Drawing.Size(182, 94);
@@ -109,7 +110,7 @@
             // 
             label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(12, 194);
+            label1.Location = new System.Drawing.Point(12, 222);
             label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(199, 15);
@@ -119,7 +120,7 @@
             // saveBtn
             // 
             saveBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            saveBtn.Location = new System.Drawing.Point(194, 324);
+            saveBtn.Location = new System.Drawing.Point(194, 352);
             saveBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             saveBtn.Name = "saveBtn";
             saveBtn.Size = new System.Drawing.Size(75, 23);
@@ -132,7 +133,7 @@
             // 
             addBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             addBtn.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            addBtn.Location = new System.Drawing.Point(200, 210);
+            addBtn.Location = new System.Drawing.Point(200, 238);
             addBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             addBtn.Name = "addBtn";
             addBtn.Size = new System.Drawing.Size(24, 21);
@@ -145,7 +146,7 @@
             // 
             removeBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             removeBtn.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            removeBtn.Location = new System.Drawing.Point(200, 237);
+            removeBtn.Location = new System.Drawing.Point(200, 265);
             removeBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             removeBtn.Name = "removeBtn";
             removeBtn.Size = new System.Drawing.Size(24, 21);
@@ -214,7 +215,7 @@
             // 
             removeWhitelistBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             removeWhitelistBtn.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            removeWhitelistBtn.Location = new System.Drawing.Point(429, 237);
+            removeWhitelistBtn.Location = new System.Drawing.Point(429, 265);
             removeWhitelistBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             removeWhitelistBtn.Name = "removeWhitelistBtn";
             removeWhitelistBtn.Size = new System.Drawing.Size(24, 21);
@@ -227,7 +228,7 @@
             // 
             addWhitelistBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             addWhitelistBtn.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            addWhitelistBtn.Location = new System.Drawing.Point(429, 210);
+            addWhitelistBtn.Location = new System.Drawing.Point(429, 238);
             addWhitelistBtn.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             addWhitelistBtn.Name = "addWhitelistBtn";
             addWhitelistBtn.Size = new System.Drawing.Size(24, 21);
@@ -240,7 +241,7 @@
             // 
             label4.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(241, 194);
+            label4.Location = new System.Drawing.Point(241, 222);
             label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(232, 15);
@@ -252,7 +253,7 @@
             whitelistIdsLb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             whitelistIdsLb.FormattingEnabled = true;
             whitelistIdsLb.ItemHeight = 15;
-            whitelistIdsLb.Location = new System.Drawing.Point(241, 210);
+            whitelistIdsLb.Location = new System.Drawing.Point(241, 238);
             whitelistIdsLb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             whitelistIdsLb.Name = "whitelistIdsLb";
             whitelistIdsLb.Size = new System.Drawing.Size(181, 94);
@@ -264,7 +265,7 @@
             beforeDateDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
             beforeDateDtp.Enabled = false;
             beforeDateDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            beforeDateDtp.Location = new System.Drawing.Point(12, 156);
+            beforeDateDtp.Location = new System.Drawing.Point(12, 184);
             beforeDateDtp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             beforeDateDtp.Name = "beforeDateDtp";
             beforeDateDtp.Size = new System.Drawing.Size(200, 23);
@@ -276,7 +277,7 @@
             // 
             beforeDateCb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             beforeDateCb.AutoSize = true;
-            beforeDateCb.Location = new System.Drawing.Point(12, 133);
+            beforeDateCb.Location = new System.Drawing.Point(12, 161);
             beforeDateCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             beforeDateCb.Name = "beforeDateCb";
             beforeDateCb.Size = new System.Drawing.Size(111, 19);
@@ -289,7 +290,7 @@
             // 
             afterDateCb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             afterDateCb.AutoSize = true;
-            afterDateCb.Location = new System.Drawing.Point(244, 133);
+            afterDateCb.Location = new System.Drawing.Point(244, 161);
             afterDateCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             afterDateCb.Name = "afterDateCb";
             afterDateCb.Size = new System.Drawing.Size(103, 19);
@@ -304,7 +305,7 @@
             afterDateDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
             afterDateDtp.Enabled = false;
             afterDateDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            afterDateDtp.Location = new System.Drawing.Point(244, 156);
+            afterDateDtp.Location = new System.Drawing.Point(244, 184);
             afterDateDtp.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             afterDateDtp.Name = "afterDateDtp";
             afterDateDtp.Size = new System.Drawing.Size(200, 23);
@@ -314,8 +315,9 @@
             // 
             // caseSensitiveCb
             // 
+            caseSensitiveCb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             caseSensitiveCb.AutoSize = true;
-            caseSensitiveCb.Location = new System.Drawing.Point(12, 102);
+            caseSensitiveCb.Location = new System.Drawing.Point(12, 130);
             caseSensitiveCb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             caseSensitiveCb.Name = "caseSensitiveCb";
             caseSensitiveCb.Size = new System.Drawing.Size(140, 19);
@@ -326,10 +328,11 @@
             // 
             // sortOrderCmb
             // 
+            sortOrderCmb.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             sortOrderCmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             sortOrderCmb.FormattingEnabled = true;
             sortOrderCmb.Items.AddRange(new object[] { "Newest to oldest", "Oldest to newest" });
-            sortOrderCmb.Location = new System.Drawing.Point(304, 100);
+            sortOrderCmb.Location = new System.Drawing.Point(304, 128);
             sortOrderCmb.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             sortOrderCmb.Name = "sortOrderCmb";
             sortOrderCmb.Size = new System.Drawing.Size(139, 23);
@@ -338,8 +341,9 @@
             // 
             // label5
             // 
+            label5.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(241, 103);
+            label5.Location = new System.Drawing.Point(241, 131);
             label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(62, 15);
@@ -392,12 +396,24 @@
             hasVideoCb.UseVisualStyleBackColor = true;
             hasVideoCb.CheckedChanged += dummyValueChanged;
             // 
+            // excludeDeletedCb
+            // 
+            excludeDeletedCb.AutoSize = true;
+            excludeDeletedCb.Location = new System.Drawing.Point(137, 99);
+            excludeDeletedCb.Name = "excludeDeletedCb";
+            excludeDeletedCb.Size = new System.Drawing.Size(163, 19);
+            excludeDeletedCb.TabIndex = 29;
+            excludeDeletedCb.Text = "Exclude deleted messages";
+            excludeDeletedCb.UseVisualStyleBackColor = true;
+            excludeDeletedCb.CheckedChanged += dummyValueChanged;
+            // 
             // SearchOptionsPrompt
             // 
             AcceptButton = saveBtn;
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(477, 356);
+            ClientSize = new System.Drawing.Size(477, 384);
+            Controls.Add(excludeDeletedCb);
             Controls.Add(hasVideoCb);
             Controls.Add(label6);
             Controls.Add(hasFileCb);
@@ -472,5 +488,6 @@
         private System.Windows.Forms.CheckBox hasFileCb;
         private System.Windows.Forms.CheckBox hasImageCb;
         private System.Windows.Forms.CheckBox hasVideoCb;
+        private System.Windows.Forms.CheckBox excludeDeletedCb;
     }
 }
