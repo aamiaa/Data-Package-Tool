@@ -12,7 +12,7 @@ namespace Data_Package_Tool.Classes.Parsing
         [JsonProperty("id")]
         public string Id { get; set; }
         [JsonProperty("type")]
-        public int Type { get; set; }
+        public ChannelType Type { get; set; }
         [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("guild")]
@@ -83,17 +83,17 @@ namespace Data_Package_Tool.Classes.Parsing
 
         public bool IsDM()
         {
-            return this.Type == 1;
+            return this.Type == ChannelType.DM;
         }
 
         public bool IsGroupDM()
         {
-            return this.Type == 3;
+            return this.Type == ChannelType.GROUP_DM;
         }
 
         public bool IsVoice()
         {
-            return this.Type == 2 || this.Type == 13;
+            return this.Type == ChannelType.GUILD_VOICE || this.Type == ChannelType.GUILD_STAGE_VOICE;
         }
 
         public string GetOtherDMRecipient(DUser user)
@@ -113,5 +113,23 @@ namespace Data_Package_Tool.Classes.Parsing
 
             throw new Exception("This shouldn't happen");
         }
+    }
+
+    public enum ChannelType
+    {
+        GUILD_TEXT = 0,
+        DM = 1,
+        GUILD_VOICE = 2,
+        GROUP_DM = 3,
+        GUILD_CATEGORY = 4,
+        GUILD_ANNOUNCEMENT = 5,
+        GUILD_STORE = 6,
+        ANNOUNCEMENT_THREAD = 10,
+        PUBLIC_THREAD = 11,
+        PRIVATE_THREAD = 12,
+        GUILD_STAGE_VOICE = 13,
+        GUILD_DIRECTORY = 14,
+        GUILD_FORUM = 15,
+        GUILD_MEDIA = 16
     }
 }
