@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -23,6 +24,7 @@ namespace Data_Package_Tool
         public static async Task<bool> CheckForUpdates()
         {
             using var client = new HttpClient();
+            client.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("no-cache");
             string version = await client.GetStringAsync("https://raw.githubusercontent.com/aamiaa/Data-Package-Tool/main/version.txt");
             if(version != Application.ProductVersion)
             {
