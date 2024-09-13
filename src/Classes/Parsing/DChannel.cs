@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
+using Data_Package_Tool.Helpers;
 using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -23,6 +25,20 @@ namespace Data_Package_Tool.Classes.Parsing
         public List<DMessage> Messages { get; } = new List<DMessage>();
         public string DMRecipientId { get; set; }
         public bool HasDuplicates { get; set; }
+
+        // Fix for https://github.com/aamiaa/Data-Package-Tool/issues/19
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context)
+        {
+            if (this.IsDM())
+            {
+                var idx = this.RecipientIds.FindIndex(x => x == "Deleted User");
+                if (idx != -1)
+                {
+                    this.RecipientIds[idx] = Consts.DeletedUserId;
+                }
+            }
+        }
 
         public void LoadMessagesFromCsv(string csv)
         {
