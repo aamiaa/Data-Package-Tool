@@ -15,6 +15,7 @@ namespace Data_Package_Tool.Classes
         public string browser;
         public string device;
         public string system_locale;
+        public bool has_client_mods;
         public string browser_user_agent;
         public string browser_version;
         public string os_version;
@@ -61,6 +62,7 @@ namespace Data_Package_Tool.Classes
                 browser = "Chrome",
                 device = "",
                 system_locale = "en-US",
+                has_client_mods = false,
                 browser_user_agent = USER_AGENT,
                 browser_version = BROWSER_VERSION_FULL,
                 os_version = "10",
