@@ -16,6 +16,12 @@ Note: This is my first C# app, sorry for bad code or development mistakes
 
 \* Requires your account token. Note that this falls under selfbotting, which is against Discord's [Community Guidelines](https://discord.com/guidelines#:~:text=Do%20not%20use%20self%2Dbots%20or%20user%2Dbots) and might get your account banned. 
 
+## Usage Guide
+You can find various guides and examples under the wiki tab:
+- [Getting your package](https://github.com/aamiaa/Data-Package-Tool/wiki/Getting-your-package)
+- [Reopening a lost DM](https://github.com/aamiaa/Data-Package-Tool/wiki/Reopening-a-lost-DM)
+- [Searching in a specific server/channel/dm](https://github.com/aamiaa/Data-Package-Tool/wiki/Searching-in-a-specific-server-channel-dm)
+
 ## Screenshots
 ![image](https://i.imgur.com/kPnrtgs.png)
 
