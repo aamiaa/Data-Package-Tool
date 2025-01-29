@@ -70,7 +70,7 @@ namespace Data_Package_Tool.Classes
                 referring_domain = "",
                 referrer_current = "",
                 referring_domain_current = "",
-                release_channel = "canary",
+                release_channel = "stable",
                 client_build_number = ClientBuildNumber,
                 client_event_source = null
             });
@@ -111,12 +111,12 @@ namespace Data_Package_Tool.Classes
         {
             var client = new HttpClient();
 
-            var res = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "https://canary.discord.com/app"));
+            var res = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "https://discord.com/app"));
             var content = await res.Content.ReadAsStringAsync();
             foreach (Match match in Regex.Matches(content, @"<script (?:defer )?src=""(\/assets\/.+?\.js)", RegexOptions.None))
             {
                 var scriptPath = match.Groups[1].Value;
-                var scriptRes = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"https://canary.discord.com{scriptPath}"));
+                var scriptRes = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"https://discord.com{scriptPath}"));
                 var scriptContent = await scriptRes.Content.ReadAsStringAsync();
                 if(scriptContent.Contains("build_number"))
                 {
