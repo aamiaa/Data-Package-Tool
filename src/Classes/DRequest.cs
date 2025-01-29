@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -83,7 +84,7 @@ namespace Data_Package_Tool.Classes
             Dictionary<string, string> headers = new Dictionary<string, string>{
                 {"Accept", "*/*"},
                 {"Accept-Language", "en-US,en;q=0.5"},
-                {"sec-ch-ua", $"\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"{BROWSER_VERSION}\", \"Google Chrome\";v=\"{BROWSER_VERSION}\""},
+                {"sec-ch-ua", GetGreasedChromeVersion()},
                 {"sec-ch-ua-mobile", "?0"},
                 {"sec-ch-ua-platform", "\"Windows\""},
                 {"sec-fetch-dest", "empty"},
@@ -138,6 +139,67 @@ namespace Data_Package_Tool.Classes
             var majorNum = latest.Split('.')[0];
 
             return majorNum;
+        }
+
+        // https://github.com/chromium/chromium/blob/3d78f2a1a74d5fed08f55e0349c21acc7fc2f5fa/components/embedder_support/user_agent_utils.cc#L430
+        public static string GetGreasedChromeVersion()
+        {
+            int seed = int.Parse(BROWSER_VERSION);
+            var greasyChars = new string[] { " ", "(", ":", "-", ".", "/", ")", ";", "=", "?", "_" };
+            var greasedVersions = new string[] { "8", "99", "24" };
+
+            string greasyBrand =
+                "Not" + greasyChars[seed % greasyChars.Length] +
+                "A" + greasyChars[(seed + 1) % greasyChars.Length] +
+                "Brand";
+            string greasyVersion = greasedVersions[seed % greasedVersions.Length];
+
+            var brandVersionList = new List<string[]>{
+                new string[] {greasyBrand, greasyVersion},
+                new string[] {"Chromium", BROWSER_VERSION},
+                new string[] {"Google Chrome", BROWSER_VERSION}
+            };
+
+            int[] order;
+            int size = brandVersionList.Count;
+            switch(size)
+            {
+                case 2:
+                    order = new int[] { seed % size, (seed + 1) % size };
+                    break;
+                case 3:
+                    {
+                        var orders = new List<int[]>
+                        {
+                            new int[] {0, 1, 2}, new int[] {0, 2, 1}, new int[] {1, 0, 2}, new int[] {1, 2, 0}, new int[] {2, 0, 1}, new int[] {2, 1, 0}
+                        };
+                        order = orders[seed % orders.Count];
+                        break;
+                    }
+                default:
+                    {
+                        var orders = new List<int[]>
+                        {
+                            new int[] {0, 1, 2, 3}, new int[] {0, 1, 3, 2}, new int[] {0, 2, 1, 3}, new int[] {0, 2, 3, 1}, new int[] {0, 3, 1, 2},
+                            new int[] {0, 3, 2, 1}, new int[] {1, 0, 2, 3}, new int[] {1, 0, 3, 2}, new int[] {1, 2, 0, 3}, new int[] {1, 2, 3, 0},
+                            new int[] {1, 3, 0, 2}, new int[] {1, 3, 2, 0}, new int[] {2, 0, 1, 3}, new int[] {2, 0, 3, 1}, new int[] {2, 1, 0, 3},
+                            new int[] {2, 1, 3, 0}, new int[] {2, 3, 0, 1}, new int[] {2, 3, 1, 0}, new int[] {3, 0, 1, 2}, new int[] {3, 0, 2, 1},
+                            new int[] {3, 1, 0, 2}, new int[] {3, 1, 2, 0}, new int[] {3, 2, 0, 1}, new int[] {3, 2, 1, 0}
+                        };
+                        order = orders[seed % orders.Count];
+                        break;
+                    }
+            }
+
+            // Initializing this with `brandVersionList` because it's the cleanest way to avoid the index of out bounds error.
+            // No, setting Capacity doesn't work for some reason.
+            var shuffled = new List<string[]>(brandVersionList);
+            for(int i=0;i<order.Length;i++)
+            {
+                shuffled[order[i]] = brandVersionList[i];
+            }
+
+            return String.Join(", ", shuffled.Select(x => $"\"{x[0]}\";v=\"{x[1]}\""));
         }
     }
     class DRequest
