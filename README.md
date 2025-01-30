@@ -22,6 +22,12 @@ You can find various guides and examples under the wiki tab:
 - [Reopening a lost DM](https://github.com/aamiaa/Data-Package-Tool/wiki/Reopening-a-lost-DM)
 - [Searching in a specific server/channel/dm](https://github.com/aamiaa/Data-Package-Tool/wiki/Searching-in-a-specific-server-channel-dm)
 
+## Your Data Safety
+Not trusting a random program with your data package is completely understandable. For this reason, I've ensured the following to make it as comfortable as possible to use this tool:
+- **It works fully offline**. You can unplug your internet or run it in an isolated vm, and it will still work the same, minus the features which require internet connection (e.g. viewing images, reopening dms).
+- **It doesn't contact any unreputable 3rd party apis**. The only domains it might contact are `discord.com`, `cdn.discordapp.com`, `raw.githubusercontent.com` (to check for updates, which you can disable), and `versionhistory.googleapis.com` (to get latest Chrome version for selfbot headers).
+- **It's built directly from the source by GitHub Actions**. This ensures that the .exe you're downloading only contains the code that's in this repo. You can verify that a release's file hasn't been swapped/modified by downloading the same version from [GitHub Actions](https://github.com/aamiaa/Data-Package-Tool/actions/workflows/release.yml) artifacts, and comparing both .exe files.
+
 ## Screenshots
 ![image](https://i.imgur.com/kPnrtgs.png)
 
