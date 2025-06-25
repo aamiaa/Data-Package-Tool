@@ -27,6 +27,9 @@ namespace Data_Package_Tool.Classes
         public string release_channel;
         public int client_build_number;
         public string client_event_source;
+        public string client_launch_id;
+        public string client_heartbeat_session_id;
+        public string client_app_state;
 
     }
     class DHeaders
@@ -35,6 +38,8 @@ namespace Data_Package_Tool.Classes
         public static string BROWSER_VERSION_FULL;
 
         public static string USER_AGENT;
+        public static string CLIENT_LAUNCH_ID = Guid.NewGuid().ToString();
+        public static string CLIENT_HEARTBEAT_SESSION_ID = Guid.NewGuid().ToString();
 
         public static int ClientBuildNumber;
 
@@ -73,7 +78,10 @@ namespace Data_Package_Tool.Classes
                 referring_domain_current = "",
                 release_channel = "stable",
                 client_build_number = ClientBuildNumber,
-                client_event_source = null
+                client_event_source = null,
+                client_launch_id = CLIENT_LAUNCH_ID,
+                client_heartbeat_session_id = CLIENT_HEARTBEAT_SESSION_ID,
+                client_app_state = "focused"
             });
 
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(propsJson));
