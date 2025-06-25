@@ -94,14 +94,14 @@ namespace Data_Package_Tool.Classes
 
                 // Messages folder is the primary folder this tool needs,
                 // so we check for it in the 1st step.
-                var messagesFile = zip.GetEntry("messages/index.json");
+                var messagesFile = zip.GetEntry("Messages/index.json") ?? zip.GetEntry("messages/index.json");
                 if(messagesFile == null)
                 {
                     throw new Exception("Invalid data package: missing messages/index.json");
                 }
                 this.CreationTime = messagesFile.LastWriteTime.DateTime;
 
-                var userFile = zip.GetEntry("account/user.json");
+                var userFile = zip.GetEntry("Account/user.json") ?? zip.GetEntry("account/user.json");
                 if (userFile == null)
                 {
                     // Create a dummy user obj for partial package
@@ -118,7 +118,7 @@ namespace Data_Package_Tool.Classes
                     // Attempt to guess the user id from dm recipients
                     this.LoadStatus.Status = $"Determining user id";
 
-                    var channelRegex = new Regex(@"messages/(c?\d+)/channel\.json", RegexOptions.Compiled);
+                    var channelRegex = new Regex(@"[mM]essages/(c?\d+)/channel\.json", RegexOptions.Compiled);
                     var potentialIds = new Dictionary<string, int>();
                     int i = 0;
                     foreach (var entry in zip.Entries)
@@ -199,7 +199,7 @@ namespace Data_Package_Tool.Classes
                     channelNamesMap = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
                 }
 
-                var guildsFile = zip.GetEntry("servers/index.json");
+                var guildsFile = zip.GetEntry("Servers/index.json") ?? zip.GetEntry("servers/index.json");
                 if(guildsFile != null)
                 {
                     using (var r = new StreamReader(guildsFile.Open()))
@@ -210,8 +210,8 @@ namespace Data_Package_Tool.Classes
                 }
                               
 
-                var messagesRegex = new Regex(@"messages/(c?(\d+))/messages\.(csv|json)", RegexOptions.Compiled);
-                var avatarRegex = new Regex(@"account/avatar\.[a-z]+", RegexOptions.Compiled);
+                var messagesRegex = new Regex(@"[mM]essages/(c?(\d+))/messages\.(csv|json)", RegexOptions.Compiled);
+                var avatarRegex = new Regex(@"[aA]ccount/avatar\.[a-z]+", RegexOptions.Compiled);
                 var nameRegex = new Regex(@"^Direct Message with (.+)#(\d{1,4})$", RegexOptions.Compiled);
                 int j = 0;
                 foreach (var entry in zip.Entries)
@@ -228,7 +228,8 @@ namespace Data_Package_Tool.Classes
                         var fileExtension = match.Groups[3].Value;
 
                         DChannel channel;
-                        using (var rChannel = new StreamReader(zip.GetEntry($"messages/{folderName}/channel.json").Open()))
+                        var channelEntry = zip.GetEntry($"Messages/{folderName}/channel.json") ?? zip.GetEntry($"messages/{folderName}/channel.json");
+                        using (var rChannel = new StreamReader(channelEntry.Open()))
                         {
                             var json = rChannel.ReadToEnd();
                             channel = Newtonsoft.Json.JsonConvert.DeserializeObject<DChannel>(json);
@@ -340,9 +341,9 @@ namespace Data_Package_Tool.Classes
              * If activity/modeling also isn't present, fallback to activity/reporting.
              */
 
-            var reportingRegex = new Regex(@"activity/reporting/events.+\.json", RegexOptions.Compiled);
-            var modelingRegex = new Regex(@"activity/modeling/events.+\.json", RegexOptions.Compiled);
-            var analyticsRegex = new Regex(@"activity/analytics/events.+\.json", RegexOptions.Compiled);
+            var reportingRegex = new Regex(@"[aA]ctivity/reporting/events.+\.json", RegexOptions.Compiled);
+            var modelingRegex = new Regex(@"[aA]ctivity/modeling/events.+\.json", RegexOptions.Compiled);
+            var analyticsRegex = new Regex(@"[aA]ctivity/analytics/events.+\.json", RegexOptions.Compiled);
 
             using (var file = File.OpenRead(fileName))
             using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
