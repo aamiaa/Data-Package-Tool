@@ -146,6 +146,8 @@ namespace Data_Package_Tool.Classes.Parsing
         GUILD_STAGE_VOICE = 13,
         GUILD_DIRECTORY = 14,
         GUILD_FORUM = 15,
-        GUILD_MEDIA = 16
+        GUILD_MEDIA = 16,
+        LOBBY = 17,
+        EPHEMERAL_DM = 18
     }
 }
