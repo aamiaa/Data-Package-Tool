@@ -1,4 +1,4 @@
-﻿
+
 namespace Data_Package_Tool
 {
     partial class Main
@@ -50,6 +50,10 @@ namespace Data_Package_Tool
             imagesCountLb = new System.Windows.Forms.Label();
             imagesNextBtn = new System.Windows.Forms.Button();
             imagesPrevBtn = new System.Windows.Forms.Button();
+            imagesAfterCb = new System.Windows.Forms.CheckBox();
+            imagesAfterDtp = new System.Windows.Forms.DateTimePicker();
+            imagesBeforeCb = new System.Windows.Forms.CheckBox();
+            imagesBeforeDtp = new System.Windows.Forms.DateTimePicker();
             serversTab = new System.Windows.Forms.TabPage();
             serversStatusStrip = new System.Windows.Forms.StatusStrip();
             serversStatusLb = new System.Windows.Forms.ToolStripStatusLabel();
@@ -276,6 +280,10 @@ namespace Data_Package_Tool
             // 
             imagesTab.BackColor = System.Drawing.Color.FromArgb(49, 51, 56);
             imagesTab.Controls.Add(imagesPanel);
+            imagesTab.Controls.Add(imagesBeforeDtp);
+            imagesTab.Controls.Add(imagesBeforeCb);
+            imagesTab.Controls.Add(imagesAfterDtp);
+            imagesTab.Controls.Add(imagesAfterCb);
             imagesTab.Controls.Add(imagesCountLb);
             imagesTab.Controls.Add(imagesNextBtn);
             imagesTab.Controls.Add(imagesPrevBtn);
@@ -328,6 +336,53 @@ namespace Data_Package_Tool
             imagesPrevBtn.Text = "<";
             imagesPrevBtn.UseVisualStyleBackColor = true;
             imagesPrevBtn.Click += imagesPrevBtn_Click;
+            // 
+            // imagesAfterCb
+            // 
+            imagesAfterCb.AutoSize = true;
+            imagesAfterCb.ForeColor = System.Drawing.SystemColors.Control;
+            imagesAfterCb.Location = new System.Drawing.Point(200, 10);
+            imagesAfterCb.Name = "imagesAfterCb";
+            imagesAfterCb.Size = new System.Drawing.Size(52, 19);
+            imagesAfterCb.TabIndex = 4;
+            imagesAfterCb.Text = "After";
+            imagesAfterCb.UseVisualStyleBackColor = true;
+            imagesAfterCb.CheckedChanged += imagesDateFilter_CheckedChanged;
+            // 
+            // imagesAfterDtp
+            // 
+            imagesAfterDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
+            imagesAfterDtp.Enabled = false;
+            imagesAfterDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            imagesAfterDtp.Location = new System.Drawing.Point(255, 7);
+            imagesAfterDtp.Name = "imagesAfterDtp";
+            imagesAfterDtp.Size = new System.Drawing.Size(200, 23);
+            imagesAfterDtp.TabIndex = 5;
+            imagesAfterDtp.Value = new System.DateTime(2023, 1, 1, 0, 0, 0, 0);
+            imagesAfterDtp.ValueChanged += imagesDateFilter_ValueChanged;
+            // 
+            // imagesBeforeCb
+            // 
+            imagesBeforeCb.AutoSize = true;
+            imagesBeforeCb.ForeColor = System.Drawing.SystemColors.Control;
+            imagesBeforeCb.Location = new System.Drawing.Point(465, 10);
+            imagesBeforeCb.Name = "imagesBeforeCb";
+            imagesBeforeCb.Size = new System.Drawing.Size(58, 19);
+            imagesBeforeCb.TabIndex = 6;
+            imagesBeforeCb.Text = "Before";
+            imagesBeforeCb.UseVisualStyleBackColor = true;
+            imagesBeforeCb.CheckedChanged += imagesDateFilter_CheckedChanged;
+            // 
+            // imagesBeforeDtp
+            // 
+            imagesBeforeDtp.CustomFormat = "MM/dd/yyyy HH:mm:ss";
+            imagesBeforeDtp.Enabled = false;
+            imagesBeforeDtp.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            imagesBeforeDtp.Location = new System.Drawing.Point(525, 7);
+            imagesBeforeDtp.Name = "imagesBeforeDtp";
+            imagesBeforeDtp.Size = new System.Drawing.Size(200, 23);
+            imagesBeforeDtp.TabIndex = 7;
+            imagesBeforeDtp.ValueChanged += imagesDateFilter_ValueChanged;
             // 
             // serversTab
             // 
@@ -733,6 +788,10 @@ namespace Data_Package_Tool
         private System.Windows.Forms.Button imagesPrevBtn;
         private System.Windows.Forms.Label imagesCountLb;
         private System.Windows.Forms.Panel imagesPanel;
+        private System.Windows.Forms.CheckBox imagesAfterCb;
+        private System.Windows.Forms.DateTimePicker imagesAfterDtp;
+        private System.Windows.Forms.CheckBox imagesBeforeCb;
+        private System.Windows.Forms.DateTimePicker imagesBeforeDtp;
         private System.Windows.Forms.TabPage settingsTab;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton canaryRb;

@@ -1,4 +1,4 @@
-﻿using Data_Package_Tool.Classes;
+using Data_Package_Tool.Classes;
 using Data_Package_Tool.Classes.Parsing;
 using Data_Package_Tool.Forms;
 using Data_Package_Tool.Helpers;
@@ -571,11 +571,27 @@ namespace Data_Package_Tool
         private int imagesPerPage = 36;
         private int imagesPerRow = 9;
         private int imageSquareSize = 200;
+        private List<DAttachment> filteredImageAttachments;
+
+        private List<DAttachment> GetFilteredImages()
+        {
+            IEnumerable<DAttachment> imgs = DataPackage.ImageAttachments;
+            if (imagesAfterCb.Checked)
+                imgs = imgs.Where(a => a.Message.Timestamp > imagesAfterDtp.Value);
+            if (imagesBeforeCb.Checked)
+                imgs = imgs.Where(a => a.Message.Timestamp < imagesBeforeDtp.Value);
+            return imgs.ToList();
+        }
+
         private async Task LoadImages()
         {
-            if (DataPackage.ImageAttachments.Count == 0)
+            if (filteredImageAttachments == null)
+                filteredImageAttachments = GetFilteredImages();
+
+            if (filteredImageAttachments.Count == 0)
             {
                 imagesCountLb.Text = $"No images found";
+                imagesPanel.Controls.Clear();
                 return;
             }
 
@@ -583,7 +599,7 @@ namespace Data_Package_Tool
             imagesPrevBtn.Enabled = false;
 
             if (imagesOffset < 0) imagesOffset = 0;
-            if (imagesOffset >= DataPackage.ImageAttachments.Count || imagesOffset + imagesPerPage >= DataPackage.ImageAttachments.Count) imagesOffset = DataPackage.ImageAttachments.Count - imagesPerPage;
+            if (imagesOffset >= filteredImageAttachments.Count || imagesOffset + imagesPerPage >= filteredImageAttachments.Count) imagesOffset = filteredImageAttachments.Count - imagesPerPage;
 
             // Refresh images on the current page
             if (DataPackage.UsesUnsignedCDNLinks)
@@ -591,7 +607,7 @@ namespace Data_Package_Tool
                 var needRefreshing = new List<DAttachment>();
                 for (int i = 0; i < imagesPerPage; i++)
                 {
-                    var attachment = DataPackage.ImageAttachments[imagesOffset + i];
+                    var attachment = filteredImageAttachments[imagesOffset + i];
                     if (!attachment.IsSigned)
                     {
                         needRefreshing.Add(attachment);
@@ -606,7 +622,7 @@ namespace Data_Package_Tool
             }
 
             imagesPanel.Controls.Clear();
-            imagesCountLb.Text = $"{imagesOffset + 1}-{imagesOffset + imagesPerPage} of {DataPackage.ImageAttachments.Count}";
+            imagesCountLb.Text = $"{imagesOffset + 1}-{imagesOffset + imagesPerPage} of {filteredImageAttachments.Count}";
 
             for (int i = 0; i < imagesPerPage; i++)
             {
@@ -617,7 +633,7 @@ namespace Data_Package_Tool
                     loc = new Point(imagesPanel.Controls.Count % imagesPerRow == 0 ? 3 : last.Location.X + last.Size.Width + 6, imagesPanel.Controls.Count % imagesPerRow == 0 ? last.Location.Y + imageSquareSize + 44 : last.Location.Y);
                 }
 
-                var attachment = DataPackage.ImageAttachments[imagesOffset + i];
+                var attachment = filteredImageAttachments[imagesOffset + i];
 
                 var pb = new Attachment(attachment)
                 {
@@ -661,6 +677,22 @@ namespace Data_Package_Tool
                 await LoadImages();
             }
             catch (Exception) { }
+        }
+
+        private async void imagesDateFilter_CheckedChanged(object sender, EventArgs e)
+        {
+            imagesAfterDtp.Enabled = imagesAfterCb.Checked;
+            imagesBeforeDtp.Enabled = imagesBeforeCb.Checked;
+            filteredImageAttachments = null;
+            imagesOffset = 0;
+            if (DataPackage.ImageAttachments.Count > 0) await LoadImages();
+        }
+
+        private async void imagesDateFilter_ValueChanged(object sender, EventArgs e)
+        {
+            filteredImageAttachments = null;
+            imagesOffset = 0;
+            if (DataPackage.ImageAttachments.Count > 0) await LoadImages();
         }
 
         private void discordInstanceSettingsChange(object sender, EventArgs e)
